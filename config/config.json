@@ -1,0 +1,8 @@
+{
+  "development": {
+    "url": "postgres://postgres:qwerty@localhost:5432/redfreelance",
+    "dialect": "postgres"
+  },
+  "test": {},
+  "production": {}
+}
