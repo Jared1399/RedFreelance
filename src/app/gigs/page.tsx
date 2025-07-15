@@ -1,16 +1,19 @@
-import Grid from '@/components/ui/layout/grid/Grid';
+import Grid from '@/components/ui/uiGrid/Grid';
+import Card from '@/components/ui/uiCard/Card';
+
 
 const Gig = () => {
+
+  const cardList = []
+
+  for(let i=0;i<6;i++){
+    cardList.push(<Card key={i} content={(i+1).toString()}/>)
+  }
 
   return (
     <>
       <Grid>
-        <div className='bg-blue-500 m-2'>a</div>
-        <div className='bg-blue-500 m-2'>b</div>
-        <div className='bg-blue-500 m-2'>c</div>
-        <div className='bg-pink-500 m-2'>a</div>
-        <div className='bg-pink-500 m-2'>b</div>
-        <div className='bg-pink-500 m-2'>c</div>
+        {cardList}
       </Grid>
     </>
   )
