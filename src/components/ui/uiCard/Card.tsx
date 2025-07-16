@@ -7,23 +7,34 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+
 interface UiCardProps {
-  content: string;
+  cardTitle: string, 
+  cardDescription: string, 
+  cardAction: string, 
+  cardContent: string, 
+  cardFooter: string 
 }
 
-const UiCard: React.FC<UiCardProps> = ({ content }) => {
+const UiCard: React.FC<UiCardProps> = ({ 
+  cardTitle, 
+  cardDescription, 
+  cardAction, 
+  cardContent, 
+  cardFooter 
+}) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Card Title</CardTitle>
-        <CardDescription>Card Description</CardDescription>
-        <CardAction>Card Action</CardAction>
+        <CardTitle>{cardTitle}</CardTitle>
+        <CardDescription>{cardDescription}</CardDescription>
+        <CardAction>{cardAction}</CardAction>
       </CardHeader>
       <CardContent>
-        <p>{content}</p>
+        <p>{cardContent}</p>
       </CardContent>
       <CardFooter>
-        <p>Card Footer</p>
+        <p>{cardFooter}</p>
       </CardFooter>
     </Card>
   )
