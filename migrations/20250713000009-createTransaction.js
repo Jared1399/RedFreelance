@@ -3,15 +3,15 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('transaction', {
-      id: { type: Sequelize.UUID, defaultValue: Sequelize.UUIDV4, primaryKey: true },
+      id:{ type: Sequelize.UUID, defaultValue: Sequelize.UUIDV4, primaryKey: true },
       freelancerId: {
         type: Sequelize.UUID,
-        references: { model: 'user', key: 'id' },
+        references: { model: 'users', key: 'id' },
         allowNull: false,
       },
       clientId: {
         type: Sequelize.UUID,
-        references: { model: 'user', key: 'id' },
+        references: { model: 'users', key: 'id' },
         allowNull: false,
       },
       gigId: {

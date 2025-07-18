@@ -5,7 +5,7 @@ module.exports = {
     await queryInterface.createTable('gig', {
       id: { type: Sequelize.UUID, defaultValue: Sequelize.UUIDV4, primaryKey: true },
       category_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         references: { model: 'category', key: 'id' },
         allowNull: false,
       },

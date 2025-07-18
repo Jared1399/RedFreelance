@@ -1,15 +1,14 @@
-// migrations/20250713000010-createUserCategory.js
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('user_category', {
       user_id: {
         type: Sequelize.UUID,
-        references: { model: 'user', key: 'id' },
+        references: { model: 'users', key: 'id' },
         allowNull: false,
       },
       category_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         references: { model: 'category', key: 'id' },
         allowNull: false,
       },

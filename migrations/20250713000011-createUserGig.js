@@ -5,7 +5,7 @@ module.exports = {
     await queryInterface.createTable('user_gig', {
       user_id: {
         type: Sequelize.UUID,
-        references: { model: 'user', key: 'id' },
+        references: { model: 'users', key: 'id' },
         allowNull: false,
       },
       gig_id: {

@@ -4,18 +4,18 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Notification extends Model {
     static associate(models) {
-      Notification.belongsTo(models.User, { foreignKey: 'userId' });
+      Notification.belongsTo(models.User, { foreignKey: 'user_id' });
     }
   }
   Notification.init(
     {
       id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
-      userId: DataTypes.UUID,
+      userId: { type: DataTypes.UUID, field: 'user_id' },
       type: DataTypes.STRING,
       message: DataTypes.TEXT,
-      isRead: DataTypes.BOOLEAN,
-      relatedId: DataTypes.STRING,
-      createdAt: DataTypes.DATE,
+      isRead: { type: DataTypes.BOOLEAN, field: 'is_read' },
+      relatedId: { type: DataTypes.STRING, field: 'related_id' },
+      createdAt: { type: DataTypes.DATE, field: 'created_at' },
     },
     { sequelize, modelName: 'notification', tableName: 'notification' }
   );

@@ -4,20 +4,20 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('feedback', {
       id: { type: Sequelize.UUID, defaultValue: Sequelize.UUIDV4, primaryKey: true },
-      clientId: {
-        type: Sequelize.UUID,
-        references: { model: 'user', key: 'id' },
+      client_id: {
+        type:Sequelize.UUID,
+        references: { model: 'users', key: 'id' },
         allowNull: false,
       },
-      freelancerId: {
-        type: Sequelize.UUID,
-        references: { model: 'user', key: 'id' },
+      freelancer_id: {
+        type:Sequelize.UUID,
+        references: { model: 'users', key: 'id' },
         allowNull: false,
       },
       rating: { type: Sequelize.INTEGER, allowNull: false },
       comment: { type: Sequelize.TEXT, allowNull: true },
-      createdAt: { type: Sequelize.DATE, allowNull: false },
-      updatedAt: { type: Sequelize.DATE, allowNull: false },
+      created_at: { type: Sequelize.DATE, allowNull: false },
+      updated_at: { type: Sequelize.DATE, allowNull: false },
     });
   },
   down: async (queryInterface) => {

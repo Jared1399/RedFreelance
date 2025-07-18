@@ -4,17 +4,17 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('portfolio', {
       id: { type: Sequelize.UUID, defaultValue: Sequelize.UUIDV4, primaryKey: true },
-      userId: {
+      user_id: {
         type: Sequelize.UUID,
-        references: { model: 'user', key: 'id' },
+        references: { model: 'users', key: 'id' },
         allowNull: false,
       },
       title: { type: Sequelize.STRING, allowNull: false },
       description: { type: Sequelize.TEXT, allowNull: true },
-      fileUrl: { type: Sequelize.STRING, allowNull: true },
-      externalUrl: { type: Sequelize.STRING, allowNull: true },
-      createdAt: { type: Sequelize.DATE, allowNull: false },
-      updatedAt: { type: Sequelize.DATE, allowNull: false },
+      file_url: { type: Sequelize.STRING, allowNull: true },
+      external_url: { type: Sequelize.STRING, allowNull: true },
+      created_at: { type: Sequelize.DATE, allowNull: false },
+      updated_at: { type: Sequelize.DATE, allowNull: false },
     });
   },
   down: async (queryInterface) => {
