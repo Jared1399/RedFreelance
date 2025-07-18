@@ -3,9 +3,7 @@
 import { useSession, signIn, signOut } from "next-auth/react"
 
 const UiLoginBtn = () => {
-  const { data: session, status } = useSession()
-
-  console.log("Session:", session, "Status:", status)
+  const { data: session } = useSession()
 
   return session ? (
     <>

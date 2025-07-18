@@ -13,7 +13,8 @@ const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
   "rules": {
-    "max-len": ["error", { "code": 100, "comments": 120 }]
+    "max-len": ["error", { "code": 100, "comments": 120 }],
+    "no-console": ["error", { allow: ["warn", "error", "info"] }]
   }
 }
 ];
