@@ -8,7 +8,7 @@ module.exports = {
         allowNull: false,
       },
       category_id: {
-        type: Sequelize.UUID,
+        type: Sequelize.INTEGER,
         references: { model: 'category', key: 'id' },
         allowNull: false,
       },

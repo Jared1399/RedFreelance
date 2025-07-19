@@ -4,11 +4,6 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('gig', {
       id: { type: Sequelize.UUID, defaultValue: Sequelize.UUIDV4, primaryKey: true },
-      category_id: {
-        type: Sequelize.UUID,
-        references: { model: 'category', key: 'id' },
-        allowNull: false,
-      },
       title: { type: Sequelize.STRING, allowNull: false },
       description: { type: Sequelize.TEXT, allowNull: false },
       price: { type: Sequelize.DECIMAL(15, 2), allowNull: false },

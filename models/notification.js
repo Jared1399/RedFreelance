@@ -1,23 +1,24 @@
 // models/notification.js
 'use strict';
-const { Model } = require('sequelize');
-module.exports = (sequelize, DataTypes) => {
-  class Notification extends Model {
-    static associate(models) {
-      Notification.belongsTo(models.User, { foreignKey: 'user_id' });
-    }
+import { Model, DataTypes } from 'sequelize';
+import { sequelize } from '../src/lib/db.js';
+
+class Notification extends Model {
+  static associate(models) {
+    Notification.belongsTo(models.User, { foreignKey: 'user_id' });
   }
-  Notification.init(
-    {
-      id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
-      userId: { type: DataTypes.UUID, field: 'user_id' },
-      type: DataTypes.STRING,
-      message: DataTypes.TEXT,
-      isRead: { type: DataTypes.BOOLEAN, field: 'is_read' },
-      relatedId: { type: DataTypes.STRING, field: 'related_id' },
-      createdAt: { type: DataTypes.DATE, field: 'created_at' },
-    },
-    { sequelize, modelName: 'notification', tableName: 'notification' }
-  );
-  return Notification;
-};
+}
+Notification.init(
+  {
+    id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
+    userId: { type: DataTypes.UUID, field: 'user_id' },
+    type: DataTypes.STRING,
+    message: DataTypes.TEXT,
+    isRead: { type: DataTypes.BOOLEAN, field: 'is_read' },
+    relatedId: { type: DataTypes.STRING, field: 'related_id' },
+    createdAt: { type: DataTypes.DATE, field: 'created_at' },
+  },
+  { sequelize, modelName: 'notification', tableName: 'notification' }
+);
+
+export default Notification

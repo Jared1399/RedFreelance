@@ -9,7 +9,7 @@ module.exports = {
         onDelete: 'CASCADE'
       },
       category_id: {
-        type: Sequelize.UUID,
+        type: Sequelize.INTEGER,
         references: { model: 'category', key: 'id' },
         field: 'category_id',
         onDelete: 'CASCADE'
