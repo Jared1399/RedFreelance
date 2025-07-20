@@ -1,0 +1,179 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+//models
+
+model User {
+  id                     String           @id @default(uuid())
+  firstName              String
+  lastName               String
+  email                  String           @unique
+  passwordHash           String
+  identification         String?          @unique
+  phone                  String?
+  isFreelancer           Boolean          @default(false)
+  rankCommunity          Float            @default(0)
+  rankPlatform           Float            @default(0)
+  subscriptionStart      DateTime?
+  subscriptionEnd        DateTime?
+  isVerified             Boolean          @default(false)
+  warningCount           Int              @default(0)
+  subscriptionPlan       SubscriptionPlan @default(basic)
+  level                  Level            @default(novice)
+  categories             Category[]
+  gigs                   Gig[]
+  freelancerTransactions Transaction[]    @relation("FreelancerTransactions")
+  clientTransactions     Transaction[]    @relation("ClientTransactions")
+  clientFeedback         Feedback[]       @relation("ClientFeedback")
+  freelancerFeedback     Feedback[]       @relation("FreelancerFeedback")
+  portfolio              Portfolio?
+  notifications          Notification[]
+  ads                    Ad[]
+  createdAt              DateTime         @default(now())
+  updatedAt              DateTime         @updatedAt
+}
+
+model Gig {
+  id           String        @id @default(uuid())
+  title        String
+  description  String
+  price        Decimal       @db.Decimal(15, 2)
+  status       GigStatus     @default(active)
+  ads          Ad[]
+  created_at   DateTime
+  updated_at   DateTime
+  user         User?         @relation(fields: [userId], references: [id])
+  userId       String?
+  transactions Transaction[]
+}
+
+model Category {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  User        User?    @relation(fields: [userId], references: [id])
+  userId      String?
+}
+
+model Ad {
+  id         String   @id @default(uuid())
+  gigId      String
+  userId     String
+  startDate  DateTime
+  endDate    DateTime
+  amountPaid Decimal? @db.Decimal(15, 2)
+  status     AdStatus @default(active)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  gig        Gig      @relation(fields: [gigId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+}
+
+model Feedback {
+  id           String   @id @default(uuid())
+  clientId     String
+  freelancerId String
+  rating       Int
+  comment      String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  client     User @relation("ClientFeedback", fields: [clientId], references: [id])
+  freelancer User @relation("FreelancerFeedback", fields: [freelancerId], references: [id])
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  type      String
+  message   String
+  isRead    Boolean  @default(false)
+  relatedId String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Portfolio {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  title       String
+  description String?
+  fileUrl     String?
+  externalUrl String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Lifecycle {
+  id          Int           @id @default(autoincrement())
+  name        String
+  description String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  Transaction Transaction[]
+}
+
+model Transaction {
+  id             String       @id @default(uuid())
+  freelancerId   String
+  clientId       String
+  gigId          String
+  lifecycleId    Int
+  amount         Decimal
+  commission     Decimal
+  commissionRate Float        @default(0.10)
+  paymentId      String?
+  escrowStatus   EscrowStatus @default(held)
+  completed      Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  freelancer User      @relation("FreelancerTransactions", fields: [freelancerId], references: [id])
+  client     User      @relation("ClientTransactions", fields: [clientId], references: [id])
+  gig        Gig       @relation(fields: [gigId], references: [id])
+  lifecycle  Lifecycle @relation(fields: [lifecycleId], references: [id])
+}
+
+//enums
+enum SubscriptionPlan {
+  basic
+  pro
+}
+
+enum Level {
+  novice
+  advanced
+  expert
+}
+
+enum GigStatus {
+  active
+  inactive
+  completed
+}
+
+enum AdStatus {
+  active
+  inactive
+}
+
+enum EscrowStatus {
+  held
+  released
+  refunded
+}

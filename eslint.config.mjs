@@ -1,5 +1,6 @@
 import { dirname } from "path";
 import { fileURLToPath } from "url";
+import { globalIgnores } from "eslint/config";
 import { FlatCompat } from "@eslint/eslintrc";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -12,11 +13,15 @@ const compat = new FlatCompat({
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
-  "rules": {
-    "max-len": ["error", { "code": 100, "comments": 120 }],
-    "no-console": ["error", { allow: ["warn", "error", "info"] }]
-  }
-}
+    "rules": {
+      "max-len": ["error", { "code": 100, "comments": 120 }],
+      "no-console": ["error", { allow: ["warn", "error", "info"] }],
+    },
+
+  },
+  globalIgnores([
+    "src/generated/*"
+  ])
 ];
 
 export default eslintConfig;
