@@ -3,14 +3,16 @@ import { prisma } from "@/lib/prisma";
 import { apiHandler } from "@/lib/apiHandler";
 
 interface Params {
-  params: { firstName: string }
+  params: { id: string }
 }
 
 
-export const GET = apiHandler(async ({ params }: Params) => {
-  const user = prisma.user.findFirst({
+export const GET = apiHandler(async (request: Request, { params }: Params) => {
+  const param = await params;
+
+  const user = await prisma.user.findFirst({
     where: {
-      firstName: params.firstName
+      id: param.id
     }
   });
 

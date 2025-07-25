@@ -18,7 +18,7 @@ model User {
   firstName              String
   lastName               String
   email                  String           @unique
-  passwordHash           String
+  passwordHash           String?
   identification         String?          @unique
   phone                  String?
   isFreelancer           Boolean          @default(false)

@@ -1,6 +1,7 @@
 import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 
+
 const handler = NextAuth({
   providers: [
     GoogleProvider({
@@ -9,9 +10,26 @@ const handler = NextAuth({
     }),
   ],
   callbacks: {
-    async signIn({ /*account, profile*/ }) {
+    async signIn({ profile }) {
 
+      const response = await fetch(`http://localhost:3000/api/user/email/${profile?.email}`);
+      const user = await response.json();
 
+      if (!user) {
+        const [firstName, lastName] = profile?.name?.split(" ") ?? [];
+
+        await fetch(`http://localhost:3000/api/user/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            firstName: firstName,
+            lastName: lastName,
+            email: profile?.email,
+          })
+        });
+      }
 
       return true;
     }
