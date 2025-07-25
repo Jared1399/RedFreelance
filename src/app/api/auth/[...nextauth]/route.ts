@@ -27,6 +27,7 @@ const handler = NextAuth({
             firstName: firstName,
             lastName: lastName,
             email: profile?.email,
+            userImg: profile?.image
           })
         });
       }
