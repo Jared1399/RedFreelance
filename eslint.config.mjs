@@ -18,7 +18,8 @@ const eslintConfig = [
       "no-console": ["error", { allow: ["warn", "error", "info"] }],
       "semi": ["error", "always"],
       "react-hooks/rules-of-hooks": "error",
-      "react-hooks/exhaustive-deps": "off"
+      "react-hooks/exhaustive-deps": "off",
+      "@typescript-eslint/no-empty-object-type": "off"
     },
 
   },

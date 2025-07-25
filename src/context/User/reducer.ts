@@ -18,7 +18,7 @@ const reducer = (state: InitialState = initialState, action: Action): InitialSta
     INIT: () => {
       return {
         ...state,
-        userData: action.payload
+        userData: action.payload.data as {}
       };
     }
   };

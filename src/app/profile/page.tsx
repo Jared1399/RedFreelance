@@ -23,8 +23,8 @@ interface UserData {
 };
 
 export default function ProfilePage() {
-  const { data: session, status } = useSession();
-  const { state } = useUser(session?.user?.email ?? '');
+  const { status } = useSession();
+  const { state } = useUser();
 
   const userData = state.userData as UserData | null;
 
