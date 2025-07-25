@@ -16,7 +16,9 @@ const eslintConfig = [
     "rules": {
       "max-len": ["error", { "code": 100, "comments": 120 }],
       "no-console": ["error", { allow: ["warn", "error", "info"] }],
-      "semi": ["error", "always"]
+      "semi": ["error", "always"],
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": "off"
     },
 
   },

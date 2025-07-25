@@ -1,21 +1,25 @@
+'use client';
+
 import Grid from '@/components/ui/uiGrid/Grid';
 import Card from '@/components/ui/uiCard/Card';
-
+import useGig from '@/context/Gig/useGig';
 
 const Gig = () => {
 
-  const cardList = [];
+  const { state } = useGig();
 
-  for (let i = 0; i < 6; i++) {
-    cardList.push(<Card
-      key={i}
-      cardTitle = 'cardTitle' 
-      cardDescription = 'cardDescription' 
-      cardAction = 'cardAction' 
-      cardContent = 'cardContent' 
-      cardFooter = 'cardFooter'
-      />);
-  }
+  const cardList = state.gigList ? state.gigList.map((card, i) => {
+    return (
+      <Card
+        key={i}
+        cardTitle={card.title}
+        cardDescription={card.status}
+        cardAction={card.price}
+        cardContent={card.description}
+        cardFooter='cardFooter'
+      />
+    );
+  }) : null;
 
   return (
     <>

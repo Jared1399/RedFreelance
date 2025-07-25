@@ -1,7 +1,9 @@
 //here you just update the state
 interface Action {
   type: string;
-  payload: object;
+  payload: {
+    [key: string]: unknown;
+  };
 }
 
 type InitialState = {
@@ -17,9 +19,9 @@ const initialState: InitialState = {
 const reducer = (state: InitialState = initialState, action: Action): InitialState => {
   const actions: { [key: string]: () => InitialState } = {
     INIT: () => {
-      console.info(action.payload);
       return {
-        ...state
+        ...state,
+        gigList: action.payload.gigs as []
       };
     }
   };
