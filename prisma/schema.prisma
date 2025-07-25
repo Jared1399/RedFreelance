@@ -39,8 +39,8 @@ model User {
   portfolio              Portfolio?
   notifications          Notification[]
   ads                    Ad[]
-  createdAt              DateTime         @default(now())
-  updatedAt              DateTime         @updatedAt
+  createdAt              DateTime?        @default(now())
+  updatedAt              DateTime?        @updatedAt
 }
 
 model Gig {
@@ -50,71 +50,71 @@ model Gig {
   price        Decimal       @db.Decimal(15, 2)
   status       GigStatus     @default(active)
   ads          Ad[]
-  created_at   DateTime
-  updated_at   DateTime
+  created_at   DateTime?
+  updated_at   DateTime?
   user         User?         @relation(fields: [userId], references: [id])
   userId       String?
   transactions Transaction[]
 }
 
 model Category {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   name        String
   description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  User        User?    @relation(fields: [userId], references: [id])
+  createdAt   DateTime? @default(now())
+  updatedAt   DateTime? @updatedAt
+  User        User?     @relation(fields: [userId], references: [id])
   userId      String?
 }
 
 model Ad {
-  id         String   @id @default(uuid())
+  id         String    @id @default(uuid())
   gigId      String
   userId     String
-  startDate  DateTime
-  endDate    DateTime
-  amountPaid Decimal? @db.Decimal(15, 2)
-  status     AdStatus @default(active)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  gig        Gig      @relation(fields: [gigId], references: [id])
-  user       User     @relation(fields: [userId], references: [id])
+  startDate  DateTime?
+  endDate    DateTime?
+  amountPaid Decimal?  @db.Decimal(15, 2)
+  status     AdStatus  @default(active)
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime? @updatedAt
+  gig        Gig       @relation(fields: [gigId], references: [id])
+  user       User      @relation(fields: [userId], references: [id])
 }
 
 model Feedback {
-  id           String   @id @default(uuid())
+  id           String    @id @default(uuid())
   clientId     String
   freelancerId String
   rating       Int
   comment      String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt    DateTime? @default(now())
+  updatedAt    DateTime? @updatedAt
 
   client     User @relation("ClientFeedback", fields: [clientId], references: [id])
   freelancer User @relation("FreelancerFeedback", fields: [freelancerId], references: [id])
 }
 
 model Notification {
-  id        String   @id @default(uuid())
+  id        String    @id @default(uuid())
   userId    String
   type      String
   message   String
-  isRead    Boolean  @default(false)
+  isRead    Boolean   @default(false)
   relatedId String?
-  createdAt DateTime @default(now())
+  createdAt DateTime? @default(now())
 
   user User @relation(fields: [userId], references: [id])
 }
 
 model Portfolio {
-  id          String   @id @default(uuid())
-  userId      String   @unique
+  id          String    @id @default(uuid())
+  userId      String    @unique
   title       String
   description String?
   fileUrl     String?
   externalUrl String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime? @default(now())
+  updatedAt   DateTime? @updatedAt
 
   user User @relation(fields: [userId], references: [id])
 }
@@ -123,8 +123,8 @@ model Lifecycle {
   id          Int           @id @default(autoincrement())
   name        String
   description String?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  createdAt   DateTime?     @default(now())
+  updatedAt   DateTime?     @updatedAt
   Transaction Transaction[]
 }
 
@@ -140,8 +140,8 @@ model Transaction {
   paymentId      String?
   escrowStatus   EscrowStatus @default(held)
   completed      Boolean      @default(false)
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+  createdAt      DateTime?    @default(now())
+  updatedAt      DateTime?    @updatedAt
 
   freelancer User      @relation("FreelancerTransactions", fields: [freelancerId], references: [id])
   client     User      @relation("ClientTransactions", fields: [clientId], references: [id])

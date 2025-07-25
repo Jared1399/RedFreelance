@@ -31,8 +31,8 @@ CREATE TABLE "User" (
     "warningCount" INTEGER NOT NULL DEFAULT 0,
     "subscriptionPlan" "SubscriptionPlan" NOT NULL DEFAULT 'basic',
     "level" "Level" NOT NULL DEFAULT 'novice',
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3),
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -44,8 +44,8 @@ CREATE TABLE "Gig" (
     "description" TEXT NOT NULL,
     "price" DECIMAL(15,2) NOT NULL,
     "status" "GigStatus" NOT NULL DEFAULT 'active',
-    "created_at" TIMESTAMP(3) NOT NULL,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMP(3),
+    "updated_at" TIMESTAMP(3),
     "userId" TEXT,
 
     CONSTRAINT "Gig_pkey" PRIMARY KEY ("id")
@@ -56,8 +56,8 @@ CREATE TABLE "Category" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3),
     "userId" TEXT,
 
     CONSTRAINT "Category_pkey" PRIMARY KEY ("id")
@@ -68,12 +68,12 @@ CREATE TABLE "Ad" (
     "id" TEXT NOT NULL,
     "gigId" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
-    "startDate" TIMESTAMP(3) NOT NULL,
-    "endDate" TIMESTAMP(3) NOT NULL,
+    "startDate" TIMESTAMP(3),
+    "endDate" TIMESTAMP(3),
     "amountPaid" DECIMAL(15,2),
     "status" "AdStatus" NOT NULL DEFAULT 'active',
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3),
 
     CONSTRAINT "Ad_pkey" PRIMARY KEY ("id")
 );
@@ -85,8 +85,8 @@ CREATE TABLE "Feedback" (
     "freelancerId" TEXT NOT NULL,
     "rating" INTEGER NOT NULL,
     "comment" TEXT,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3),
 
     CONSTRAINT "Feedback_pkey" PRIMARY KEY ("id")
 );
@@ -99,7 +99,7 @@ CREATE TABLE "Notification" (
     "message" TEXT NOT NULL,
     "isRead" BOOLEAN NOT NULL DEFAULT false,
     "relatedId" TEXT,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "createdAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Notification_pkey" PRIMARY KEY ("id")
 );
@@ -112,8 +112,8 @@ CREATE TABLE "Portfolio" (
     "description" TEXT,
     "fileUrl" TEXT,
     "externalUrl" TEXT,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3),
 
     CONSTRAINT "Portfolio_pkey" PRIMARY KEY ("id")
 );
@@ -123,8 +123,8 @@ CREATE TABLE "Lifecycle" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3),
 
     CONSTRAINT "Lifecycle_pkey" PRIMARY KEY ("id")
 );
@@ -142,8 +142,8 @@ CREATE TABLE "Transaction" (
     "paymentId" TEXT,
     "escrowStatus" "EscrowStatus" NOT NULL DEFAULT 'held',
     "completed" BOOLEAN NOT NULL DEFAULT false,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3),
 
     CONSTRAINT "Transaction_pkey" PRIMARY KEY ("id")
 );

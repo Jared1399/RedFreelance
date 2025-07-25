@@ -1,26 +1,13 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { apiHandler } from "@/lib/apiHandler";
 
+export const GET = apiHandler(async () => {
+  const users = await prisma.user.findMany()
+  return NextResponse.json({ ok: true, users })
+})
 
-export async function GET() {
-  try {
-    const users = await prisma.user.findMany()
-
-    return NextResponse.json(
-      {
-        ok: true,
-        users
-      }
-    )
-  } catch (error) {
-    if (error instanceof Error) {
-      return NextResponse.json(error.message)
-    }
-  }
-}
-
-
-export async function POST(request: Request) {
+export const POST = apiHandler(async (request: Request) => {
   const {
     firstName,
     lastName,
@@ -29,7 +16,6 @@ export async function POST(request: Request) {
     identification,
     phone
   } = await request.json()
-
 
   const newUser = await prisma.user.create({
     data: {
@@ -42,5 +28,5 @@ export async function POST(request: Request) {
     }
   })
 
-  return NextResponse.json(newUser)
-}
+  return NextResponse.json({ ok: true, user: newUser }, { status: 201 })
+})
