@@ -6,7 +6,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 
 interface UiCardProps {
   cardTitle: string, 
@@ -37,7 +37,7 @@ const UiCard: React.FC<UiCardProps> = ({
         <p>{cardFooter}</p>
       </CardFooter>
     </Card>
-  )
-}
+  );
+};
 
-export default UiCard
+export default UiCard;

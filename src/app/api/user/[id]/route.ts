@@ -12,7 +12,7 @@ export const GET = apiHandler(async ({ params }: Params) => {
     where: {
       firstName: params.firstName
     }
-  })
+  });
 
-  return NextResponse.json(user)
-})
+  return NextResponse.json(user);
+});

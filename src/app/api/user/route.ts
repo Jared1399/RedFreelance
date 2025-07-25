@@ -3,9 +3,9 @@ import { prisma } from "@/lib/prisma";
 import { apiHandler } from "@/lib/apiHandler";
 
 export const GET = apiHandler(async () => {
-  const users = await prisma.user.findMany()
-  return NextResponse.json({ ok: true, users })
-})
+  const users = await prisma.user.findMany();
+  return NextResponse.json({ ok: true, users });
+});
 
 export const POST = apiHandler(async (request: Request) => {
   const {
@@ -15,7 +15,7 @@ export const POST = apiHandler(async (request: Request) => {
     passwordHash,
     identification,
     phone
-  } = await request.json()
+  } = await request.json();
 
   const newUser = await prisma.user.create({
     data: {
@@ -26,7 +26,7 @@ export const POST = apiHandler(async (request: Request) => {
       identification,
       phone
     }
-  })
+  });
 
-  return NextResponse.json({ ok: true, user: newUser }, { status: 201 })
-})
+  return NextResponse.json({ ok: true, user: newUser }, { status: 201 });
+});

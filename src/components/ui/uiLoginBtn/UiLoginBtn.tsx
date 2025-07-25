@@ -1,9 +1,9 @@
 'use client';
 
-import { useSession, signIn, signOut } from "next-auth/react"
+import { useSession, signIn, signOut } from "next-auth/react";
 
 const UiLoginBtn = () => {
-  const { data: session } = useSession()
+  const { data: session } = useSession();
 
   return session ? (
     <>
@@ -13,6 +13,6 @@ const UiLoginBtn = () => {
   ) : (
     <button onClick={() => signIn('google', { callbackUrl: '/gigs' })}>Ingresar con Google</button>
   );
-}
+};
 
 export default UiLoginBtn;

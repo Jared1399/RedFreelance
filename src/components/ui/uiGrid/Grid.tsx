@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import React, { ReactNode } from 'react';
 import clsx from 'clsx';
 interface GridProps {
@@ -24,6 +24,6 @@ const Grid: React.FC<GridProps> = ({ children }) => {
       {children}
     </div>
   );
-}
+};
 
 export default Grid;

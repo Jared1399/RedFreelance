@@ -4,7 +4,7 @@ import Card from '@/components/ui/uiCard/Card';
 
 const Gig = () => {
 
-  const cardList = []
+  const cardList = [];
 
   for (let i = 0; i < 6; i++) {
     cardList.push(<Card
@@ -14,7 +14,7 @@ const Gig = () => {
       cardAction = 'cardAction' 
       cardContent = 'cardContent' 
       cardFooter = 'cardFooter'
-      />)
+      />);
   }
 
   return (
@@ -23,7 +23,7 @@ const Gig = () => {
         {cardList}
       </Grid>
     </>
-  )
-}
+  );
+};
 
 export default Gig;

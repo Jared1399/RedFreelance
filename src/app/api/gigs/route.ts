@@ -12,13 +12,13 @@ import { apiHandler } from "@/lib/apiHandler";
 
 
 export const GET = apiHandler(async () => {
-  const gigs = await prisma.gig.findMany()
+  const gigs = await prisma.gig.findMany();
 
   return NextResponse.json(
     { ok: true, gigs }
-  )
+  );
 
-})
+});
 
 
 export const POST = apiHandler(async (request: Request) => {
@@ -27,8 +27,7 @@ export const POST = apiHandler(async (request: Request) => {
     description,
     price,
     status
-  } = await request.json()
-
+  } = await request.json();
 
   const newGig = await prisma.gig.create({
     data: {
@@ -37,8 +36,8 @@ export const POST = apiHandler(async (request: Request) => {
       price,
       status
     }
-  })
+  });
 
   return NextResponse.json(newGig);
 
-})
+});

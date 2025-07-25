@@ -11,14 +11,14 @@ const useGig = () => {
   const actions = {
     async fetchGigList() {
       console.info(state.gigList);
-      dispatch({ type: 'INIT', payload: { lol: true } })
+      dispatch({ type: 'INIT', payload: { lol: true } });
     }
-  }
+  };
 
   return {
     actions,
     state
-  }
-}
+  };
+};
 
 export default useGig;
