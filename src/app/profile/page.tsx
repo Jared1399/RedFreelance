@@ -38,7 +38,7 @@ export default function ProfilePage() {
 
   return (
     <>
-      Hola denuevo {userData?.firstName}!
+      Hola denuevo, {userData?.firstName}!
     </>
   );
 }

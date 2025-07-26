@@ -6,22 +6,22 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/components/UI/shadcn/card";
 
 interface UiCardProps {
-  cardTitle: string, 
-  cardDescription: string, 
-  cardAction: string, 
-  cardContent: string, 
-  cardFooter: string 
+  cardTitle: string,
+  cardDescription: string,
+  cardAction: string,
+  cardContent: string,
+  cardFooter: string
 }
 
-const UiCard: React.FC<UiCardProps> = ({ 
-  cardTitle, 
-  cardDescription, 
-  cardAction, 
-  cardContent, 
-  cardFooter 
+const UiCard: React.FC<UiCardProps> = ({
+  cardTitle,
+  cardDescription,
+  cardAction,
+  cardContent,
+  cardFooter
 }) => {
   return (
     <Card>

@@ -1,4 +1,4 @@
-//shadcn component dont need to be linted, skip whatever is installed and wont be altered
+//shadcn component don't need to be linted, skip whatever is installed and wont be altered
 /* eslint max-len: 0 */
 
 import * as React from "react";

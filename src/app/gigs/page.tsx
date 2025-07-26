@@ -1,7 +1,7 @@
 'use client';
 
-import Grid from '@/components/ui/uiGrid/Grid';
-import Card from '@/components/ui/uiCard/Card';
+import Grid from '@/components/UI/Grid';
+import Card from '@/components/UI/Card';
 import useGig from '@/context/Gig/useGig';
 
 const Gig = () => {
