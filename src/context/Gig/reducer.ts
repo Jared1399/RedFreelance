@@ -6,10 +6,16 @@ interface Action {
   };
 }
 
+interface Gig {
+  id?: string;
+  title: string;
+  description: string;
+  price: number;
+  status: "active" | "inactive" | "completed"
+}
+
 type InitialState = {
-  // TODO: ADD GIG TYPE
-  // eslint-disable-next-line
-  gigList: Array<any>;
+  gigList: Array<Gig>;
 }
 
 const initialState: InitialState = {

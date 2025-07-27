@@ -9,7 +9,7 @@ const useGig = () => {
 
   const actions = {
     async fetchGigList() {
-      const res = await fetch("http://localhost:3000/api/gigs");
+      const res = await fetch("http://localhost:3000/api/gig");
       const data = await res.json();
 
       dispatch({ type: 'INIT', payload: { gigs: data.gigs } });

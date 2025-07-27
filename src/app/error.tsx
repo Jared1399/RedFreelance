@@ -1,9 +1,9 @@
 'use client';
 
-const ErrorPage = () => {
-  return(
-    <div>Error haha</div>
-  );
-}; 
+import ErrorPage from "@/pages/errorPage/ErrorPage";
 
-export default ErrorPage;
+const Error = () => {
+  return <ErrorPage />;
+};
+
+export default Error;

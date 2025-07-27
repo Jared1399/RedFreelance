@@ -1,9 +1,8 @@
 'use client';
+import NotFoundPage from "@/pages/notFoundPage/NotFoundPage";
 
-const NotFoundPage = () => {
-  return(
-    <div>not found haha</div>
-  );
-}; 
+const NotFound = () => {
+  return <NotFoundPage />;
+};
 
-export default NotFoundPage;
+export default NotFound;

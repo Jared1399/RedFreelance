@@ -1,11 +1,7 @@
-import UiLoginBtn from "@/components/UI/LoginBtn";
+import HomePage from "@/pages/homepage/Homepage";
 
+const Home = () => {
+  return <HomePage />;
+};
 
-export default function Home() {
-  return (
-    <div>
-      a mamarla <br />
-      <UiLoginBtn />
-    </div>
-  );
-}
+export default Home;

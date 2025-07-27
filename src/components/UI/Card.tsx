@@ -11,7 +11,7 @@ import {
 interface UiCardProps {
   cardTitle: string,
   cardDescription: string,
-  cardAction: string,
+  cardAction: number,
   cardContent: string,
   cardFooter: string
 }
