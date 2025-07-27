@@ -41,6 +41,7 @@ CREATE TABLE "User" (
 -- CreateTable
 CREATE TABLE "Gig" (
     "id" TEXT NOT NULL,
+    "gigImg" TEXT,
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "price" DECIMAL(15,2) NOT NULL,
@@ -60,6 +61,7 @@ CREATE TABLE "Category" (
     "createdAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3),
     "userId" TEXT,
+    "gigId" TEXT,
 
     CONSTRAINT "Category_pkey" PRIMARY KEY ("id")
 );
@@ -163,6 +165,9 @@ ALTER TABLE "Gig" ADD CONSTRAINT "Gig_userId_fkey" FOREIGN KEY ("userId") REFERE
 
 -- AddForeignKey
 ALTER TABLE "Category" ADD CONSTRAINT "Category_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Category" ADD CONSTRAINT "Category_gigId_fkey" FOREIGN KEY ("gigId") REFERENCES "Gig"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Ad" ADD CONSTRAINT "Ad_gigId_fkey" FOREIGN KEY ("gigId") REFERENCES "Gig"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

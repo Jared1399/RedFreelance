@@ -34,7 +34,9 @@ export default function RootLayout({
         <AuthProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <NavBar />
-            {children}
+            <div className="mx-6 my-6">
+              {children}
+            </div>
           </ThemeProvider>
         </AuthProvider>
       </body>

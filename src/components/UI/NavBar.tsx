@@ -17,40 +17,23 @@ import {
 
 const components: { title: string; href: string; description: string }[] = [
   {
-    title: "Alert Dialog",
-    href: "/docs/primitives/alert-dialog",
+    title: "Artes",
+    href: "/categories/name/artes",
     description:
-      "A modal dialog that interrupts the user with important content and expects a response.",
+      "Encuentra el diseno perfecto para tu negocio o idea.",
   },
   {
-    title: "Hover Card",
-    href: "/docs/primitives/hover-card",
+    title: "Marketing",
+    href: "/categories/name/marketing",
     description:
-      "For sighted users to preview content available behind a link.",
+      "Promociona tus emprendimientos con los mejores profesionales.",
   },
   {
-    title: "Progress",
-    href: "/docs/primitives/progress",
+    title: "Medicina",
+    href: "/categories/name/medicina online",
     description:
-      "Displays an indicator showing the completion progress of a task",
-  },
-  {
-    title: "Scroll-area",
-    href: "/docs/primitives/scroll-area",
-    description: "Visually or semantically separates content.",
-  },
-  {
-    title: "Tabs",
-    href: "/docs/primitives/tabs",
-    description:
-      "A set of layered sections of content—known as tab panels—that are displayed one at a time.",
-  },
-  {
-    title: "Tooltip",
-    href: "/docs/primitives/tooltip",
-    description:
-      "A popup that displays information related to an element",
-  },
+      "Agenda consultas online con los mejores profesionales",
+  }
 ];
 
 const navMenuLinkCls = clsx(
@@ -72,7 +55,7 @@ const navMenuLinkCls = clsx(
 
 export function NavBar() {
   return (
-    <NavigationMenu viewport={false}>
+    <NavigationMenu viewport={false} className="py-4 px-4">
       <NavigationMenuList>
         <NavigationMenuItem>
 
@@ -86,10 +69,10 @@ export function NavBar() {
                     href="/"
                   >
                     <div className="mt-4 mb-2 text-lg font-medium">
-                      shadcn/ui
+                      RedFreelance
                     </div>
                     <p className="text-muted-foreground text-sm leading-tight">
-                      Beautifully designed components built with Tailwind CSS.
+                      Creado por trabajadores, para trabajadores
                     </p>
                   </Link>
                 </NavigationMenuLink>

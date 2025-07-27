@@ -26,15 +26,23 @@ export const POST = apiHandler(async (request: Request) => {
     title,
     description,
     price,
-    status
+    status,
+    categories
   } = await request.json();
+
+  const categoryIds = Array.isArray(categories)
+    ? categories
+    : [categories];
 
   const newGig = await prisma.gig.create({
     data: {
       title,
       description,
       price,
-      status
+      status,
+      categories: {
+        connect: categoryIds.map((id: number) => ({ id }))
+      }
     }
   });
 

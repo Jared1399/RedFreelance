@@ -15,7 +15,7 @@ export const POST = apiHandler(async (request: Request) => {
 
   const newCategory = await prisma.category.create({
     data: {
-      name,
+      name: name.toLowerCase(),
       description
     }
   });
