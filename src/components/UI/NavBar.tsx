@@ -18,7 +18,7 @@ import {
 const components: { title: string; href: string; description: string }[] = [
   {
     title: "Artes",
-    href: "/categories/name/artes",
+    href: "/categories/name/arte",
     description:
       "Encuentra el diseno perfecto para tu negocio o idea.",
   },

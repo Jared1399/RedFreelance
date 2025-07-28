@@ -36,7 +36,7 @@ export const POST = apiHandler(async (request: Request) => {
 
   const newGig = await prisma.gig.create({
     data: {
-      title,
+      title: title.toLowerCase(),
       description,
       price,
       status,
