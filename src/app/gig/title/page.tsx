@@ -1,13 +1,14 @@
 import { queryBuilder } from "@/lib/utils";
 
+
 interface Gig {
   title: string;
   description: string;
   price: number;
   gigImg: string;
   status: string;
-  created_at: string;
   userId: string;
+  created_at: string;
 }
 
 interface SearchParamsProps {

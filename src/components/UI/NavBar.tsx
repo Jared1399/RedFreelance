@@ -111,7 +111,7 @@ export function NavBar() {
         <NavigationMenuItem>
 
           <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-            <Link href="/docs">Docs</Link>
+            <Link href="/gig">Trabajos</Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
 

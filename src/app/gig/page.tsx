@@ -4,6 +4,14 @@ import Grid from '@/components/UI/Grid';
 import Card from '@/components/UI/Card';
 import useGig from '@/context/Gig/useGig';
 
+interface Card {
+  title: string;
+  status: string;
+  price: number;
+  description: string
+  userId: string
+}
+
 const Gig = () => {
 
   const { state } = useGig();
@@ -17,6 +25,7 @@ const Gig = () => {
         cardAction={card.price}
         cardContent={card.description}
         cardFooter='cardFooter'
+        userId={card.userId ?? ""}
       />
     );
   }) : null;

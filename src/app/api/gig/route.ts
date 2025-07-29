@@ -2,14 +2,6 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { apiHandler } from "@/lib/apiHandler";
 
-// interface Gig {
-//   id?: string;
-//   title: string;
-//   description: string;
-//   price: number;
-//   status: "active" | "inactive" | "completed"
-// }
-
 
 export const GET = apiHandler(async () => {
   const gigs = await prisma.gig.findMany();
@@ -19,7 +11,6 @@ export const GET = apiHandler(async () => {
   );
 
 });
-
 
 export const POST = apiHandler(async (request: Request) => {
   const {

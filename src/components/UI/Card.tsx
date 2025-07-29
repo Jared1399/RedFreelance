@@ -7,13 +7,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/UI/shadcn/card";
+import Link from "next/link";
+import { queryBuilder } from "@/lib/utils";
+
 
 interface UiCardProps {
   cardTitle: string,
   cardDescription: string,
   cardAction: number,
   cardContent: string,
-  cardFooter: string
+  cardFooter: string,
+  userId: string
 }
 
 const UiCard: React.FC<UiCardProps> = ({
@@ -21,21 +25,31 @@ const UiCard: React.FC<UiCardProps> = ({
   cardDescription,
   cardAction,
   cardContent,
-  cardFooter
+  cardFooter,
+  userId
 }) => {
+
+  const gigQuery = queryBuilder({
+    title: cardTitle,
+    userId: userId
+  });
+
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>{cardTitle}</CardTitle>
-        <CardDescription>{cardDescription}</CardDescription>
-        <CardAction>{cardAction}</CardAction>
-      </CardHeader>
-      <CardContent>
-        <p>{cardContent}</p>
-      </CardContent>
-      <CardFooter>
-        <p>{cardFooter}</p>
-      </CardFooter>
+      <Link href={`/gig/title${gigQuery}`}>
+
+        <CardHeader>
+          <CardTitle>{cardTitle}</CardTitle>
+          <CardDescription>{cardDescription}</CardDescription>
+          <CardAction>{cardAction}</CardAction>
+        </CardHeader>
+        <CardContent>
+          <p>{cardContent}</p>
+        </CardContent>
+        <CardFooter>
+          <p>{cardFooter}</p>
+        </CardFooter>
+      </Link>
     </Card>
   );
 };
