@@ -1,8 +1,19 @@
 'use client';
+import useCategory from '@/context/Category/useCategory';
 import clsx from 'clsx';
 import { FormEvent } from 'react';
 
 export default function CreateGig() {
+
+  const { state } = useCategory();
+
+  const categoryList = state.categoryList.length ?
+    state.categoryList.map((cat) => {
+      return (
+        <option key={`${cat.id}-${cat.name}`} value={cat.id}>{cat.name}</option>
+      );
+    }) :
+    null;
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -38,10 +49,7 @@ export default function CreateGig() {
       <input type="text" name="description" autoComplete="off" className={inputCls} />
       <input type="text" name="price" autoComplete="off" className={inputCls} />
       <select name="categories" className={inputCls} >
-        <option value="4">Edicion</option>
-        <option value="5">Arte</option>
-        <option value="6">Medicina online</option>
-        <option value="7">Marketing</option>
+        {categoryList}
       </select>
       <button type="submit">Submit</button>
     </form>
