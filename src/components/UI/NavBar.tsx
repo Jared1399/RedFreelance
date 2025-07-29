@@ -3,6 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { CircleCheckIcon, CircleHelpIcon, CircleIcon } from "lucide-react";
+import { useSession } from "next-auth/react";
 import clsx from 'clsx';
 import {
   NavigationMenu,
@@ -54,11 +55,23 @@ const navMenuLinkCls = clsx(
 );
 
 export function NavBar() {
+  const { data: session } = useSession();
+
+  const profileLink = session ? (
+    <>
+      <NavigationMenuItem>
+        <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+          <Link href="/profile">Perfil</Link>
+        </NavigationMenuLink>
+      </NavigationMenuItem>
+      <NavigationMenuItem></NavigationMenuItem>
+    </>
+  ) : null;
+
   return (
     <NavigationMenu viewport={false} className="py-4 px-4">
       <NavigationMenuList>
         <NavigationMenuItem>
-
           <NavigationMenuTrigger>Home</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid gap-2 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
@@ -92,7 +105,7 @@ export function NavBar() {
 
         <NavigationMenuItem>
 
-          <NavigationMenuTrigger>Components</NavigationMenuTrigger>
+          <NavigationMenuTrigger>Categorias</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid w-[400px] gap-2 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
               {components.map((component) => (
@@ -198,6 +211,8 @@ export function NavBar() {
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
+
+        {profileLink}
 
       </NavigationMenuList>
     </NavigationMenu>
