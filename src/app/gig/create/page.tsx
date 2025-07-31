@@ -1,11 +1,20 @@
 'use client';
 import useCategory from '@/context/Category/useCategory';
+import useUser from '@/context/User/useUser';
 import clsx from 'clsx';
 import { FormEvent } from 'react';
+import { useRouter } from 'next/navigation';
+
+
+interface User {
+  id: string;
+}
 
 export default function CreateGig() {
 
   const { state } = useCategory();
+  const { state: userState } = useUser();
+  const router = useRouter();
 
   const categoryList = state.categoryList.length ?
     state.categoryList.map((cat) => {
@@ -25,15 +34,20 @@ export default function CreateGig() {
       description: formData.get("description"),
       price: parseInt(formData.get("price") as string),
       categories: [parseInt(formData.get("categories") as string)],
+      userId: (userState?.userData as User)?.id
     };
 
-    await fetch("/api/gig", {
+    const res = await fetch("/api/gig", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),
     });
+
+    if (res.ok) {
+      router.push('/gig');
+    }
 
   }
 

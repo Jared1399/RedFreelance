@@ -18,7 +18,8 @@ export const POST = apiHandler(async (request: Request) => {
     description,
     price,
     status,
-    categories
+    categories,
+    userId
   } = await request.json();
 
   const categoryIds = Array.isArray(categories)
@@ -31,6 +32,7 @@ export const POST = apiHandler(async (request: Request) => {
       description,
       price,
       status,
+      userId,
       categories: {
         connect: categoryIds.map((id: number) => ({ id }))
       }
