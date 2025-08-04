@@ -8,12 +8,12 @@ interface GridProps {
 const Grid: React.FC<GridProps> = ({ children }) => {
 
   if (!children) {
-    return <div>No elements yet to show</div>;   
+    return <div>No elements yet to show</div>;
   }
 
   const gridClasses = clsx(
     'grid',
-    'grid-cols-[repeat(auto-fill,minmax(200px,1fr))]',
+    'grid-cols-[repeat(auto-fill,minmax(250px,1fr))]',
     'gap-4',
     'overflow-hidden'
   );

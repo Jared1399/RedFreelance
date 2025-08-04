@@ -1,15 +1,16 @@
 'use client';
 
 import Grid from '@/components/UI/Grid';
-import Card from '@/components/UI/Card';
+import Card from '@/components/UI/GigCard';
 import useGig from '@/context/Gig/useGig';
 
 interface Card {
   title: string;
-  status: string;
   price: number;
-  description: string
-  userId: string
+  description: string;
+  userName: string;
+  userImg: string;
+  userId: string;
 }
 
 const Gig = () => {
@@ -20,12 +21,11 @@ const Gig = () => {
     return (
       <Card
         key={i}
-        cardTitle={card.title}
-        cardDescription={card.status}
-        cardAction={card.price}
-        cardContent={card.description}
-        cardFooter='cardFooter'
-        userId={card.userId ?? ""}
+        title={card.title}
+        price={card.price}
+        userId={card.userId}
+        userImg={card.user.userImg}
+        userName={card.user.firstName}
       />
     );
   }) : null;

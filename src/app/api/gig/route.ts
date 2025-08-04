@@ -4,7 +4,16 @@ import { apiHandler } from "@/lib/apiHandler";
 
 
 export const GET = apiHandler(async () => {
-  const gigs = await prisma.gig.findMany();
+  const gigs = await prisma.gig.findMany({
+    include: {
+      user: {
+        select: {
+          firstName: true,
+          userImg: true,
+        },
+      },
+    },
+  });
 
   return NextResponse.json(
     { ok: true, gigs }

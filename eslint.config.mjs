@@ -19,7 +19,8 @@ const eslintConfig = [
       "semi": ["error", "always"],
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "off",
-      "@typescript-eslint/no-empty-object-type": "off"
+      "@typescript-eslint/no-empty-object-type": "off",
+      "@next/next/no-img-element": "off"
     },
 
   },

@@ -48,7 +48,6 @@ export default function CreateGig() {
     if (res.ok) {
       router.push('/gig');
     }
-
   }
 
   const inputCls = clsx(

@@ -13,6 +13,10 @@ interface Gig {
   price: number;
   status: "active" | "inactive" | "completed";
   userId: string;
+  user: {
+    userImg: string;
+    firstName: string;
+  }
 }
 
 type InitialState = {
