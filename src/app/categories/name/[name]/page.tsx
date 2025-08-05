@@ -1,12 +1,21 @@
+import Grid from '@/components/UI/Grid';
+import Card from '@/components/UI/GigCard';
+
 interface Props {
   params: { name: string };
 }
 
-interface Gig {
+interface Card {
   title: string;
-  description: string;
   price: number;
+  description: string;
+  userId: string;
+  user: {
+    firstName: string;
+    userImg: string;
+  }
 }
+
 
 const CategoryName = async ({ params }: Props) => {
   const param = await params;
@@ -18,23 +27,25 @@ const CategoryName = async ({ params }: Props) => {
   const fetchGigs = await fetch(`http://localhost:3000/api/gig/category/${categoryInfo.id}`);
   const gigList = await fetchGigs.json();
 
-
   return (
     <div>
       Categoria: <strong>{decodedName}</strong><br />
       <small>{categoryInfo?.description}</small><br /><br />
 
-      <div>
-        {gigList.map((gig: Gig, i: number) => {
+      <Grid>
+        {gigList.map((card: Card, i: number) => {
           return (
-            <div key={i}>
-              {gig.title} <br />
-              {gig.description} <br />
-              {gig.price}
-            </div>
+            <Card
+              key={i}
+              title={card.title}
+              price={card.price}
+              userId={card.userId}
+              userImg={card.user.userImg}
+              userName={card.user.firstName}
+            />
           );
         })}
-      </div>
+      </Grid>
     </div>
   );
 };

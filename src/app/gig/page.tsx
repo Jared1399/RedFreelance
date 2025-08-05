@@ -4,14 +4,6 @@ import Grid from '@/components/UI/Grid';
 import Card from '@/components/UI/GigCard';
 import useGig from '@/context/Gig/useGig';
 
-interface Card {
-  title: string;
-  price: number;
-  description: string;
-  userName: string;
-  userImg: string;
-  userId: string;
-}
 
 const Gig = () => {
 
@@ -32,6 +24,7 @@ const Gig = () => {
 
   return (
     <>
+      <h1 className='text-3xl pb-8'>Encuentra el servicio que mas te guste</h1>
       <Grid>
         {cardList}
       </Grid>

@@ -2,6 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import useUser from "@/context/User/useUser";
+import AuthMiddleware from "@/components/AuthMiddleware";
 
 interface UserData {
   id: string;
@@ -28,17 +29,11 @@ export default function ProfilePage() {
 
   const userData = state.userData as UserData | null;
 
-  if (status === "loading" || !state) {
-    return <p>Loading...</p>;
-  }
-
-  if (status === "unauthenticated") {
-    return <p>Access Denied</p>;
-  }
-
   return (
-    <>
-      Hola denuevo, {userData?.firstName}!
-    </>
+    <AuthMiddleware status={status}>
+      <>
+        Hola denuevo, {userData?.firstName}!
+      </>
+    </AuthMiddleware>
   );
 }

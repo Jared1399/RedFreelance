@@ -18,12 +18,20 @@ export const GET = apiHandler(async (request: Request, { params }: Params) => {
     const gigs = await prisma.gig.findMany({
       where: {
         categories: {
-          some: {
+          every: {
             id: {
               in: categoryIds
             }
           }
         }
+      },
+      include: {
+        user: {
+          select: {
+            firstName: true,
+            userImg: true,
+          },
+        },
       }
     });
 
