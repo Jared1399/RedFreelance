@@ -29,19 +29,43 @@ model User {
   subscriptionEnd        DateTime?
   isVerified             Boolean          @default(false)
   warningCount           Int              @default(0)
+  createdAt              DateTime?        @default(now())
+  updatedAt              DateTime?        @updatedAt
   subscriptionPlan       SubscriptionPlan @default(basic)
   level                  Level            @default(novice)
   categories             Category[]
   gigs                   Gig[]
+  portfolio              Portfolio?
+  notifications          Notification[]
+  ads                    Ad[]
+  Likes                  Likes[]
   freelancerTransactions Transaction[]    @relation("FreelancerTransactions")
   clientTransactions     Transaction[]    @relation("ClientTransactions")
   clientFeedback         Feedback[]       @relation("ClientFeedback")
   freelancerFeedback     Feedback[]       @relation("FreelancerFeedback")
-  portfolio              Portfolio?
-  notifications          Notification[]
-  ads                    Ad[]
-  createdAt              DateTime?        @default(now())
-  updatedAt              DateTime?        @updatedAt
+  following              Follow[]         @relation("UserFollowing")
+  followers              Follow[]         @relation("UserFollowers")
+}
+
+model Likes {
+  id        String    @id @default(uuid())
+  userId    String
+  gigId     String
+  createdAt DateTime? @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+  gig  Gig  @relation(fields: [gigId], references: [id])
+}
+
+model Follow {
+  id          String @id @default(uuid())
+  followerId  String
+  followingId String
+
+  follower  User @relation("UserFollowing", fields: [followerId], references: [id])
+  following User @relation("UserFollowers", fields: [followingId], references: [id])
+
+  @@unique([followerId, followingId])
 }
 
 model Gig {
@@ -49,15 +73,30 @@ model Gig {
   gigImg       String?
   title        String
   description  String
-  price        Decimal       @db.Decimal(15, 2)
+  price        Int           @default(0)
   status       GigStatus     @default(active)
   categories   Category[]
   ads          Ad[]
   created_at   DateTime?     @default(now())
   updated_at   DateTime?     @updatedAt
-  user         User?         @relation(fields: [userId], references: [id])
   userId       String?
   transactions Transaction[]
+  likeCount    Int           @default(0)
+  Likes        Likes[]
+
+  user    User?     @relation(fields: [userId], references: [id])
+  GigTier GigTier[]
+}
+
+model GigTier {
+  id           String  @id @default(uuid())
+  name         String
+  price        Int
+  description  String?
+  deliveryTime Int?
+
+  gigId String
+  gig   Gig    @relation(fields: [gigId], references: [id])
 }
 
 model Category {
@@ -66,10 +105,11 @@ model Category {
   description String?
   createdAt   DateTime? @default(now())
   updatedAt   DateTime? @updatedAt
-  User        User?     @relation(fields: [userId], references: [id])
   userId      String?
-  Gig         Gig?      @relation(fields: [gigId], references: [id])
   gigId       String?
+
+  User User? @relation(fields: [userId], references: [id])
+  Gig  Gig?  @relation(fields: [gigId], references: [id])
 }
 
 model Ad {
@@ -82,8 +122,9 @@ model Ad {
   status     AdStatus  @default(active)
   createdAt  DateTime? @default(now())
   updatedAt  DateTime? @updatedAt
-  gig        Gig       @relation(fields: [gigId], references: [id])
-  user       User      @relation(fields: [userId], references: [id])
+
+  gig  Gig  @relation(fields: [gigId], references: [id])
+  user User @relation(fields: [userId], references: [id])
 }
 
 model Feedback {
