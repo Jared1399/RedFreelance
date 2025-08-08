@@ -14,12 +14,12 @@ interface User {
 
 export default function CreateGig() {
   const { status } = useSession();
-  const { state } = useCategory();
+  const { state: categoryState } = useCategory({ skip: 0, limit: 10 });
   const { state: userState } = useUser();
   const router = useRouter();
 
-  const categoryList = state.categoryList.length ?
-    state.categoryList.map((cat) => {
+  const categoryList = categoryState.categoryList.length ?
+    categoryState.categoryList.map((cat) => {
       return (
         <option key={`${cat.id}-${cat.name}`} value={cat.id}>{cat.name}</option>
       );

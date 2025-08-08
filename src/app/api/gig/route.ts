@@ -3,7 +3,13 @@ import { prisma } from "@/lib/prisma";
 import { apiHandler } from "@/lib/apiHandler";
 
 
-export const GET = apiHandler(async () => {
+export const GET = apiHandler(async (request: Request) => {
+
+  const { searchParams } = new URL(request.url);
+
+  const skip = parseInt(searchParams.get("skip") ?? "0", 10);
+  const limit = parseInt(searchParams.get("limit") ?? "0", 10);
+
   const gigs = await prisma.gig.findMany({
     include: {
       user: {
@@ -13,6 +19,8 @@ export const GET = apiHandler(async () => {
         },
       },
     },
+    skip: skip || undefined,
+    take: limit || undefined
   });
 
   return NextResponse.json(

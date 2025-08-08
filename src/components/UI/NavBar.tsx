@@ -18,9 +18,9 @@ import useCategory from "@/context/Category/useCategory";
 
 
 const CategoryList = () => {
-  const { state } = useCategory();
+  const { state } = useCategory({ skip: 0, limit: 4 });
 
-  const categoryList = state.categoryList.slice(0, 4);
+  const categoryList = state.categoryList;
 
   const categoryComponents = categoryList.length ?
     state.categoryList.map((component) => {

@@ -7,7 +7,7 @@ import useGig from '@/context/Gig/useGig';
 
 const Gig = () => {
 
-  const { state } = useGig();
+  const { state } = useGig({ skip: 0, limit: 10 });
 
   const cardList = state.gigList ? state.gigList.map((card, i) => {
     return (
