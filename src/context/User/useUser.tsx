@@ -9,7 +9,7 @@ const useUser = () => {
   const userMail = session?.user?.email ?? '';
 
   const actions = {
-    async fetchGigList() {
+    async fetchUserData() {
       if (userMail) {
         const res = await fetch(`http://localhost:3000/api/user/email/${userMail}`);
         const data = await res.json();
@@ -24,7 +24,7 @@ const useUser = () => {
   };
 
   useEffect(() => {
-    actions.fetchGigList();
+    actions.fetchUserData();
   }, [userMail]);
 
 

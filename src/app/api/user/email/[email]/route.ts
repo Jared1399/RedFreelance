@@ -13,6 +13,10 @@ export const GET = apiHandler(async (request: Request, { params }: Params) => {
   const user = await prisma.user.findFirst({
     where: {
       email: param.email
+    },
+    include: {
+      followers: true,
+      following: true
     }
   });
 

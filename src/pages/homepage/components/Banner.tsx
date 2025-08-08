@@ -1,9 +1,26 @@
 import React from 'react';
+import Image from '@/components/UI/Image';
 
 export default function Banner() {
+  const bannerImgSrc = `
+  https://images.unsplash.com/photo-1514395659518-2e1c59302e99?q
+  =80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fD
+  B8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D`;
+
   return (
     <div className='text-zinc-700 bg-amber-200 my-8 h-[415px]'>
-      Banner
+      <div className="w-full h-full relative">
+        <Image
+          src={bannerImgSrc}
+          className="w-full h-[415px] brightness-[0.5]"
+          alt='RedFreelance-image-banner'
+        />
+        <div className='absolute top-0 left-0 w-full h-full flex justify-center items-center'>
+          <h1 className='text-amber-50 text-5xl [text-shadow:_0px_2px_3px_rgba(0,0,0,0.8)]'>
+            Bienvenido a RedFreelance <small>®</small>
+          </h1>
+        </div>
+      </div>
     </div>
   );
 }
