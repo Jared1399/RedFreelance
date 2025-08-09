@@ -3,11 +3,12 @@
 import Grid from '@/components/UI/Grid';
 import Card from '@/components/UI/GigCard';
 import useGig from '@/context/Gig/useGig';
+import { useEffect } from 'react';
 
 
 const Gig = () => {
 
-  const { state } = useGig({ skip: 0, limit: 10 });
+  const { state, actions } = useGig({ limit: 10 });
 
   const cardList = state.gigList ? state.gigList.map((card, i) => {
     return (
@@ -21,6 +22,10 @@ const Gig = () => {
       />
     );
   }) : null;
+
+  useEffect(() => {
+    actions.fetchGigList();
+  }, []);
 
   return (
     <>
