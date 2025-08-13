@@ -39,9 +39,7 @@ export const POST = apiHandler(async (request: Request) => {
     userId
   } = await request.json();
 
-  const categoryIds = Array.isArray(categories)
-    ? categories
-    : [categories];
+  const categoryIds = categories.split(",").map((c: string) => Number.parseInt(c));
 
   const newGig = await prisma.gig.create({
     data: {

@@ -18,7 +18,7 @@ export const GET = apiHandler(async (request: Request, { params }: Params) => {
     const gigs = await prisma.gig.findMany({
       where: {
         categories: {
-          every: {
+          some: {
             id: {
               in: categoryIds
             }

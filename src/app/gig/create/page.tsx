@@ -3,9 +3,10 @@ import useCategory from '@/context/Category/useCategory';
 import { useSession } from "next-auth/react";
 import useUser from '@/context/User/useUser';
 import clsx from 'clsx';
-import { FormEvent } from 'react';
+import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import AuthMiddleware from "@/components/AuthMiddleware";
+import PoolSelect from '@/components/UI/PoolSelect';
 
 
 interface User {
@@ -17,14 +18,7 @@ export default function CreateGig() {
   const { state: categoryState } = useCategory({ skip: 0, limit: 10 });
   const { state: userState } = useUser();
   const router = useRouter();
-
-  const categoryList = categoryState.categoryList.length ?
-    categoryState.categoryList.map((cat) => {
-      return (
-        <option key={`${cat.id}-${cat.name}`} value={cat.id}>{cat.name}</option>
-      );
-    }) :
-    null;
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -35,7 +29,7 @@ export default function CreateGig() {
       title: formData.get("title"),
       description: formData.get("description"),
       price: parseInt(formData.get("price") as string),
-      categories: [parseInt(formData.get("categories") as string)],
+      categories: formData.get("categories") as string,
       userId: (userState?.userData as User)?.id
     };
 
@@ -81,11 +75,15 @@ export default function CreateGig() {
     "text-l"
   );
 
+  const handleChange = (ids: number[]) => {
+    setSelectedIds(ids);
+  };
+
   return (
     <AuthMiddleware status={status}>
       <div className={formContainerCls}>
         <h1 className='text-3xl pb-8 mx-auto'>Crear un nuevo trabajo</h1>
-        <form onSubmit={onSubmit} className='flex flex-col '>
+        <form onSubmit={onSubmit} className='flex flex-col ' action="POST">
 
           <label className={labelCls} htmlFor="title">Titulo</label>
           <input type="text" name="title" autoComplete="off" className={inputCls} />
@@ -97,10 +95,8 @@ export default function CreateGig() {
           <input type="number" name="price" autoComplete="off" className={inputCls} />
 
           <label className={labelCls} htmlFor="categories">Categorias</label>
-          <select name="categories" className={inputCls} >
-            {categoryList}
-
-          </select>
+          <PoolSelect options={categoryState.categoryList} onChange={handleChange} />
+          <input type="hidden" name="categories" value={selectedIds.join(",")} />
           <button
             className="cursor-pointer rounded-full bg-amber-800 w-25 mx-auto mt-10"
             type="submit"

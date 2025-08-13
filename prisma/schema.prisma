@@ -106,10 +106,9 @@ model Category {
   createdAt   DateTime? @default(now())
   updatedAt   DateTime? @updatedAt
   userId      String?
-  gigId       String?
 
   User User? @relation(fields: [userId], references: [id])
-  Gig  Gig?  @relation(fields: [gigId], references: [id])
+  gigs Gig[]
 }
 
 model Ad {
