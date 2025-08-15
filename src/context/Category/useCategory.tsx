@@ -3,7 +3,7 @@ import { reducer, initialState } from './reducer';
 import { queryBuilder } from "@/lib/utils";
 
 
-const useCategory = ({ skip = 0, limit = 0 }: { skip: number, limit: number }) => {
+const useCategory = ({ skip = 0, limit = 10 }: { skip?: number, limit?: number } = {}) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const actions = {

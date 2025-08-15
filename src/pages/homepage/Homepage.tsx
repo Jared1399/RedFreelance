@@ -1,4 +1,3 @@
-import UiLoginBtn from "@/components/UI/LoginBtn";
 import * as components from './components';
 
 export default function HomePage() {
@@ -10,7 +9,6 @@ export default function HomePage() {
       <components.PopularCategories />
       <components.GetPremium />
       <components.BlogEntry />
-      <UiLoginBtn />
       <components.Footer />
     </div>
   );
