@@ -5,15 +5,15 @@ import { queryBuilder } from "@/lib/utils";
 
 const useGig = (
   {
-    limit,
-    skip,
+    limit = 10,
+    skip = 0,
     category,
   }:
     {
-      limit: number,
+      limit?: number,
       skip?: number,
       category?: string
-    }
+    } = {}
 ) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
@@ -46,10 +46,8 @@ const useGig = (
       const data = await fetchGigs.json();
 
       dispatch({ type: 'SET_GIG_LIST', payload: { gigs: data } });
-
     }
   };
-
 
   return {
     actions,

@@ -11,7 +11,7 @@ interface GigCardProps {
   userImg: string;
   userId: string;
   cardWidth?: number;
-  cardHeigth?: number
+  cardHeight?: number
 }
 
 const GigCard: React.FC<GigCardProps> = ({
@@ -21,14 +21,13 @@ const GigCard: React.FC<GigCardProps> = ({
   userName,
   userImg,
   cardWidth,
-  cardHeigth
+  cardHeight
 }) => {
 
   const cardContainerCls = clsx(
     "flex",
     "flex-col",
-    `${cardWidth ? `w-[${cardWidth}px]` : 'w-auto'}`,
-    `h-[${cardHeigth ?? 400}px]`,
+    "w-auto",
     "mx-auto",
     "rounded-lg",
     "dark:bg-card",
@@ -43,37 +42,46 @@ const GigCard: React.FC<GigCardProps> = ({
     userId: userId
   });
 
+  const imageHeight = cardHeight ? (cardHeight / 1.5).toString().split(".")[0] : 240;
+
   const userInfo = (!cardWidth || (cardWidth > 200)) ? (
     <>
-      <Avatar className="h-auto w-5 mr-1">
-        <AvatarImage src={userImg ?? "/not_found.png"} />
-        <AvatarFallback>RF</AvatarFallback>
-      </Avatar>
-      Creado por
-      <span className="ml-1">
-        <strong>{userName}</strong>
-      </span></>
+      <div className="flex flex-row align-center text-xs mt-4 ml-2">
+        <Avatar className="h-auto w-5 mr-1">
+          <AvatarImage src={userImg ?? "/not_found.png"} />
+          <AvatarFallback>RF</AvatarFallback>
+        </Avatar>
+        Creado por
+        <span className="ml-1">
+          <strong>{userName}</strong>
+        </span>
+      </div>
+    </>
   ) : null;
 
   return (
     <Link href={`/gig/title${gigQuery}`}>
-      <div className={cardContainerCls}>
+      <div
+        className={cardContainerCls}
+        style={{
+          height: `${cardHeight ? `${cardHeight}px` : '450px'}`,
+          width: `${cardWidth ? `${cardWidth}px` : 'auto'}`
+        }}
+      >
         <div className="w-full">
           <Image
             className={
-              `rounded-lg w-full h-[${cardHeigth ? cardHeigth / 1.5 : 240}px] drop-shadow-color`
+              `rounded-lg w-full h-[${imageHeight}px] drop-shadow-color`
             }
             alt="gig-card-image"
           />
         </div>
-        <div className="my-auto ml-2">
-          <div className="flex flex-row align-baseline text-xs mb-3">
-            {
-              userInfo
-            }
-          </div>
-          <div>
-            <h3 className="text-2xl">{title}</h3>
+
+        {userInfo}
+
+        <div className="ml-2 flex">
+          <div className="my-2 mb-5">
+            <h3 className="text-2xl mb-2">{title}</h3>
             <p>Desde CLP {price}</p>
           </div>
         </div>

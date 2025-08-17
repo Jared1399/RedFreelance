@@ -9,7 +9,6 @@ interface SingleRowGridProps {
 }
 
 const SingleRowGrid: React.FC<SingleRowGridProps> = ({ children, childWidth }) => {
-
   const [screenWidth, setscreenWidth] = useState(500);
 
   useEffect(() => {
@@ -30,7 +29,7 @@ const SingleRowGrid: React.FC<SingleRowGridProps> = ({ children, childWidth }) =
     'h-full',
     'gap-4',
     'px-4',
-    'px-auto'
+    'fade-mask'
   );
 
   const childrenArray = Array.from(children);
@@ -46,7 +45,6 @@ const SingleRowGrid: React.FC<SingleRowGridProps> = ({ children, childWidth }) =
       </div>
     );
   });
-
 
   return (
     <div className={gridClasses}>

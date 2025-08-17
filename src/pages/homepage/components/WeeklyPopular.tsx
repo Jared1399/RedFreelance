@@ -1,31 +1,51 @@
-import React from 'react';
+'use client';
+
+import React, { useEffect } from 'react';
 import SingleRowGrid from '@/components/UI/SingleRowGrid';
 import GigCard from '@/components/UI/GigCard';
+import useGig from '@/context/Gig/useGig';
 
+interface CardType {
+  title: string
+  price: number
+  description: string
+  userId: string
+  user: {
+    firstName: string
+    userImg: string
+  }
+}
 
 export default function WeeklyPopular() {
-  return (
-    <div className='text-white bg-blue-500 my-8 h-[300px]' >
-      <SingleRowGrid childWidth={150}>
-        <GigCard
-          title={'title'}
-          price={1000}
-          userId={'342314asfd'}
-          userImg={'img'}
-          userName={'tu vieja'}
-          cardHeigth={50}
-          cardWidth={100}
-        />
+  const { state, actions } = useGig({ limit: 5 });
 
-        <GigCard
-          title={'title'}
-          price={1000}
-          userId={'342314asfd'}
-          userImg={'img'}
-          userName={'tu vieja'}
-          cardHeigth={100}
-          cardWidth={100}
-        />
+  useEffect(() => {
+    actions.fetchGigList();
+  }, []);
+
+  return (
+    <div className='text-white my-8 h-[300px]' >
+      <SingleRowGrid childWidth={150}>
+        {state.gigList?.map((card: CardType, i: number) => {
+          const trimTitle = card.title.length > 8 ?
+            card.title.slice(0, 10).concat("...") :
+            card.title;
+
+          return (
+            <GigCard
+              key={i}
+              title={trimTitle}
+              price={card.price}
+              userId={card.userId}
+              userImg={card.user.userImg}
+              userName={card.user.firstName}
+              cardHeight={280}
+              cardWidth={200}
+            />
+          );
+        })
+        }
+
       </SingleRowGrid>
     </div>
   );
