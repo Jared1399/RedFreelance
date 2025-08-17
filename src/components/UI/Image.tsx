@@ -1,10 +1,13 @@
 import React from 'react';
 
-export default function Image({ src = "/not_found.png", alt = "", className = "" }) {
+export default function Image(
+  { src = "/not_found.png", className = "", alt }:
+    { src: string; className: string; alt: string }
+) {
   return (
     <img
       src={src ?? ""}
-      alt={alt ?? ""}
+      alt={alt}
       className={`object-cover ${className}`}
     />
   );
