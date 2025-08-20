@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from 'react';
+import { useEffect, useReducer, useCallback } from 'react';
 import { reducer, initialState } from './reducer';
 import { queryBuilder } from "@/lib/utils";
 
@@ -6,19 +6,25 @@ import { queryBuilder } from "@/lib/utils";
 const useCategory = ({ skip = 0, limit = 10 }: { skip?: number, limit?: number } = {}) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const actions = {
-    async fetchCategoryList() {
-      const categoryQuery = queryBuilder(
-        {
-          skip: skip,
-          limit: limit
-        }
-      );
-      const res = await fetch(`http://localhost:3000/api/category${categoryQuery}`);
-      const data = await res.json();
+  const fetchCategoryList = useCallback(async () => {
+    try {
+      const categoryQuery = queryBuilder({ skip, limit });
+      const res = await fetch(`/api/category${categoryQuery}`, {
+        cache: "force-cache"
+      });
 
-      dispatch({ type: 'INIT', payload: { gigs: data.category } });
+      if (!res.ok) throw new Error("Error fetching categories");
+
+      const data = await res.json();
+      dispatch({ type: "INIT", payload: { gigs: data.category } });
+    } catch (error) {
+      console.error(error);
     }
+  }, [skip, limit]);
+
+
+  const actions = {
+    fetchCategoryList
   };
 
   useEffect(() => {

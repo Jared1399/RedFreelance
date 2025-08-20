@@ -15,6 +15,7 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/UI/shadcn/navigation-menu";
 import useCategory from "@/context/Category/useCategory";
+import { useMemo } from "react";
 
 
 const CategoryList = () => {
@@ -22,18 +23,19 @@ const CategoryList = () => {
 
   const categoryList = state.categoryList;
 
-  const categoryComponents = categoryList.length ?
-    state.categoryList.map((component) => {
-      return (
-        <ListItem
-          key={component.id}
-          title={component.name}
-          href={`/categories/name/${component.name}`}
-        >
-          {component.description}
-        </ListItem>
-      );
-    }) : null;
+  const categoryComponents = useMemo(() => {
+    if (!categoryList?.length) return null;
+
+    return categoryList.map((component) => (
+      <ListItem
+        key={component.id}
+        title={component.name}
+        href={`/categories/name/${component.name}`}
+      >
+        {component.description}
+      </ListItem>
+    ));
+  }, [categoryList]);
 
   return (
     <>{categoryComponents}</>

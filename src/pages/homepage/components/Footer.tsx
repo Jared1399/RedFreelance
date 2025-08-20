@@ -23,7 +23,7 @@ export default function Footer() {
               <li><a href="/gigs" className="hover:text-amber-700">Buscar trabajos</a></li>
               <li><a href="/publish" className="hover:text-amber-700">Publicar un servicio</a></li>
               <li><a href="/how-it-works" className="hover:text-amber-700">Cómo funciona</a></li>
-              <li><a href="/pricing" className="hover:text-amber-700">Precios & membresías</a></li>
+              <li><a href="/pricing" className="hover:text-amber-700">Precios y membresías</a></li>
             </ul>
           </div>
 
@@ -41,7 +41,10 @@ export default function Footer() {
             <ul className="space-y-2 text-sm">
               <li>
                 Email:
-                <a href="mailto:soporte@redfreelance.com" className="hover:text-amber-700">
+                <a
+                  href="mailto:soporte@redfreelance.com"
+                  className="text-amber-600 hover:text-amber-700 ml-1"
+                >
                   soporte@redfreelance.com
                 </a>
               </li>
