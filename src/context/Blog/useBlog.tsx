@@ -32,14 +32,10 @@ const useBlog = (
       dispatch({ type: 'SET_BLOG_LIST', payload: { blogs: data.blogs } });
     },
     async fetchBlogDetail() {
-      const blogQuery = queryBuilder({
-        id: id
-      });
-
-      const res = await fetch(`http://localhost:3000/api/blog${blogQuery}`);
+      const res = await fetch(`http://localhost:3000/api/blog/id/${id}`);
       const data = await res.json();
 
-      dispatch({ type: 'SET_BLOG_DETAIL', payload: { blogDetail: data.blogs[0] } });
+      dispatch({ type: 'SET_BLOG_DETAIL', payload: { blogDetail: data } });
     }
   };
 

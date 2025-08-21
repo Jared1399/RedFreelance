@@ -17,7 +17,7 @@ export default function Blog() {
   const { state, actions } = useBlog();
 
   useEffect(() => {
-    actions.fetchBlogDetail();
+    actions.fetchBlogList();
   }, []);
 
   const blogList = state.blogList as BlogDTO[];
