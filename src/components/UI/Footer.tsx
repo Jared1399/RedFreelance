@@ -1,4 +1,5 @@
 import Image from '@/components/UI/Image';
+import Link from 'next/link';
 import React from 'react';
 
 export default function Footer() {
@@ -20,19 +21,33 @@ export default function Footer() {
           <div>
             <h3 className="text-white font-semibold mb-3">Explorar</h3>
             <ul className="space-y-2 text-sm">
-              <li><a href="/gigs" className="hover:text-amber-700">Buscar trabajos</a></li>
-              <li><a href="/publish" className="hover:text-amber-700">Publicar un servicio</a></li>
-              <li><a href="/how-it-works" className="hover:text-amber-700">Cómo funciona</a></li>
-              <li><a href="/pricing" className="hover:text-amber-700">Precios y membresías</a></li>
+              <li><Link href="/gigs" className="hover:text-amber-700">
+                Buscar trabajos
+              </Link></li>
+              <li><Link href="/publish" className="hover:text-amber-700">
+                Publicar un servicio
+              </Link></li>
+              <li><Link href="/how-it-works" className="hover:text-amber-700">
+                Cómo funciona
+              </Link></li>
+              <li><Link href="/pricing" className="hover:text-amber-700">
+                Precios y membresías
+              </Link></li>
             </ul>
           </div>
 
           <div>
             <h3 className="text-white font-semibold mb-3">Comunidad</h3>
             <ul className="space-y-2 text-sm">
-              <li><a href="/blog" className="hover:text-amber-700">Blog</a></li>
-              <li><a href="/success" className="hover:text-amber-700">Historias de éxito</a></li>
-              <li><a href="/faq" className="hover:text-amber-700">Centro de ayuda</a></li>
+              <li><Link href="/blog" className="hover:text-amber-700">
+                Blog
+              </Link></li>
+              <li><Link href="/success" className="hover:text-amber-700">
+                Historias de éxito
+              </Link></li>
+              <li><Link href="/faq" className="hover:text-amber-700">
+                Centro de ayuda
+              </Link></li>
             </ul>
           </div>
 
@@ -41,20 +56,28 @@ export default function Footer() {
             <ul className="space-y-2 text-sm">
               <li>
                 Email:
-                <a
+                <Link
                   href="mailto:soporte@redfreelance.com"
                   className="text-amber-600 hover:text-amber-700 ml-1"
                 >
                   soporte@redfreelance.com
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/contact" className="hover:text-amber-700">Formulario de contacto</a>
+                <Link href="/contact" className="hover:text-amber-700">
+                  Formulario de contacto
+                </Link>
               </li>
               <li className="flex space-x-3 mt-2">
-                <a href="#" className="hover:text-amber-700">LinkedIn</a>
-                <a href="#" className="hover:text-amber-700">Instagram</a>
-                <a href="#" className="hover:text-amber-700">Twitter</a>
+                <Link href="#" className="hover:text-amber-700">
+                  LinkedIn
+                </Link>
+                <Link href="#" className="hover:text-amber-700">
+                  Instagram
+                </Link>
+                <Link href="#" className="hover:text-amber-700">
+                  Twitter
+                </Link>
               </li>
             </ul>
           </div>

@@ -17,3 +17,11 @@ export function queryBuilder(queryParams: QueryParams) {
 
   return `?${query}`;
 }
+
+export function capitalizeFirst(s: string) {
+  const firstChar = s.charAt(0).toUpperCase();
+
+  const restOfString = s.slice(1);
+
+  return firstChar + restOfString;
+}
