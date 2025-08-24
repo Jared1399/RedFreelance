@@ -15,7 +15,8 @@ export default function PopularCategories() {
   });
 
   return (
-    <div className='text-white my-8 h-[300px]'>
+    <div className='text-white mb-10 mt-20 h-[300px]'>
+      <h2 className='text-lg font-bold pl-6 '>Categorias populares entre nuestros usuarios</h2>
       <SingleRowGrid >
         {categoryList}
       </SingleRowGrid>

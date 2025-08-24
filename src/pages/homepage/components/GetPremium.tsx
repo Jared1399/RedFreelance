@@ -3,7 +3,7 @@ import React from 'react';
 
 export default function GetPremium() {
   return (
-    <div className='text-white bg-blue-900 my-8 h-[460px] relative' >
+    <div className='text-white my-8 h-[460px] relative' >
       <Image
         src='https://images.unsplash.com/photo-1618709348403-ea30d1901362'
         className='w-full h-[460px] brightness-[0.5]'

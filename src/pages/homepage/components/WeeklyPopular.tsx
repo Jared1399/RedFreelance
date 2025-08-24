@@ -24,7 +24,8 @@ export default function WeeklyPopular() {
   }, []);
 
   return (
-    <div className='text-white my-8 h-[300px]' >
+    <div className='text-white mb-8 mt-20 h-[300px]' >
+      <h2 className='text-lg font-bold pl-6 mb-4'>Trabajos destacados de esta semana</h2>
       <SingleRowGrid childWidth={150}>
         {state.gigList?.map((card: CardType, i: number) => {
           const trimTitle = card.title.length > 8 ?

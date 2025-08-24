@@ -2,14 +2,11 @@ import React from 'react';
 import Image from '@/components/UI/Image';
 
 export default function Banner() {
-  const bannerImgSrc = `
-  https://images.unsplash.com/photo-1514395659518-2e1c59302e99`;
-
   return (
     <div className='text-zinc-700 bg-amber-200 my-8 h-[415px]'>
       <div className="w-full h-full relative">
         <Image
-          src={bannerImgSrc}
+          src='https://images.unsplash.com/photo-1514395659518-2e1c59302e99'
           className="w-full h-[415px] brightness-[0.5]"
           alt='RedFreelance-image-banner'
         />

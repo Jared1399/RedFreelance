@@ -16,7 +16,8 @@ export default function CategoryList() {
   });
 
   return (
-    <div className='text-accent-foreground my-8 h-[235px]'>
+    <div data-component="CategoryList" className='text-accent-foreground my-8 h-[235px]'>
+      <h2 className='text-lg font-bold pl-6 mb-4'>Puede que te interesen estas categorias</h2>
       <SingleRowGrid >
         {categoryList}
       </SingleRowGrid>
