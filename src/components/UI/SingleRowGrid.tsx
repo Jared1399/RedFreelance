@@ -1,5 +1,5 @@
 'use client';
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { ReactNode } from 'react';
 import clsx from 'clsx';
 
 
@@ -9,12 +9,6 @@ interface SingleRowGridProps {
 }
 
 const SingleRowGrid: React.FC<SingleRowGridProps> = ({ children, childWidth }) => {
-  const [screenWidth, setscreenWidth] = useState(500);
-
-  useEffect(() => {
-    setscreenWidth(window.innerWidth);
-  }, []);
-
   if (!children) {
     return <div>No elements yet to show</div>;
   }
@@ -27,13 +21,13 @@ const SingleRowGrid: React.FC<SingleRowGridProps> = ({ children, childWidth }) =
     'overflow-y-hidden',
     'w-full',
     'h-full',
-    'gap-4',
+    'gap-[3vw]',
     'px-4',
     'fade-mask'
   );
 
   const childrenArray = Array.from(children);
-  const childrenWidth = childWidth ?? `${Math.ceil((screenWidth / childrenArray.length))}px`;
+  const childrenWidth = childWidth ?? '25vw';
 
   const gridElements = childrenArray.map((child, i) => {
     return (
