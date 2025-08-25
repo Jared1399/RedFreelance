@@ -14,7 +14,6 @@ const gigService = {
 
 
     return { gigTiers, creator };
-
   }
 };
 

@@ -8,12 +8,15 @@ import NavBar from "@/components/UI/NavBar";
 export const metadata: Metadata = {
   title: "RedFreelance",
   description: "Conectando talento con oportunidades",
+  icons: {
+    icon: '/favicon.ico',
+  }
 };
 
 export const inter = Inter({
   subsets: ['latin'],
-  display: 'swap', // Optimizes font loading
-  variable: '--font-inter', // For Tailwind CSS
+  display: 'swap',
+  variable: '--font-inter',
 });
 
 

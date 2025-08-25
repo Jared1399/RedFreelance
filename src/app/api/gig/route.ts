@@ -50,9 +50,10 @@ export const POST = apiHandler(async (request: Request) => {
       userId,
       categories: {
         connect: categoryIds.map((id: number) => ({ id }))
-      }
+      },
     }
   });
+
 
   return NextResponse.json(newGig);
 

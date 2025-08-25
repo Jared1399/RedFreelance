@@ -1,4 +1,5 @@
 'use client';
+
 import useCategory from '@/context/Category/useCategory';
 import { useSession } from "next-auth/react";
 import useUser from '@/context/User/useUser';
@@ -7,17 +8,42 @@ import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import AuthMiddleware from "@/components/AuthMiddleware";
 import PoolSelect from '@/components/UI/PoolSelect';
-
+import useTier from './hooks/useTier';
+import Image from '@/components/UI/Image';
+import TierForm from './components/TierForm';
+import AddTier from './components/AddTier';
+import { formContainerCls, tierListContainerCls, tierScrollListCls } from './styles';
 
 interface User {
   id: string;
 }
 
+interface Tier {
+  localId?: number;
+  name: string;
+  price: number;
+  description: string;
+  deliveryTime: number;
+}
+
+const inputCls = clsx(
+  "border",
+  "border-solid",
+  "border-white",
+  "rounded",
+  "mb-4"
+);
+
+
+
 export default function CreateGig() {
+  const router = useRouter();
+
   const { status } = useSession();
   const { state: categoryState } = useCategory({ skip: 0, limit: 10 });
   const { state: userState } = useUser();
-  const router = useRouter();
+  const { state: tierState, actions: tierActions } = useTier();
+
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
@@ -46,29 +72,6 @@ export default function CreateGig() {
     }
   }
 
-  const inputCls = clsx(
-    "border",
-    "border-solid",
-    "border-white",
-    "rounded",
-    "mb-4"
-  );
-
-  const formContainerCls = clsx(
-    "flex",
-    "flex-col",
-    "justify-center",
-    "w-200",
-    "h-[500px]",
-    "mx-auto ",
-    "rounded-lg",
-    "dark:bg-card",
-    "dark:border",
-    "px-12 ",
-    "py-2",
-    "mt-15",
-    "shadow-[0px_4px_6px_0px_rgba(81,_81,_81,_0.5)]"
-  );
 
   const labelCls = clsx(
     "mb-1",
@@ -79,31 +82,86 @@ export default function CreateGig() {
     setSelectedIds(ids);
   };
 
+  const tierComponents = tierState.tierList.map((t: Tier) => {
+    return (
+      <TierForm
+        tier={t}
+        onCloseHandler={() => tierActions.removeTier(t.localId!)}
+        key={t.localId}
+      />
+    );
+  });
+
+  const addTier = () => {
+    const generatedId = Number.parseInt((Math.random() * 1000).toString());
+
+    tierActions.addTier(
+      {
+        localId: generatedId,
+        name: "",
+        price: 0,
+        description: "",
+        deliveryTime: 0
+      }
+    );
+  };
+
+  const tierList = tierComponents.length ? tierComponents : <AddTier addTierHandler={addTier} />;
+
+
+
   return (
     <AuthMiddleware status={status}>
-      <div className={formContainerCls}>
-        <h1 className='text-3xl pb-8 mx-auto'>Crear un nuevo trabajo</h1>
-        <form onSubmit={onSubmit} className='flex flex-col ' action="POST">
+      <div className='flex flex-row align-middle justify-center'>
+        <div className={formContainerCls}>
+          <h1 className='text-3xl pb-8 mx-auto'>Crear un nuevo trabajo</h1>
+          <form onSubmit={onSubmit} className='flex flex-col ' action="POST">
 
-          <label className={labelCls} htmlFor="title">Titulo</label>
-          <input type="text" name="title" autoComplete="off" className={inputCls} />
+            <label className={labelCls} htmlFor="title">Titulo</label>
+            <input type="text" name="title" autoComplete="off" className={inputCls} />
 
-          <label className={labelCls} htmlFor="description">Descripcion</label>
-          <input type="text" name="description" autoComplete="off" className={inputCls} />
+            <label className={labelCls} htmlFor="description">Descripcion</label>
+            <input type="text" name="description" autoComplete="off" className={inputCls} />
 
-          <label className={labelCls} htmlFor="price">Precio</label>
-          <input type="number" name="price" autoComplete="off" className={inputCls} />
+            <label className={labelCls} htmlFor="price">Precio base</label>
+            <input type="number" name="price" autoComplete="off" className={inputCls} />
 
-          <label className={labelCls} htmlFor="categories">Categorias</label>
-          <PoolSelect options={categoryState.categoryList} onChange={handleChange} />
-          <input type="hidden" name="categories" value={selectedIds.join(",")} />
-          <button
-            className="cursor-pointer rounded-full bg-amber-800 w-25 mx-auto mt-10"
-            type="submit"
-          >
-            Submit
-          </button>
-        </form>
+            <label className={labelCls} htmlFor="categories">Categorias</label>
+            <PoolSelect options={categoryState.categoryList} onChange={handleChange} />
+            <input type="hidden" name="categories" value={selectedIds.join(",")} />
+            <button
+              className="cursor-pointer rounded-full bg-amber-800 w-25 mx-auto mt-10"
+              type="submit"
+            >
+              Submit
+            </button>
+          </form>
+        </div>
+        <div className={tierListContainerCls}>
+          <div className='text-xl'>Niveles</div>
+          <span className='text-sm opacity-[0.5]'>
+            Define los niveles en los que tus clientes pueden solicitar tus servicios
+          </span>
+
+          <div className={tierScrollListCls}>
+
+            {tierList}
+
+            {
+              !!tierState.tierList.length && (
+                <div onClick={() => addTier()} className='mt-2'>
+                  <Image
+                    alt='add-tier-icon'
+                    src='/plus_icon.svg'
+                    className='w-10 rounded-full cursor-pointer'
+                  />
+                </div>
+              )
+            }
+
+          </div>
+
+        </div>
       </div>
     </AuthMiddleware>
 
