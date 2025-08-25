@@ -2,6 +2,15 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { apiHandler } from "@/lib/apiHandler";
 
+interface Tier {
+  localId: number;
+  name: string;
+  price: number;
+  description: string;
+  deliveryTime: number;
+}
+
+
 
 export const GET = apiHandler(async (request: Request) => {
 
@@ -36,6 +45,7 @@ export const POST = apiHandler(async (request: Request) => {
     price,
     status,
     categories,
+    tiers,
     userId
   } = await request.json();
 
@@ -49,11 +59,21 @@ export const POST = apiHandler(async (request: Request) => {
       status,
       userId,
       categories: {
-        connect: categoryIds.map((id: number) => ({ id }))
+        connect: categoryIds.map((id: number) => ({ id })),
       },
-    }
+      GigTier: {
+        create: tiers.map((tier: Tier) => ({
+          name: tier.name,
+          price: tier.price,
+          description: tier.description,
+          deliveryTime: tier.deliveryTime,
+        })),
+      },
+    },
+    include: {
+      GigTier: true,
+    },
   });
-
 
   return NextResponse.json(newGig);
 

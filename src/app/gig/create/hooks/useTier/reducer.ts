@@ -40,6 +40,18 @@ const reducer = (state: InitialState = initialState, action: Action): InitialSta
             .filter((t) => t.localId != action.payload.localId)
         ]
       };
+    },
+    UPDATE_TIER: () => {
+      const tierToUpdate = action.payload.tierToUpdate as Tier;
+
+      return {
+        ...state,
+        tierList: state.tierList.map((t) =>
+          t.localId === tierToUpdate.localId
+            ? action.payload.tierToUpdate
+            : t
+        ) as Tier[],
+      };
     }
   };
 

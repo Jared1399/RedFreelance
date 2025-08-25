@@ -18,7 +18,10 @@ const useTier = () => {
     },
     removeTier(localId: number) {
       dispatch({ type: 'REMOVE_TIER', payload: { localId: localId } });
+    },
+    updateTier(tierToUpdate: Tier) {
 
+      dispatch({ type: 'UPDATE_TIER', payload: { tierToUpdate } });
     }
   };
 

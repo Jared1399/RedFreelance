@@ -1,8 +1,9 @@
 
 import clsx from 'clsx';
+import { useEffect, useState } from 'react';
 
 interface Tier {
-  localId?: number;
+  localId: number;
   name: string;
   price: number;
   description: string;
@@ -18,9 +19,16 @@ const inputCls = clsx(
 );
 
 export default function TierForm(
-  { tier, onCloseHandler }:
-    { tier: Tier, onCloseHandler: () => void }
+  { tier, onCloseHandler, updateTierHandler }:
+    { tier: Tier, onCloseHandler: () => void, updateTierHandler: (tier: Tier) => void }
 ) {
+
+  const [tierInfo, updateTierInfo] = useState(tier);
+
+  useEffect(() => {
+    updateTierHandler(tierInfo);
+  }, [tierInfo]);
+
   return (
     <div className='w-[95%] p-2 px-4 my-2 h-fit dark:bg-card dark:border rounded-lg'>
 
@@ -37,6 +45,7 @@ export default function TierForm(
             type="text"
             name='tierName'
             defaultValue={tier.name}
+            onChange={(e) => updateTierInfo({ ...tierInfo, name: e.target.value })}
             className={inputCls}
             autoComplete="off"
           />
@@ -49,6 +58,7 @@ export default function TierForm(
           type="text"
           name='tierDescription'
           defaultValue={tier.description}
+          onChange={(e) => updateTierInfo({ ...tierInfo, description: e.target.value })}
           className={inputCls}
           autoComplete="off"
         />
@@ -60,17 +70,23 @@ export default function TierForm(
           type="number"
           name='tierPrice'
           defaultValue={tier.price}
+          onChange={(e) => updateTierInfo(
+            { ...tierInfo, price: Number.parseInt(e.target.value) }
+          )}
           className={inputCls}
           autoComplete="off"
         />
       </div>
 
       <div className='w-full flex justify-between'>
-        <label htmlFor="tierPrice">Tiempo de entrega</label>
+        <label htmlFor="deliveryTime">Tiempo de entrega</label>
         <input
           type="number"
-          name='tierPrice'
+          name='deliveryTime'
           defaultValue={tier.deliveryTime}
+          onChange={(e) => updateTierInfo(
+            { ...tierInfo, deliveryTime: Number.parseInt(e.target.value) }
+          )}
           className={inputCls}
           autoComplete="off"
         />

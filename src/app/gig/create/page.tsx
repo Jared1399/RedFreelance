@@ -19,7 +19,7 @@ interface User {
 }
 
 interface Tier {
-  localId?: number;
+  localId: number;
   name: string;
   price: number;
   description: string;
@@ -34,8 +34,6 @@ const inputCls = clsx(
   "mb-4"
 );
 
-
-
 export default function CreateGig() {
   const router = useRouter();
 
@@ -48,7 +46,6 @@ export default function CreateGig() {
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
     const formData = new FormData(event.currentTarget);
 
     const payload = {
@@ -56,6 +53,7 @@ export default function CreateGig() {
       description: formData.get("description"),
       price: parseInt(formData.get("price") as string),
       categories: formData.get("categories") as string,
+      tiers: tierState.tierList,
       userId: (userState?.userData as User)?.id
     };
 
@@ -72,7 +70,6 @@ export default function CreateGig() {
     }
   }
 
-
   const labelCls = clsx(
     "mb-1",
     "text-l"
@@ -87,6 +84,7 @@ export default function CreateGig() {
       <TierForm
         tier={t}
         onCloseHandler={() => tierActions.removeTier(t.localId!)}
+        updateTierHandler={tierActions.updateTier}
         key={t.localId}
       />
     );
@@ -109,9 +107,9 @@ export default function CreateGig() {
   const tierList = tierComponents.length ? tierComponents : <AddTier addTierHandler={addTier} />;
 
 
-
   return (
     <AuthMiddleware status={status}>
+
       <div className='flex flex-row align-middle justify-center'>
         <div className={formContainerCls}>
           <h1 className='text-3xl pb-8 mx-auto'>Crear un nuevo trabajo</h1>
@@ -137,6 +135,7 @@ export default function CreateGig() {
             </button>
           </form>
         </div>
+
         <div className={tierListContainerCls}>
           <div className='text-xl'>Niveles</div>
           <span className='text-sm opacity-[0.5]'>
@@ -160,7 +159,6 @@ export default function CreateGig() {
             }
 
           </div>
-
         </div>
       </div>
     </AuthMiddleware>
