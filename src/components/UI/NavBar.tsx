@@ -15,11 +15,15 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/UI/shadcn/navigation-menu";
 import useCategory from "@/context/Category/useCategory";
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 
 
 const CategoryList = () => {
-  const { state } = useCategory({ skip: 0, limit: 4 });
+  const { state, actions } = useCategory({ skip: 0, limit: 4 });
+
+  useEffect(() => {
+    actions.fetchCategoryList();
+  }, []);
 
   const categoryList = state.categoryList;
 

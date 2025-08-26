@@ -6,7 +6,7 @@ export const formContainerCls = clsx(
     flex-col
     justify-center
     w-170
-    h-120
+    h-[80dvh]
     mr-4 
     rounded-lg
     dark:bg-card
@@ -19,7 +19,7 @@ export const formContainerCls = clsx(
 
 export const tierListContainerCls = clsx(
   `
-    h-120 
+    h-[80dvh]
     w-110 
     mt-15 
     px-4 

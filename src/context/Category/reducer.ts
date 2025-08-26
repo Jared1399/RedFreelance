@@ -16,10 +16,12 @@ interface Category {
 
 type InitialState = {
   categoryList: Array<Category>;
+  searchCategories: Array<Category>;
 }
 
 const initialState: InitialState = {
   categoryList: [],
+  searchCategories: []
 };
 
 const reducer = (state: InitialState = initialState, action: Action): InitialState => {
@@ -28,6 +30,21 @@ const reducer = (state: InitialState = initialState, action: Action): InitialSta
       return {
         ...state,
         categoryList: action.payload.gigs as []
+      };
+    },
+    SEARCH_CATEGORIES: () => {
+      return {
+        ...state,
+        searchCategories: action.payload.searchResults as Category[]
+      };
+    },
+    ADD_CATEGORY: () => {
+      return {
+        ...state,
+        categoryList: [
+          ...state.categoryList,
+          action.payload.newCategory as Category
+        ]
       };
     }
   };

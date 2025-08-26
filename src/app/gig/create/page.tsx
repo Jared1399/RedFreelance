@@ -26,6 +26,15 @@ interface Tier {
   deliveryTime: number;
 }
 
+interface Category {
+  id?: string;
+  name: string;
+  description: string;
+  userId: string;
+  created_at: Date;
+  updated_at: Date;
+}
+
 const inputCls = clsx(
   "border",
   "border-solid",
@@ -38,7 +47,7 @@ export default function CreateGig() {
   const router = useRouter();
 
   const { status } = useSession();
-  const { state: categoryState } = useCategory({ skip: 0, limit: 10 });
+  const { state: categoryState, actions: categoryActions } = useCategory({ skip: 0, limit: 10 });
   const { state: userState } = useUser();
   const { state: tierState, actions: tierActions } = useTier();
 
@@ -105,12 +114,41 @@ export default function CreateGig() {
   };
 
   const tierList = tierComponents.length ? tierComponents : <AddTier addTierHandler={addTier} />;
+  const [search, setSearch] = useState("");
 
+  const handleSearchCategory = (cat: Category) => {
+    let repeated = false;
+    categoryState.categoryList.map((c) => {
+      if (c.name == cat.name) { repeated = true; }
+    });
+
+    if (!repeated) {
+      categoryActions.addCategory(cat);
+    }
+
+    setSearch("");
+  };
+
+  const searchResults = (
+    search && categoryState.searchCategories.length && (
+      <div className='absolute top-14 left-0 w-full'>
+        {categoryState.searchCategories.map((cat) => (
+          <div
+            className="w-full bg-neutral-700 h-fit px-2 py-1 hover:bg-neutral-800"
+            key={cat.id}
+            onClick={() => handleSearchCategory(cat)}
+          >
+            {cat.name}
+          </div>
+        ))}
+      </div>
+    )
+  );
 
   return (
     <AuthMiddleware status={status}>
 
-      <div className='flex flex-row align-middle justify-center'>
+      <div className='flex flex-row align-middle justify-center mb-15'>
         <div className={formContainerCls}>
           <h1 className='text-3xl pb-8 mx-auto'>Crear un nuevo trabajo</h1>
           <form onSubmit={onSubmit} className='flex flex-col ' action="POST">
@@ -124,9 +162,26 @@ export default function CreateGig() {
             <label className={labelCls} htmlFor="price">Precio base</label>
             <input type="number" name="price" autoComplete="off" className={inputCls} />
 
-            <label className={labelCls} htmlFor="categories">Categorias</label>
-            <PoolSelect options={categoryState.categoryList} onChange={handleChange} />
-            <input type="hidden" name="categories" value={selectedIds.join(",")} />
+            <div className='relative flex flex-col'>
+              <label className={labelCls} htmlFor="categories">Categorias</label>
+              <input
+                type="text"
+                name="searchCategories"
+                autoComplete="off"
+                className={inputCls}
+                value={search}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                  categoryActions.searchCategories(e.target.value);
+                }}
+              />
+              {searchResults == 0 ? null : searchResults}
+
+              <PoolSelect options={categoryState.categoryList} onChange={handleChange} />
+              <input type="hidden" name="categories" value={selectedIds.join(",")} />
+
+            </div>
+
             <button
               className="cursor-pointer rounded-full bg-amber-800 w-25 mx-auto mt-10"
               type="submit"
@@ -143,9 +198,7 @@ export default function CreateGig() {
           </span>
 
           <div className={tierScrollListCls}>
-
             {tierList}
-
             {
               !!tierState.tierList.length && (
                 <div onClick={() => addTier()} className='mt-2'>
@@ -157,7 +210,6 @@ export default function CreateGig() {
                 </div>
               )
             }
-
           </div>
         </div>
       </div>
