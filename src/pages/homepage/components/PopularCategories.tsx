@@ -1,16 +1,22 @@
-'use client';
 import React from 'react';
 import SingleRowGrid from '@/components/UI/SingleRowGrid';
-import useCategory from '@/context/Category/useCategory';
 import CategoryButton from './CategoryButton';
+import { Category } from './types/Category';
+import { queryBuilder } from "@/lib/utils";
 
 
-export default function PopularCategories() {
-  const { state } = useCategory();
+export default async function PopularCategories() {
+  const categoryQuery = queryBuilder({ skip: 0, limit: 10 });
 
-  const categoryList = state.categoryList.map((cat, i) => {
+  const res = await fetch(`http://localhost:3000/api/category${categoryQuery}`, {
+    cache: "force-cache"
+  });
+
+  const categories = await res.json();
+
+  const categoryList = categories.category.map((cat: Category) => {
     return (
-      <CategoryButton key={i} categoryName={cat.name} />
+      <CategoryButton key={cat.id} categoryName={cat.name} />
     );
   });
 

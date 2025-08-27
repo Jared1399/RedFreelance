@@ -14,37 +14,7 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/UI/shadcn/navigation-menu";
-import useCategory from "@/context/Category/useCategory";
-import { useMemo, useEffect } from "react";
-
-
-const CategoryList = () => {
-  const { state, actions } = useCategory({ skip: 0, limit: 4 });
-
-  useEffect(() => {
-    actions.fetchCategoryList();
-  }, []);
-
-  const categoryList = state.categoryList;
-
-  const categoryComponents = useMemo(() => {
-    if (!categoryList?.length) return null;
-
-    return categoryList.map((component) => (
-      <ListItem
-        key={component.id}
-        title={component.name}
-        href={`/categories/name/${component.name}`}
-      >
-        {component.description}
-      </ListItem>
-    ));
-  }, [categoryList]);
-
-  return (
-    <>{categoryComponents}</>
-  );
-};
+import CategoryList from "./CategoryList";
 
 const navMenuLinkCls = clsx(
   "from-muted/50",
@@ -208,7 +178,7 @@ export function NavBar() {
   );
 }
 
-function ListItem({
+export function ListItem({
   title,
   children,
   href,
