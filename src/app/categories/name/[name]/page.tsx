@@ -1,40 +1,29 @@
-'use client';
-
 import Grid from '@/components/UI/Grid';
 import Card from '@/components/UI/GigCard';
-import useGig from '@/context/Gig/useGig';
-import { use, useEffect } from 'react';
+import { GigParams } from '../../types/Gig';
+import categoryService from '../../category.service';
+import { Gig } from "../../types/Gig";
 
 
-interface CardType {
-  title: string
-  price: number
-  description: string
-  userId: string
-  user: {
-    firstName: string
-    userImg: string
+export default async function CategoryName({ params }: GigParams) {
+  const param = await params;
+  const name = await decodeURIComponent(param.name!);
+
+  const categoryInfo = await categoryService.fetchCategoryInfoByName(name);
+
+  if (!categoryInfo) {
+    return <div>Categoría no encontrada</div>;
   }
-}
 
-export default function CategoryName({ params }: { params: Promise<{ name: string }> }) {
-  const { name } = use(params);
-  const decodedName = decodeURIComponent(name);
-
-  const { state, actions } = useGig({ limit: 10, category: decodedName });
-
-  useEffect(() => {
-    actions.fetchGigsByCategory();
-  }, []);
-
+  const gigList = await categoryService.fetchGigsByCategoryId(categoryInfo.id);
 
   return (
-    <div>
-      Categoria: <strong>{decodedName}</strong><br />
-      <small>{state.categoryInfo.description}</small><br /><br />
+    <div className='px-8'>
+      Categoria: <strong>{name}</strong><br />
+      <small>{categoryInfo.description}</small><br /><br />
 
       <Grid>
-        {state.gigList?.map((card: CardType, i: number) => (
+        {gigList.map((card: Gig, i: number) => (
           <Card
             key={i}
             title={card.title}

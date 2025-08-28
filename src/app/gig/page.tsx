@@ -1,16 +1,32 @@
-'use client';
-
 import Grid from '@/components/UI/Grid';
 import Card from '@/components/UI/GigCard';
-import useGig from '@/context/Gig/useGig';
-import { useEffect } from 'react';
+import { queryBuilder } from "@/lib/utils";
 
+interface GigCardProps {
+  title: string;
+  price: number;
+  userName: string;
+  userImg: string;
+  userId: string;
+  user: {
+    userImg: string,
+    firstName: string
+  }
+}
 
-const Gig = () => {
+const Gig = async () => {
+  const gigQuery = queryBuilder(
+    {
+      skip: 0,
+      limit: 10
+    }
+  );
 
-  const { state, actions } = useGig({ limit: 10 });
+  const res = await fetch(`http://localhost:3000/api/gig${gigQuery}`);
+  const data = await res.json();
 
-  const cardList = state.gigList ? state.gigList.map((card, i) => {
+  const gigList = data.gigs;
+  const cardList = gigList ? gigList.map((card: GigCardProps, i: number) => {
     return (
       <Card
         key={i}
@@ -23,9 +39,6 @@ const Gig = () => {
     );
   }) : null;
 
-  useEffect(() => {
-    actions.fetchGigList();
-  }, []);
 
   return (
     <>
