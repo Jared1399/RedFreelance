@@ -1,6 +1,7 @@
-import { useEffect, useReducer } from 'react';
+import { useReducer } from 'react';
 import { reducer, initialState } from './reducer';
 import { useSession } from "next-auth/react";
+import { queryBuilder } from '@/lib/utils';
 
 
 const useUser = () => {
@@ -17,16 +18,19 @@ const useUser = () => {
         delete data["passwordHash"];
         delete data["rankCommunity"];
         delete data["rankPlatform"];
-
         dispatch({ type: 'INIT', payload: { data } });
       }
+    },
+    async fetchUserGigs() {
+      const userId = state.userData.id;
+      const userQuery = queryBuilder({ userId });
+      const res = await fetch(`http://localhost:3000/api/user/gig/${userQuery}`);
+      const data = await res.json();
+
+      dispatch({ type: 'SET_USER_GIGS', payload: { data } });
+
     }
   };
-
-  useEffect(() => {
-    actions.fetchUserData();
-  }, [userMail]);
-
 
   return {
     actions,

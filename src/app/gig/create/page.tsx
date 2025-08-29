@@ -6,7 +6,7 @@ import useUser from '@/context/User/useUser';
 import clsx from 'clsx';
 import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import AuthMiddleware from "@/components/AuthMiddleware";
+import AuthMiddleware from "@/components/ClientAuthMiddleware";
 import PoolSelect from '@/components/UI/PoolSelect';
 import useTier from './hooks/useTier';
 import Image from '@/components/UI/Image';

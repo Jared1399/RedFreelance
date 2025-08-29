@@ -1,39 +1,29 @@
-'use client';
 
-import { useSession } from "next-auth/react";
-import useUser from "@/context/User/useUser";
-import AuthMiddleware from "@/components/AuthMiddleware";
+import { getServerSession } from "next-auth";
+import AuthMiddleware from "@/components/ServerAuthProvider";
+import userProfileService from "./userProfile.service";
+import { Gig } from "./types/Gig";
 
-interface UserData {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  userImg: string;
-  identification: string;
-  isFreelancer: boolean;
-  isVerified: boolean;
-  level: number;
-  phone: string;
-  subscriptionPlan: string;
-  warningCount: number;
-  createdAt: Date;
-  updatedAt: Date;
-  subscriptionEnd: Date;
-  subscriptionStart: Date;
-};
+export default async function ProfilePage() {
+  const session = await getServerSession();
+  const userName = session?.user?.name?.split(" ")[0];
+  const userEmail = session?.user?.email;
 
-export default function ProfilePage() {
-  const { status } = useSession();
-  const { state } = useUser();
+  const userData = await userProfileService.fetchUser(userEmail ?? "");
+  const userGigs = await userProfileService.fetchUserGigs((await userData).id);
 
-  const userData = state.userData as UserData | null;
+  const gigList = userGigs.map((gig: Gig, i: number) => {
+    return (
+      <div key={i}>{gig.title}</div>
+    );
+  });
 
   return (
-    <AuthMiddleware status={status}>
+    <AuthMiddleware>
       <>
-        Hola denuevo, {userData?.firstName}!
+        Hola denuevo, {userName}!
       </>
+      {gigList}
     </AuthMiddleware>
   );
 }
