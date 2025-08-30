@@ -7,7 +7,7 @@ export interface UserData {
   identification: string;
   isFreelancer: boolean;
   isVerified: boolean;
-  level: number;
+  level: string;
   phone: string;
   subscriptionPlan: string;
   warningCount: number;
@@ -15,7 +15,30 @@ export interface UserData {
   updatedAt: Date;
   subscriptionEnd: Date;
   subscriptionStart: Date;
+  followers: string[];
+  following: string[];
   passwordHash?: string;
   rankCommunity?: number;
   rankPlatform?: number;
 };
+
+export interface UserTransaction {
+  id: string;
+  freelancerId: string;
+  clientId: string;
+  gigId: string;
+  lifecycleId: number;
+  amount: number;
+  commission: number;
+  commissionRate: number;
+  paymentId: string;
+  lifecycle: {
+    id: number;
+    name: string;
+    description: string;
+  }
+  escrowStatus: string;
+  completed: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}

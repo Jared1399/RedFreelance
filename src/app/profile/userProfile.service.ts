@@ -19,6 +19,22 @@ const userProfileService = {
     const userGigs: Gig[] = await fetchUserGigs.json();
 
     return userGigs;
+  },
+  async fetchUserTransactions(userId: string) {
+    const userQuery = queryBuilder({ userId });
+    const url = `http://localhost:3000/api/user/transaction${userQuery}`;
+
+    const fetchUserTransactions = await fetch(url);
+    const userTransactions = await fetchUserTransactions.json();
+
+    return userTransactions;
+  },
+  async fetchGigById(gigId: string) {
+    const gigQuery = queryBuilder({ gigId });
+    const fetchGigDetails = await fetch(`http://localhost:3000/api/gig/id${gigQuery}`);
+    const gigDetails = await fetchGigDetails.json();
+
+    return gigDetails;
   }
 };
 
