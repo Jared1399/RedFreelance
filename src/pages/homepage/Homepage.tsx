@@ -9,7 +9,6 @@ export default function HomePage() {
       <components.PopularCategories />
       <components.GetPremium />
       <components.BlogEntry />
-      <components.Footer />
     </div>
   );
 }

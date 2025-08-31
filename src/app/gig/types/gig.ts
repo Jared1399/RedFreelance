@@ -7,6 +7,19 @@ export interface Gig {
   status: string;
   userId: string;
   created_at: string;
+  user?: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    identification: string;
+    userImg: string;
+    isVerified: string;
+    createdAt: string;
+    updatedAt: string;
+    subscriptionPlan: string;
+    level: string;
+  }
 }
 
 

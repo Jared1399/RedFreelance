@@ -1,21 +1,23 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-interface QueryParams {
-  [key: string]: string | number | undefined;
-}
-
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+function isValidValue(value: string | number | boolean | undefined | null): boolean {
+  return value !== undefined && value !== null && value !== "" && value !== false;
+}
 
-export function queryBuilder(queryParams: QueryParams) {
+export function queryBuilder(
+  queryParams: Record<string, string | number | boolean | undefined | null>
+) {
   const query = Object.entries(queryParams)
-    .map(([key, value]) => `${key}=${encodeURIComponent(value ?? "")}`)
+    .filter(([, value]) => isValidValue(value))
+    .map(([key, value]) => `${key}=${encodeURIComponent(String(value))}`)
     .join("&");
 
-  return `?${query}`;
+  return query ? `?${query}` : "";
 }
 
 export function capitalizeFirst(s: string) {

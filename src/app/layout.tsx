@@ -4,6 +4,7 @@ import { ThemeProvider } from 'next-themes';
 import AuthProvider from "@/components/AuthProvider";
 import "./globals.css";
 import NavBar from "@/components/UI/NavBar";
+import Footer from "@/components/UI/Footer";
 
 export const metadata: Metadata = {
   title: "RedFreelance",
@@ -26,16 +27,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning >
       <body
         className={`${inter.variable} antialiased`}
       >
         <AuthProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <NavBar />
-            <div className="mt-6">
+            <div className="mt-6 min-h-[40vh]">
               {children}
             </div>
+            <Footer />
           </ThemeProvider>
         </AuthProvider>
       </body>

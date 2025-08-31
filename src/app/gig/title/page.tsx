@@ -5,7 +5,6 @@ import { capitalizeFirst, queryBuilder } from "@/lib/utils";
 import Link from "next/link";
 import gigService from "../gig.service";
 import { Gig, GigSearchParamsProps } from "../types/gig";
-import Footer from "@/components/UI/Footer";
 
 
 const GigName = async ({ searchParams }: GigSearchParamsProps) => {
@@ -74,7 +73,6 @@ const GigName = async ({ searchParams }: GigSearchParamsProps) => {
         </div>
       </div>
 
-      <Footer />
     </div>
   );
 };
