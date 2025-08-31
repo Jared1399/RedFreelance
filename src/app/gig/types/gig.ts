@@ -29,3 +29,12 @@ export interface GigSearchParamsProps {
     userId?: string;
   };
 }
+
+export interface GigTier {
+  name: string;
+  description: string;
+  price: number;
+  gigId: string;
+  id: string;
+  deliveryTime: string;
+}

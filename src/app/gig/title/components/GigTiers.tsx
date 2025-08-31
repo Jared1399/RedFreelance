@@ -1,15 +1,8 @@
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/UI/shadcn/tabs";
 import { capitalizeFirst } from '@/lib/utils';
-
-interface GigTier {
-  name: string;
-  description: string;
-  price: number;
-  gigId: string;
-  id: string;
-  deliveryTime: string;
-}
+import RequestBtn from './RequestBtn';
+import { GigTier } from '../../types/gig';
 
 const GigTiers = ({ gigTiers }: { gigTiers: GigTier[] }) => {
 
@@ -33,7 +26,7 @@ const GigTiers = ({ gigTiers }: { gigTiers: GigTier[] }) => {
           {tier.description}
         </div>
 
-        <button className='bg-amber-700 rounded-full w-fit px-8 py-2 self-center'>Solicitar</button>
+        <RequestBtn gigTiers={gigTiers} />
 
       </TabsContent>
     );

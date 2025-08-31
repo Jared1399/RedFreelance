@@ -14,6 +14,11 @@ const gigService = {
 
 
     return { gigTiers, creator };
+  },
+  fetchUserInfo: async (userId: string) => {
+    const fetchUser = await fetch(`http://localhost:3000/api/user/id/${userId}`);
+    const user = await fetchUser.json();
+    return user;
   }
 };
 
