@@ -5,83 +5,111 @@ import { GigTier } from '../../types/gig';
 import { useSearchParams } from 'next/navigation';
 import gigService from '../../gig.service';
 import { User } from '../../types/User';
-import clsx from 'clsx';
 import { ToastContainer, toast } from 'react-toastify';
+import { useSession } from "next-auth/react";
+import Tier from './Tier';
+
+const successNotify = () => toast.success('Solicitud enviada!', {
+  position: "bottom-right",
+  autoClose: 3000,
+  hideProgressBar: false,
+  pauseOnHover: true,
+  theme: "dark",
+});
+
+const errorNotify = () => toast.success('Solicitud enviada!', {
+  position: "bottom-right",
+  autoClose: 3000,
+  hideProgressBar: false,
+  pauseOnHover: true,
+  theme: "dark",
+});
 
 
 
-export default function RequestBtn({ gigTiers }: { gigTiers: GigTier[] }) {
-  const notify = () => toast.success('Solicitud enviada!', {
-    position: "bottom-right",
-    autoClose: 3000,
-    hideProgressBar: false,
-    pauseOnHover: true,
-    theme: "dark",
-  });
-
+export default function RequestBtn({ gigTiers, gigId }: { gigTiers: GigTier[], gigId: string }) {
   const searchParams = useSearchParams()!;
-  const userId = searchParams.get("userId");
-  const [user, setUser] = useState<User | null>(null);
+  const { data } = useSession();
 
+  const clientMail = data?.user?.email;
+  const freelancerId = searchParams.get("userId");
+
+  const [freelancer, setFreelancer] = useState<User | null>(null);
+  const [client, setClient] = useState<User | null>(null);
+  const [currentGigId, setCurrentGigId] = useState("");
   const [isDialogOpen, setDialogOpen] = useState(false);
 
   const [requestDetails, setRequestDetails] = useState("");
-  const [selectedTier, setSelecterTier] = useState("");
+  const [selectedTier, setSelectedTier] = useState({
+    id: "",
+    price: 0,
+  });
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
 
     const payload = {
+      tierId: formData.get("tierId"),
+      freelancerId: freelancer?.id,
+      clientId: client?.id,
+      gigId: currentGigId,
       requestDetails: formData.get("requestDetails"),
-      tierId: formData.get("tierId")
-    };
-    console.info(payload);
+      amount: selectedTier.price,
 
-    notify();
-    setDialogOpen(false);
+    };
+
+    const res = await fetch("/api/user/transaction", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (res.ok) {
+      setRequestDetails("");
+      setSelectedTier({ id: "", price: 0 });
+      setDialogOpen(false);
+
+      successNotify();
+    } else {
+      errorNotify();
+    }
+
 
   }
 
-  const tiers = gigTiers.map((tier: GigTier) => {
-
-    const tierCls = clsx({
-      "flex flex-row justify-between px-5 py-2 h-fit dark:bg-card rounded-lg border-2": true,
-      "dark:border": tier.id != selectedTier,
-      "border-amber-700": tier.id == selectedTier
-    });
-
+  const tiers = gigTiers.map((tier: GigTier, i: number) => {
     return (
-      <div
-        key={tier.id}
-        className={tierCls}
-        onClick={() => {
-          if (tier.id == selectedTier) {
-            setSelecterTier("");
-          } else {
-            setSelecterTier("");
-            setSelecterTier(tier.id);
-          }
-        }}
-      >
-        <div>{tier.name}</div>
-        <div className='flex flex-col'>
-          <div>CLP {tier.price}</div>
-          <div>{tier.deliveryTime} dias</div>
-        </div>
-      </div>
+      <Tier
+        key={i}
+        tier={tier}
+        selectedTier={selectedTier}
+        selectTierHandler={setSelectedTier}
+      />
     );
   });
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const u = await gigService.fetchUserInfo(userId ?? "");
-      setUser(u);
+    const fetchFreelancer = async () => {
+      const u = await gigService.fetchUserInfo(freelancerId ?? "");
+      setFreelancer(u);
     };
-    fetchUser();
-  }, [userId]);
+    fetchFreelancer();
+  }, [freelancerId]);
 
+  useEffect(() => {
+    const fetchClient = async () => {
+      const u = await gigService.fetchUserByEmail(clientMail ?? "");
+      setClient(u);
+    };
+    fetchClient();
+  }, [clientMail]);
 
+  useEffect(() => {
+    setCurrentGigId(gigId);
+  }, [gigId]);
 
   return (
     <>
@@ -128,7 +156,7 @@ export default function RequestBtn({ gigTiers }: { gigTiers: GigTier[] }) {
                 Comparte detalles, ideas y cualquier otra pregunta relacionada a tu solicitud
               </p>
               <p>
-                Si {user?.firstName} aprueba tu propuesta se pondra en contacto contigo para
+                Si {freelancer?.firstName} aprueba tu propuesta se pondra en contacto contigo para
                 continuar con el encargo
               </p>
             </div>
@@ -137,6 +165,7 @@ export default function RequestBtn({ gigTiers }: { gigTiers: GigTier[] }) {
               name="requestDetails"
               maxLength={2000}
               onChange={(e) => setRequestDetails(e.target.value)}
+              value={requestDetails}
             >
             </textarea>
           </div>
@@ -173,7 +202,8 @@ export default function RequestBtn({ gigTiers }: { gigTiers: GigTier[] }) {
           onSubmit={onSubmit}
         >
           <input type="hidden" name='requestDetails' value={requestDetails} />
-          <input type="hidden" name='tierId' value={selectedTier} />
+          <input type="hidden" name='tierId' value={selectedTier.id} />
+          <input type="hidden" name='tierPrice' value={selectedTier.price} />
           <button
             className='bg-amber-700 rounded-full w-fit px-8 py-2 self-center'
           >

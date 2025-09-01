@@ -18,4 +18,34 @@ export const GET = apiHandler(async (req: Request) => {
   });
 
   return NextResponse.json(gig);
+});
+
+export const POST = apiHandler(async (req: Request) => {
+
+  const {
+    tierId,
+    freelancerId,
+    clientId,
+    gigId,
+    requestDetails,
+    amount
+  } = await req.json();
+
+  const commissionRate = 0.10;
+  const commission = Number(amount) * commissionRate;
+
+  const newTransaction = await prisma.transaction.create({
+    data: {
+      gigId,
+      freelancerId,
+      clientId,
+      tierId,
+      requestDetails,
+      amount,
+      commission,
+      commissionRate
+    }
+  });
+
+  return NextResponse.json(newTransaction);
 }); 

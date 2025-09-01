@@ -99,6 +99,8 @@ model GigTier {
 
   gigId String
   gig   Gig    @relation(fields: [gigId], references: [id])
+
+  transactions Transaction[]
 }
 
 model Category {
@@ -180,8 +182,10 @@ model Transaction {
   freelancerId   String
   clientId       String
   gigId          String
-  lifecycleId    Int
+  lifecycleId    Int          @default(1)
+  tierId         String
   amount         Decimal
+  requestDetails String
   commission     Decimal
   commissionRate Float        @default(0.10)
   paymentId      String?
@@ -190,6 +194,7 @@ model Transaction {
   createdAt      DateTime?    @default(now())
   updatedAt      DateTime?    @updatedAt
 
+  tier       GigTier   @relation(fields: [tierId], references: [id])
   freelancer User      @relation("FreelancerTransactions", fields: [freelancerId], references: [id])
   client     User      @relation("ClientTransactions", fields: [clientId], references: [id])
   gig        Gig       @relation(fields: [gigId], references: [id])

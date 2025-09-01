@@ -69,7 +69,7 @@ const GigName = async ({ searchParams }: GigSearchParamsProps) => {
         </div>
 
         <div className="w-[40%] h-full flex justify-center items-center p-4">
-          <GigTiers gigTiers={gigTiers} />
+          <GigTiers gigTiers={gigTiers} gigId={gigInfo.id} />
         </div>
       </div>
 

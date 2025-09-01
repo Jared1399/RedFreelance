@@ -10,7 +10,6 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async signIn({ profile }) {
-      // Buscar usuario en tu backend
       const response = await fetch(`http://localhost:3000/api/user/email/${profile?.email}`);
       const user = await response.json();
 

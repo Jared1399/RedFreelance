@@ -4,7 +4,7 @@ import { capitalizeFirst } from '@/lib/utils';
 import RequestBtn from './RequestBtn';
 import { GigTier } from '../../types/gig';
 
-const GigTiers = ({ gigTiers }: { gigTiers: GigTier[] }) => {
+const GigTiers = ({ gigTiers, gigId }: { gigTiers: GigTier[], gigId: string }) => {
 
   const tierTabs = gigTiers.map((tier: GigTier, i: number) => {
     return <TabsTrigger key={i} value={tier.name}>{tier.name}</TabsTrigger>;
@@ -26,7 +26,7 @@ const GigTiers = ({ gigTiers }: { gigTiers: GigTier[] }) => {
           {tier.description}
         </div>
 
-        <RequestBtn gigTiers={gigTiers} />
+        <RequestBtn gigTiers={gigTiers} gigId={gigId} />
 
       </TabsContent>
     );

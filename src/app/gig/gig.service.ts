@@ -19,7 +19,17 @@ const gigService = {
     const fetchUser = await fetch(`http://localhost:3000/api/user/id/${userId}`);
     const user = await fetchUser.json();
     return user;
-  }
+  },
+  async fetchUserByEmail(userEmail: string) {
+    const fetchUserData = await fetch(`http://localhost:3000/api/user/email/${userEmail}`);
+    const userData = await fetchUserData.json();
+
+    delete userData["passwordHash"];
+    delete userData["rankCommunity"];
+    delete userData["rankPlatform"];
+
+    return userData;
+  },
 };
 
 
