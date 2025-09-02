@@ -50,7 +50,7 @@ export default function UserDetails({ details }: { details: UserData }) {
               capitalizeFirst(
                 `${details.firstName} 
                 ${details.lastName} 
-                ${details.isVerified ? "✅" : null}`
+                ${details.isVerified ? "✅" : ""}`
               )
             }
           </div>

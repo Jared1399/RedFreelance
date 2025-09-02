@@ -8,16 +8,19 @@ export const GET = apiHandler(async (req: Request) => {
 
   const userId = searchParams.get("userId");
 
-  const gig = await prisma.transaction.findMany({
+  const transaction = await prisma.transaction.findMany({
     where: {
-      freelancerId: { equals: userId! }
+      OR: [
+        { freelancerId: userId! },
+        { clientId: userId! }
+      ]
     },
     include: {
       lifecycle: true
     }
   });
 
-  return NextResponse.json(gig);
+  return NextResponse.json(transaction);
 });
 
 export const POST = apiHandler(async (req: Request) => {
