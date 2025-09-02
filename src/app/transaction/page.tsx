@@ -16,10 +16,6 @@ const Transaction = async ({ searchParams }: TransactionSearchParams) => {
   const currentTransaction = await transactionService
     .fetchTransactionInfo(transactionId) as TransactionInterface;
 
-  const userInfo = await transactionService
-    .fetchUserById(currentTransaction.freelancerId);
-  console.info("🚀 ~ Transaction ~ userInfo:", userInfo);
-
   const transactionsId = await transactionService
     .fetchUserTransactions(currentTransaction.freelancerId) as TransactionInterface[];
 

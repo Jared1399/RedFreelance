@@ -28,6 +28,44 @@ const transactionService = {
     delete userData["rankPlatform"];
 
     return userData;
+  },
+  async getConversationByTransactionId(transactionId: string, limit?: string) {
+    const conversationQuery = queryBuilder({ transactionId, limit: limit ?? 10 });
+    const url = `http://localhost:3000/api/chat${conversationQuery}`;
+
+    const fetchConversation = await fetch(url);
+    const conversation = await fetchConversation.json();
+
+    return conversation;
+  },
+  async createConversation(clientId: string, freelancerId: string, transactionId: string) {
+    const url = 'http://localhost:3000/api/chat';
+    const data = { clientId, freelancerId, transactionId };
+    const options = {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    const newConversation = await fetch(url, options);
+    return newConversation;
+  },
+  async sendMessage(senderId: string, conversationId: string, text: string,) {
+    const url = 'http://localhost:3000/api/chat/message';
+    const data = { senderId, conversationId, text };
+
+    const options = {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    const newMessage = await fetch(url, options);
+    return newMessage;
   }
 };
 

@@ -4,8 +4,8 @@ import React from 'react';
 
 export default function Footer() {
   return (
-    <div className='text-white mt-8 h-[300px]'>
-      <footer className="bg-neutral-900 text-gray-300 px-8 py-12 mt-16">
+    <div className='text-white h-[300px]'>
+      <footer className="bg-neutral-900 text-gray-300 px-8 py-12">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
 
           <div>
