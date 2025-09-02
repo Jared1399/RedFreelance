@@ -37,7 +37,7 @@ export function NavBar() {
 
   return (
     <div>
-      <NavigationMenu viewport={false} className="py-4 px-4 z-50 w-full">
+      <NavigationMenu viewport={false} className="pt-4 px-4 z-50 w-full">
         <NavigationMenuList>
 
           <NavigationMenuItem>

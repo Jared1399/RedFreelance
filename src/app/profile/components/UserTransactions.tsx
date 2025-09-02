@@ -2,6 +2,8 @@ import React from 'react';
 import { UserTransaction } from '../types/User';
 import userProfileService from '../userProfile.service';
 import { Gig } from '../types/Gig';
+import Link from 'next/link';
+import { queryBuilder } from '@/lib/utils';
 
 const transLateTransaction = (stateENG: string): string => {
   const valuesES: Record<string, string> = {
@@ -24,7 +26,9 @@ export default async function UserTransactions(
 
   const transactions = await Promise.all(
     transactionList.map(async (t: UserTransaction) => {
+
       const gigInfo: Gig = await userProfileService.fetchGigById(t.gigId);
+      const transactionQuery = queryBuilder({ transactionId: t.id });
 
       return (
         <div key={t.id}
@@ -38,14 +42,19 @@ export default async function UserTransactions(
           dark:border 
           rounded-lg 
           flex 
-          flex-col 
+          flex-row
           justify-center 
           items-start
         "
         >
-          <p>{gigInfo.title}</p>
-          <p>Monto: {t.amount}</p>
-          <p>Estado: {transLateTransaction(t.lifecycle.name)}</p>
+          <div className='flex flex-col'>
+            <p>{gigInfo.title}</p>
+            <p>Monto: {t.amount}</p>
+            <p>Estado: {transLateTransaction(t.lifecycle.name)}</p>
+          </div>
+          <Link href={`/transaction${transactionQuery}`}>
+            Detalles
+          </Link>
         </div>
       );
 
