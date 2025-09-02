@@ -1,5 +1,28 @@
-import { NextAuthOptions } from "next-auth";
+import { NextAuthOptions, Session, Profile, DefaultSession } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import { JWT } from "next-auth/jwt";
+
+declare module "next-auth" {
+  interface Session extends DefaultSession {
+    userId?: string;
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    userId?: string;
+  }
+}
+
+declare module "next-auth" {
+  interface Session {
+    userId?: string;
+  }
+}
+
+interface CustomProfile extends Profile {
+  userId?: string;
+}
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -9,18 +32,18 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   pages: {
-    error: '/',  // a dónde ir en caso de error
+    error: '/',
   },
   callbacks: {
     async signIn({ profile }) {
       try {
         const response = await fetch(`http://localhost:3000/api/user/email/${profile?.email}`);
-        const user = await response.json();
+        let user = await response.json();
 
-        if (!user) {
+        if (!user?.id) {
           const [firstName, lastName] = profile?.name?.split(" ") ?? [];
 
-          await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/user/`, {
+          const newUserRes = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/user/`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -32,15 +55,33 @@ export const authOptions: NextAuthOptions = {
               userImg: profile?.image,
             }),
           });
+
+          user = await newUserRes.json();
         }
+
+        // Guardamos userId en el profile para usarlo luego en jwt/session
+        (profile as CustomProfile).userId = user.id;
 
         return true;
       } catch (err) {
         console.error("Error creating or fetching user:", err);
         return false;
       }
+    },
+    async jwt({ token, profile }): Promise<JWT & { userId?: string }> {
+      if (profile && (profile as CustomProfile).userId) {
+        token.userId = (profile as CustomProfile).userId;
+      }
+      return token;
+    },
 
+    async session({ session, token }): Promise<Session & { userId?: string }> {
+      if (token.userId) {
+        session.userId = token.userId;
+      }
+      return session;
     },
   },
+
   secret: process.env.NEXTAUTH_SECRET,
 };

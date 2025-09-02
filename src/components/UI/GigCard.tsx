@@ -11,7 +11,8 @@ interface GigCardProps {
   userImg: string;
   userId: string;
   cardWidth?: number;
-  cardHeight?: number
+  cardHeight?: number;
+  href?: string
 }
 
 const GigCard: React.FC<GigCardProps> = ({
@@ -21,7 +22,8 @@ const GigCard: React.FC<GigCardProps> = ({
   userName,
   userImg,
   cardWidth,
-  cardHeight
+  cardHeight,
+  href
 }) => {
 
   const cardContainerCls = clsx(
@@ -38,7 +40,7 @@ const GigCard: React.FC<GigCardProps> = ({
   );
 
   const gigQuery = queryBuilder({
-    title: title,
+    title: href ?? title,
     userId: userId
   });
 

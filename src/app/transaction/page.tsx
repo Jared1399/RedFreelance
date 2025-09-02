@@ -3,6 +3,7 @@ import transactionService from './transaction.service';
 import Sidebar from './components/Sidebar';
 import Chat from './components/Chat';
 import { TransactionInterface } from './types/Transaction';
+import AuthMiddleware from "@/components/ServerAuthProvider";
 
 interface TransactionSearchParams {
   searchParams: {
@@ -16,6 +17,7 @@ const Transaction = async ({ searchParams }: TransactionSearchParams) => {
   const currentTransaction = await transactionService
     .fetchTransactionInfo(transactionId) as TransactionInterface;
 
+
   const transactionsId = await transactionService
     .fetchUserTransactions(currentTransaction.freelancerId) as TransactionInterface[];
 
@@ -24,11 +26,13 @@ const Transaction = async ({ searchParams }: TransactionSearchParams) => {
   })) as [];
 
   return (
-    <div className='h-full'>
-      <Sidebar sidebarItems={transactionsList} >
-        <Chat currentGig={currentTransaction} />
-      </Sidebar>
-    </div>
+    <AuthMiddleware>
+      <div className='h-full'>
+        <Sidebar sidebarItems={transactionsList} >
+          <Chat currentGig={currentTransaction} />
+        </Sidebar>
+      </div>
+    </AuthMiddleware>
   );
 };
 

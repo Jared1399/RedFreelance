@@ -19,7 +19,6 @@ io.on("connection", (socket) => {
   socket.on("message", (msg) => {
     console.log("Mensaje recibido:", msg);
 
-    // reenviar a todos los demás
     socket.broadcast.emit("message", msg);
   });
 

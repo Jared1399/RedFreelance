@@ -1,20 +1,37 @@
 "use client";
-import { useEffect, useState } from "react";
-import io from "socket.io-client";
+import { useEffect, useState, useRef } from "react";
+import io, { Socket } from "socket.io-client";
 import Message from "./Message";
 import { TransactionInterface } from "../types/Transaction";
 import transactionService from "../transaction.service";
 import { ConversationInterface, MessageInterface } from "../types/Chat";
+import { useSession } from "next-auth/react";
 
-
-const socket = io("http://localhost:4000");
 
 export default function Chat({ currentGig }: { currentGig: TransactionInterface }) {
-  const [messages, setMessages] = useState<{ text: string; sender: "me" | "other" }[]>([
-    { text: currentGig.requestDetails, sender: "other" }
+  const { data: session } = useSession();
+  const [messages, setMessages] = useState<{ text: string; sender: string }[]>([
+    {
+      text: currentGig.requestDetails,
+      sender: currentGig.clientId == session?.userId ? "me" : "other"
+    }
   ]);
   const [input, setInput] = useState("");
   const [conversation, setConversation] = useState<ConversationInterface>();
+
+  const socketRef = useRef<Socket>(null);
+
+  useEffect(() => {
+    socketRef.current = io("http://localhost:4000");
+
+    socketRef.current.on("message", (msg: { text: string; sender: string }) => {
+      setMessages((prev) => [...prev, msg]);
+    });
+
+    return () => {
+      socketRef.current?.disconnect();
+    };
+  }, []);
 
   useEffect(() => {
     const fetchConversation = async () => {
@@ -23,81 +40,57 @@ export default function Chat({ currentGig }: { currentGig: TransactionInterface 
           .getConversationByTransactionId(currentGig.id);
 
         if (!conversation) {
-          await transactionService.createConversation(
+          const createConversation = await transactionService.createConversation(
             currentGig.clientId,
             currentGig.freelancerId,
             currentGig.id
           );
+          const res = await createConversation.json();
+
+          if (res.ok) {
+            const { conversation } = await transactionService
+              .getConversationByTransactionId(currentGig.id);
+            setConversation(conversation);
+          }
         }
+
+        if (conversation) {
+          const msgList = conversation.messages.map((msg: MessageInterface) => ({
+            text: msg.text,
+            sender: msg.senderId === session?.userId ? "me" : "other"
+          }));
+          setConversation(conversation);
+          setMessages((prev) => [...prev, ...msgList]);
+        }
+
       } catch (error) {
         console.error("Error fetching conversation:", error);
       }
     };
 
     fetchConversation();
-  }, [conversation]);
-
-  useEffect(() => {
-    const fetchMessages = async () => {
-      const { conversation } = await transactionService
-        .getConversationByTransactionId(currentGig.id);
-
-      const msgList = conversation.messages.map((msg: MessageInterface) => {
-        return {
-          ...msg,
-          sender: msg.senderId == currentGig.freelancerId ? 'me' : 'other'
-        };
-      });
-
-      setConversation(conversation);
-      setMessages(conversation ?
-        [...messages, msgList].flat() :
-        messages
-      );
-    };
-
-    fetchMessages();
-
-  }, [currentGig.freelancerId]);
-
-  useEffect(() => {
-    const handleMessage = (msg: string) => {
-      setMessages((prev) => [...prev, { text: msg, sender: "other" }]);
-    };
-
-    return () => {
-      socket.off("message", handleMessage);
-    };
-  }, []);
-
+  }, [currentGig.id, currentGig.clientId, currentGig.freelancerId, session?.userId]);
 
   const sendMessage = () => {
     if (!input.trim()) return;
-    const newMsg: { text: string; sender: "me" | "other" } = {
+
+    const newMsg = {
       text: input,
-      sender: "me"
+      senderId: session?.userId,
     };
 
-    if (!conversation?.id) {
-      console.warn("No conversation yet, cannot send message");
-      return;
-    }
 
-    const sendMessage = async () => {
+    transactionService.sendMessage(
+      session?.userId ?? "",
+      conversation?.id ?? "",
+      newMsg.text
+    );
 
-      await transactionService.sendMessage(
-        currentGig.freelancerId,
-        conversation?.id,
-        newMsg.text
-      );
-    };
+    socketRef.current?.emit("message", newMsg);
+    setMessages((prev) => [...prev, { ...newMsg, sender: "me" }]);
 
-    sendMessage();
-    setMessages((prev) => [...prev, newMsg]);
-    socket.emit("message", input);
     setInput("");
   };
-
 
   return (
     <div

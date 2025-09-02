@@ -46,6 +46,7 @@ export default async function WeeklyPopular() {
               userName={card.user.firstName}
               cardHeight={280}
               cardWidth={200}
+              href={card.title}
             />
           );
         })
