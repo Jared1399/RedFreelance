@@ -117,7 +117,7 @@ export default function Chat({ currentGig }: { currentGig: TransactionInterface 
       <div className="flex-1 overflow-y-auto p-4 space-y-2">
         {messages.map((msg, idx) => <Message key={idx} msg={msg} />)}
       </div>
-      <div className="flex items-center p-4 bg-neutral-300 border-t rounded-b-lg">
+      <div className="flex items-center p-4 bg-neutral-300 border-t rounded-b-lg ">
         <input
           type="text"
           className="

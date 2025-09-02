@@ -30,7 +30,7 @@ const transactionService = {
     return userData;
   },
   async getConversationByTransactionId(transactionId: string, limit?: string) {
-    const conversationQuery = queryBuilder({ transactionId, limit: limit ?? 10 });
+    const conversationQuery = queryBuilder({ transactionId, limit: limit ?? null });
     const url = `http://localhost:3000/api/chat${conversationQuery}`;
 
     const fetchConversation = await fetch(url);
