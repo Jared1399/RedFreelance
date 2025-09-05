@@ -1,16 +1,47 @@
 'use client';
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Home } from "lucide-react";
 import { TransactionInterface } from "../types/Transaction";
+import { TransactionContext } from "../hooks/UseTransaction/context";
+
+
+export default function Sidebar(
+  { children, sidebarItems }:
+    { children: React.ReactNode, sidebarItems: [] }
+) {
+
+  return (
+    <div className="flex">
+      <SidebarBody sidebarItems={sidebarItems} />
+
+      <div className="flex-1">
+        {children}
+      </div>
+    </div>
+  );
+}
+
+type SidebarItemProps = {
+  icon: React.ReactNode;
+  text: string;
+  open: boolean;
+  id: string;
+};
 
 const SidebarBody = ({ sidebarItems }: { sidebarItems: [] }) => {
   const [open, setOpen] = useState(true);
+
+  if (!sidebarItems.length) return;
+
   const items = sidebarItems.map((item: TransactionInterface, i: number) => {
+    const trimTitle = `${item.gig.title} - ${item.tier.name}`.slice(0, 15).concat("...");
+
     return (
       <SidebarItem
         icon={<Home size={20} />}
-        text={`${item.gig.title} - ${item.tier.name}`}
+        text={trimTitle}
         open={open}
+        id={item.id}
         key={i}
       />
     );
@@ -35,32 +66,13 @@ const SidebarBody = ({ sidebarItems }: { sidebarItems: [] }) => {
   );
 };
 
-export default function Sidebar(
-  { children, sidebarItems }:
-    { children: React.ReactNode, sidebarItems: [] }
-) {
 
-  return (
-    <div className="flex">
-      <SidebarBody sidebarItems={sidebarItems} />
+function SidebarItem({ icon, text, open, id }: SidebarItemProps) {
+  const { actions, state } = useContext(TransactionContext);
 
-      <div className="flex-1">
-        {children}
-      </div>
-    </div>
-  );
-}
-
-type SidebarItemProps = {
-  icon: React.ReactNode;
-  text: string;
-  open: boolean;
-};
-
-function SidebarItem({ icon, text, open }: SidebarItemProps) {
   return (
     <div
-      className="
+      className={`
         flex 
         items-center 
         gap-3 
@@ -71,7 +83,9 @@ function SidebarItem({ icon, text, open }: SidebarItemProps) {
         overflow-hidden 
         transition-all 
         duration-300
-      "
+        ${state.currentTransaction?.id == id ? 'bg-amber-700' : ""}
+      `}
+      onClick={() => actions.setCurrentTransaction(id)}
     >
       {icon}
       <span

@@ -1,0 +1,40 @@
+import { TransactionInterface } from "../../types/Transaction";
+
+interface Action {
+  type: string;
+  payload: {
+    [key: string]: unknown;
+  };
+}
+
+type InitialState = {
+  userTransactions: TransactionInterface[],
+  currentTransaction: TransactionInterface | undefined
+}
+
+const initialState: InitialState = {
+  userTransactions: [],
+  currentTransaction: {} as TransactionInterface
+};
+
+const reducer = (state: InitialState = initialState, action: Action): InitialState => {
+  const actions: { [key: string]: () => InitialState } = {
+    SET_CURRENT_TRANSACTION: () => {
+      return {
+        ...state,
+        currentTransaction: action.payload.transaction as TransactionInterface
+      };
+    },
+    SET_USER_TRANSACTIONS: () => {
+      return {
+        ...state,
+        userTransactions: action.payload.userTransactions as TransactionInterface[]
+      };
+    }
+  };
+
+  const fn = actions[action.type];
+  return fn ? fn() : state;
+};
+
+export { initialState, reducer }; 

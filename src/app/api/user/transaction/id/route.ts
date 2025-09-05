@@ -16,7 +16,8 @@ export const GET = apiHandler(async (req: Request) => {
     },
     include: {
       gig: true,
-      tier: true
+      tier: true,
+      lifecycle: true,
     }
   });
 

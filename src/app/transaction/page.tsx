@@ -1,37 +1,38 @@
-import React from 'react';
-import transactionService from './transaction.service';
+'use client';
+
 import Sidebar from './components/Sidebar';
 import Chat from './components/Chat';
-import { TransactionInterface } from './types/Transaction';
-import AuthMiddleware from "@/components/ServerAuthProvider";
+import AuthMiddleware from "@/components/ClientAuthMiddleware";
+import useTransaction from './hooks/UseTransaction';
+import { useSession } from 'next-auth/react';
+import { useSearchParams } from "next/navigation";
+import { TransactionContext } from './hooks/UseTransaction/context';
 
-interface TransactionSearchParams {
-  searchParams: {
-    transactionId: string;
-  };
-}
+const Transaction = () => {
+  const searchParams = useSearchParams();
+  const transactionId = searchParams?.get("transactionId");
+  const { data: session, status } = useSession();
 
-const Transaction = async ({ searchParams }: TransactionSearchParams) => {
-  const { transactionId } = await searchParams;
+  const { state, actions } = useTransaction(
+    {
+      transactionId: transactionId!,
+      userId: session?.userId
+    }
+  );
 
-  const currentTransaction = await transactionService
-    .fetchTransactionInfo(transactionId) as TransactionInterface;
-
-
-  const transactionsId = await transactionService
-    .fetchUserTransactions(currentTransaction.freelancerId) as TransactionInterface[];
-
-  const transactionsList = await Promise.all(transactionsId.map((t) => {
-    return transactionService.fetchTransactionInfo(t.id);
-  })) as [];
+  const transaction = transactionId ? state.currentTransaction : state.userTransactions[0];
 
   return (
-    <AuthMiddleware>
-      <div className='h-full'>
-        <Sidebar sidebarItems={transactionsList} >
-          <Chat currentGig={currentTransaction} />
-        </Sidebar>
-      </div>
+    <AuthMiddleware status={status}>
+      <TransactionContext.Provider value={{ state, actions }}>
+        <div className='h-full'>
+          <Sidebar sidebarItems={state.userTransactions as []} >
+            {transaction && (
+              <Chat />
+            )}
+          </Sidebar>
+        </div>
+      </TransactionContext.Provider>
     </AuthMiddleware>
   );
 };
