@@ -7,6 +7,8 @@ import gigService from "../gig.service";
 import { Gig, GigSearchParamsProps } from "../types/gig";
 
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
 const GigName = async ({ searchParams }: GigSearchParamsProps) => {
   const { title, userId } = await searchParams;
 
@@ -17,7 +19,7 @@ const GigName = async ({ searchParams }: GigSearchParamsProps) => {
     userId: userId
   });
 
-  const fetchGig = await fetch(`http://localhost:3000/api/gig/title${gigQuery}`);
+  const fetchGig = await fetch(`${BASE_URL}/api/gig/title${gigQuery}`);
   const gigInfo: Gig = await fetchGig.json();
 
   const { gigTiers, creator } = await gigService.fetchGigDetails(gigInfo.id, gigInfo.userId);

@@ -2,6 +2,9 @@ import { NextAuthOptions, Session, Profile, DefaultSession } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { JWT } from "next-auth/jwt";
 
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
 declare module "next-auth" {
   interface Session extends DefaultSession {
     userId?: string;
@@ -37,7 +40,7 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async signIn({ profile }) {
       try {
-        const response = await fetch(`http://localhost:3000/api/user/email/${profile?.email}`);
+        const response = await fetch(`${BASE_URL}/api/user/email/${profile?.email}`);
         let user = await response.json();
 
         if (!user?.id) {

@@ -5,10 +5,12 @@ import { Category } from './types/Category';
 import { queryBuilder } from "@/lib/utils";
 
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
 export default async function PopularCategories() {
   const categoryQuery = queryBuilder({ skip: 0, limit: 10 });
 
-  const res = await fetch(`http://localhost:3000/api/category${categoryQuery}`, {
+  const res = await fetch(`${BASE_URL}/api/category${categoryQuery}`, {
     cache: "force-cache"
   });
 

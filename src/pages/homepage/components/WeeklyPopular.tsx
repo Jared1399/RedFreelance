@@ -3,6 +3,8 @@ import GigCard from '@/components/UI/GigCard';
 import { queryBuilder } from "@/lib/utils";
 
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
 interface CardType {
   title: string
   price: number
@@ -23,7 +25,7 @@ export default async function WeeklyPopular() {
     }
   );
 
-  const res = await fetch(`http://localhost:3000/api/gig${gigQuery}`);
+  const res = await fetch(`${BASE_URL}/api/gig${gigQuery}`);
   const data = await res.json();
   const gigList = data.gigs;
 

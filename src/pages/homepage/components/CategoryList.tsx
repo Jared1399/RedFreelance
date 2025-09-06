@@ -4,10 +4,13 @@ import CategoryButton from './CategoryButton';
 import { queryBuilder } from "@/lib/utils";
 import { Category } from './types/Category';
 
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
 export default async function CategoryList() {
   const categoryQuery = queryBuilder({ skip: 0, limit: 10 });
 
-  const res = await fetch(`http://localhost:3000/api/category${categoryQuery}`, {
+  const res = await fetch(`${BASE_URL}/api/category${categoryQuery}`, {
     cache: "force-cache"
   });
 

@@ -4,6 +4,9 @@ import { queryBuilder } from "@/lib/utils";
 import Grid from '@/components/UI/Grid';
 import Card from '@/components/UI/GigCard';
 
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
 export default async function Searchgig({ searchParams }: GigSearchParamsProps) {
 
   const { title } = await searchParams;
@@ -15,7 +18,7 @@ export default async function Searchgig({ searchParams }: GigSearchParamsProps) 
     user: true
   });
 
-  const searchGigs = await fetch(`http://localhost:3000/api/gig/search${gigQuery}`);
+  const searchGigs = await fetch(`${BASE_URL}/api/gig/search${gigQuery}`);
 
   const res = await searchGigs.json();
 

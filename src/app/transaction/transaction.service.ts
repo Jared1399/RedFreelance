@@ -1,9 +1,12 @@
 import { queryBuilder } from "@/lib/utils";
 
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
 const transactionService = {
   fetchTransactionInfo: async (transactionId: string) => {
     const transactionQuery = queryBuilder({ transactionId });
-    const url = `http://localhost:3000/api/user/transaction/id${transactionQuery}`;
+    const url = `${BASE_URL}/api/user/transaction/id${transactionQuery}`;
 
     const fetchTransaction = await fetch(url);
     const transaction = await fetchTransaction.json();
@@ -12,7 +15,7 @@ const transactionService = {
   },
   async fetchUserTransactions(userId: string, limit?: number) {
     const userQuery = queryBuilder({ userId, limit: limit ?? 10 });
-    const url = `http://localhost:3000/api/user/transaction${userQuery}`;
+    const url = `${BASE_URL}/api/user/transaction${userQuery}`;
 
     const fetchUserTransactions = await fetch(url);
     const userTransactions = await fetchUserTransactions.json();
@@ -20,7 +23,7 @@ const transactionService = {
     return userTransactions;
   },
   async fetchUserById(userId: string) {
-    const fetchUserData = await fetch(`http://localhost:3000/api/user/id/${userId}`);
+    const fetchUserData = await fetch(`${BASE_URL}/api/user/id/${userId}`);
     const userData = await fetchUserData.json();
 
     delete userData["passwordHash"];
@@ -31,7 +34,7 @@ const transactionService = {
   },
   async getConversationByTransactionId(transactionId: string, limit?: string) {
     const conversationQuery = queryBuilder({ transactionId, limit: limit ?? null });
-    const url = `http://localhost:3000/api/chat${conversationQuery}`;
+    const url = `${BASE_URL}/api/chat${conversationQuery}`;
 
     const fetchConversation = await fetch(url);
     const conversation = await fetchConversation.json();
@@ -39,7 +42,7 @@ const transactionService = {
     return conversation;
   },
   async createConversation(clientId: string, freelancerId: string, transactionId: string) {
-    const url = 'http://localhost:3000/api/chat';
+    const url = `${BASE_URL}/api/chat`;
     const data = { clientId, freelancerId, transactionId };
     const options = {
       method: "POST",
@@ -53,7 +56,7 @@ const transactionService = {
     return newConversation;
   },
   async sendMessage(senderId: string, conversationId: string, text: string,) {
-    const url = 'http://localhost:3000/api/chat/message';
+    const url = `${BASE_URL}/api/chat/message`;
     const data = { senderId, conversationId, text };
 
     const options = {

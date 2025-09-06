@@ -4,6 +4,8 @@ import { useSession } from "next-auth/react";
 import { queryBuilder } from '@/lib/utils';
 
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
 const useUser = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { data: session } = useSession();
@@ -12,7 +14,7 @@ const useUser = () => {
   const actions = {
     async fetchUserData() {
       if (userMail) {
-        const res = await fetch(`http://localhost:3000/api/user/email/${userMail}`);
+        const res = await fetch(`${BASE_URL}/api/user/email/${userMail}`);
         const data = await res.json();
 
         delete data["passwordHash"];
@@ -24,7 +26,7 @@ const useUser = () => {
     async fetchUserGigs() {
       const userId = state.userData.id;
       const userQuery = queryBuilder({ userId });
-      const res = await fetch(`http://localhost:3000/api/user/gig/${userQuery}`);
+      const res = await fetch(`${BASE_URL}/api/user/gig/${userQuery}`);
       const data = await res.json();
 
       dispatch({ type: 'SET_USER_GIGS', payload: { data } });

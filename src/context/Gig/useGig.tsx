@@ -3,6 +3,8 @@ import { reducer, initialState } from './reducer';
 import { queryBuilder } from "@/lib/utils";
 
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
 const useGig = (
   {
     limit = 10,
@@ -26,13 +28,13 @@ const useGig = (
         }
       );
 
-      const res = await fetch(`http://localhost:3000/api/gig${gigQuery}`);
+      const res = await fetch(`${BASE_URL}/api/gig${gigQuery}`);
       const data = await res.json();
 
       dispatch({ type: 'SET_GIG_LIST', payload: { gigs: data.gigs } });
     },
     async fetchCategoryInfo() {
-      const fetchCategory = await fetch(`http://localhost:3000/api/category/name/${category}`);
+      const fetchCategory = await fetch(`${BASE_URL}/api/category/name/${category}`);
       const categoryInfo = await fetchCategory.json();
 
       dispatch({ type: 'SET_CATEGORY_INFO', payload: { categoryInfo } });
@@ -41,7 +43,7 @@ const useGig = (
     },
     async fetchGigsByCategory() {
       const categoryInfo = await actions.fetchCategoryInfo();
-      const fetchGigs = await fetch(`http://localhost:3000/api/gig/category/${categoryInfo.id}`);
+      const fetchGigs = await fetch(`${BASE_URL}/api/gig/category/${categoryInfo.id}`);
 
       const data = await fetchGigs.json();
 
