@@ -7,7 +7,7 @@ import { Gig } from "../../types/Gig";
 
 export default async function CategoryName({ params }: GigParams) {
   const param = await params;
-  const name = await decodeURIComponent(param.name!);
+  const name = decodeURIComponent(param.name);
 
   const categoryInfo = await categoryService.fetchCategoryInfoByName(name);
 

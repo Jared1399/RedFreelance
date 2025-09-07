@@ -22,7 +22,6 @@ const eslintConfig = [
       "@typescript-eslint/no-empty-object-type": "off",
       "@next/next/no-img-element": "off"
     },
-
   },
   globalIgnores([
     "src/generated/*"

@@ -25,7 +25,7 @@ export default async function WeeklyPopular() {
     }
   );
 
-  const res = await fetch(`${BASE_URL}/api/gig${gigQuery}`);
+  const res = await fetch(`${BASE_URL}/api/gig${gigQuery}`, { cache: "no-store" });
   const data = await res.json();
   const gigList = data.gigs;
 

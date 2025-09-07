@@ -1,6 +1,6 @@
 'use client';
 
-import ErrorPage from "@/pages/errorPage/ErrorPage";
+import ErrorPage from "@/defaultPages/errorPage/ErrorPage";
 
 const Error = () => {
   return <ErrorPage />;

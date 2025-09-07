@@ -1,7 +1,5 @@
 export interface GigParams {
-  params: {
-    name?: string
-  };
+  params: Promise<{ name: string }>;
 }
 
 export type Gig = {

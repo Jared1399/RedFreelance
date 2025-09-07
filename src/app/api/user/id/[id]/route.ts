@@ -2,19 +2,18 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { apiHandler } from "@/lib/apiHandler";
 
-interface Params {
-  params: { id: string }
-}
 
+export const GET = apiHandler(
+  async (request: Request, { params }: { params: Promise<{ id: string }> }
 
-export const GET = apiHandler(async (request: Request, { params }: Params) => {
-  const param = await params;
+  ) => {
+    const param = await params;
 
-  const user = await prisma.user.findFirst({
-    where: {
-      id: param.id
-    }
+    const user = await prisma.user.findFirst({
+      where: {
+        id: param.id
+      }
+    });
+
+    return NextResponse.json(user);
   });
-
-  return NextResponse.json(user);
-});

@@ -2,6 +2,7 @@ import Grid from '@/components/UI/Grid';
 import Card from '@/components/UI/GigCard';
 import { queryBuilder } from "@/lib/utils";
 
+export const dynamic = 'force-dynamic';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
