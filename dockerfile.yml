@@ -1,0 +1,28 @@
+version: '3.9'
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: redfreelance-db
+    restart: always
+    environment:
+      POSTGRES_DB: redfreelance
+      POSTGRES_USER: redfreelance
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"  # solo si quieres acceder desde fuera (opcional)
+
+  web:
+    build: .
+    container_name: redfreelance-web
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgres://redfreelance:secret@db:5432/redfreelance
+    depends_on:
+      - db
+
+volumes:
+  db-data:
