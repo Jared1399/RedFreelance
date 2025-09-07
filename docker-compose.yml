@@ -1,24 +1,28 @@
-# Etapa 1: Build
-FROM node:18-alpine AS builder
-WORKDIR /app
+version: '3.9'
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: redfreelance-db
+    restart: always
+    environment:
+      POSTGRES_DB: redfreelance
+      POSTGRES_USER: redfreelance
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"  # solo si quieres acceder desde fuera (opcional)
 
-COPY package*.json ./
-RUN npm install --frozen-lockfile
+  web:
+    build: .
+    container_name: redfreelance-web
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgres://redfreelance:secret@db:5432/redfreelance
+    depends_on:
+      - db
 
-COPY . .
-
-RUN npm run build
-
-FROM node:18-alpine AS runner
-WORKDIR /app
-
-ENV NODE_ENV=production
-
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
-
-EXPOSE 3000
-
-CMD ["npm", "start"]
+volumes:
+  db-data:
