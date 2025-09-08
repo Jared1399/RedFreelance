@@ -18,6 +18,8 @@ COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/prisma ./prisma 
 
+RUN npx prisma generate
+
 EXPOSE 3000
 
 CMD ["npm", "start"]
