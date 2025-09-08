@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { Inter } from 'next/font/google';
 import { ThemeProvider } from 'next-themes';
 import AuthProvider from "@/components/AuthProvider";
 import "./globals.css";
 import NavBar from "@/components/UI/NavBar";
 import Footer from "@/components/UI/Footer";
+import localFont from 'next/font/local';
+
 
 export const metadata: Metadata = {
   title: "RedFreelance",
@@ -14,12 +15,10 @@ export const metadata: Metadata = {
   }
 };
 
-export const inter = Inter({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-inter',
+export const inter = localFont({
+  src: './fonts/Inter.woff2',
+  variable: '--font-inter'
 });
-
 
 export default function RootLayout({
   children,
