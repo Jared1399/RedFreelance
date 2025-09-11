@@ -13,7 +13,7 @@ interface GigCardProps {
   userImg: string;
   userId: string;
   user: {
-    userImg: string,
+    userImg?: string,
     firstName: string
   }
 }
@@ -37,7 +37,7 @@ const Gig = async () => {
         title={card.title}
         price={card.price}
         userId={card.userId}
-        userImg={card.user.userImg}
+        userImg={card.user.userImg ?? "/not_found.png"}
         userName={card.user.firstName}
       />
     );
