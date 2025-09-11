@@ -8,8 +8,8 @@ import Card from '@/components/UI/GigCard';
 export const dynamic = "force-dynamic";
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
-export default async function Searchgig({ params }: GigSearchParamsProps) {
-  const { title } = await params;
+export default async function Searchgig({ searchParams }: GigSearchParamsProps) {
+  const { title } = await searchParams;
 
   const decodedTitle = title ?? "";
 
