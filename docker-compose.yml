@@ -27,6 +27,7 @@ services:
 
   socket:
     build: .
+    container_name: redfreelance-socket
     command: node ./socketServer.js
     ports:
       - "4000:4000"

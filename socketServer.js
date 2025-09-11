@@ -8,7 +8,7 @@ const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: ["http://localhost:3000", "https://redfreelance.cl", "https://www.redfreelance.cl"],
     methods: ["GET", "POST"],
   },
 });
@@ -28,5 +28,5 @@ io.on("connection", (socket) => {
 });
 
 httpServer.listen(4000, () => {
-  console.log("Servidor de sockets corriendo en http://localhost:4000");
+  console.log(`Servidor de sockets corriendo en ${SOCKET_URL}`);
 });
