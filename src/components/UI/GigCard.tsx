@@ -45,12 +45,14 @@ const GigCard: React.FC<GigCardProps> = ({
   });
 
   const imageHeight = cardHeight ? (cardHeight / 1.5).toString().split(".")[0] : 240;
+  const fallBackUserImg = typeof userImg === "string" && userImg.length > 0 ?
+    userImg : "/not_found.png";
 
   const userInfo = (!cardWidth || (cardWidth > 200)) ? (
     <>
       <div className="flex flex-row align-center text-xs mt-4 ml-2">
         <Avatar className="h-auto w-5 mr-1">
-          <AvatarImage src={userImg ?? "/not_found.png"} />
+          <AvatarImage src={fallBackUserImg} />
           <AvatarFallback>RF</AvatarFallback>
         </Avatar>
         Creado por
