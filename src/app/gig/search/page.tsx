@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 export default async function Searchgig({ searchParams }: GigSearchParamsProps) {
-  const { title } = await searchParams;
+  const { title } = searchParams;
 
   const decodedTitle = title ?? "";
 
