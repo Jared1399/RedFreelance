@@ -9,13 +9,11 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 interface GigCardProps {
   title: string;
   price: number;
-  userName: string;
-  userImg: string;
   userId: string;
-  user: {
-    userImg: string,
-    firstName: string
-  }
+  user?: {
+    userImg?: string;
+    firstName?: string;
+  } | null;
 }
 
 const Gig = async () => {
@@ -38,7 +36,7 @@ const Gig = async () => {
         price={card.price}
         userId={card.userId}
         userImg={card.user?.userImg ?? "/not_found.png"}
-        userName={card.user.firstName}
+        userName={card.user?.firstName}
       />
     );
   }) : null;

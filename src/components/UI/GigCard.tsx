@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/UI/shadcn/avat
 interface GigCardProps {
   title: string;
   price: number;
-  userName: string;
+  userName?: string;
   userImg: string;
   userId: string;
   cardWidth?: number;
@@ -45,8 +45,7 @@ const GigCard: React.FC<GigCardProps> = ({
   });
 
   const imageHeight = cardHeight ? (cardHeight / 1.5).toString().split(".")[0] : 240;
-  const fallBackUserImg = typeof userImg === "string" && userImg.length > 0 ?
-    userImg : "/not_found.png";
+  const fallBackUserImg = userImg?.trim() || "/not_found.png";
 
   const userInfo = (!cardWidth || (cardWidth > 200)) ? (
     <>

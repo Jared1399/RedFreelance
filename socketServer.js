@@ -28,5 +28,5 @@ io.on("connection", (socket) => {
 });
 
 httpServer.listen(4000, () => {
-  console.log(`Servidor de sockets corriendo en ${SOCKET_URL}`);
+  console.log(`Servidor de sockets corriendo en ${process.env.NEXT_PUBLIC_SOCKET_URL}`);
 });
