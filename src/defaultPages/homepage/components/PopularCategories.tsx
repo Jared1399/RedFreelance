@@ -4,7 +4,7 @@ import CategoryButton from './CategoryButton';
 import { Category } from './types/Category';
 import { queryBuilder } from "@/lib/utils";
 
-
+export const dynamic = "force-dynamic";
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 export default async function PopularCategories() {

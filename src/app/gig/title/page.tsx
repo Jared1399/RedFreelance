@@ -7,10 +7,13 @@ import gigService from "../gig.service";
 import { Gig, GigSearchParamsProps } from "../types/gig";
 
 
+export const dynamic = "force-dynamic";
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
-const GigName = async ({ params }: GigSearchParamsProps) => {
-  const { title, userId } = await params;
+
+const GigName = async ({ searchParams }: GigSearchParamsProps) => {
+
+  const { title, userId } = searchParams;
 
   const decodedTitle = title ?? "";
 
@@ -19,11 +22,16 @@ const GigName = async ({ params }: GigSearchParamsProps) => {
     userId: userId
   });
 
+
   const fetchGig = await fetch(`${BASE_URL}/api/gig/title${gigQuery}`, {
     cache: "no-store"
   });
 
   const gigInfo: Gig = await fetchGig.json();
+
+  if (!gigInfo || !gigInfo.id) {
+    return <div>No se encontró el gig solicitado o la respuesta es inválida.</div>;
+  }
 
   const { gigTiers, creator } = await gigService.fetchGigDetails(gigInfo.id, gigInfo.userId);
 

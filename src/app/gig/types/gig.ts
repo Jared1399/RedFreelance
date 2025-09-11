@@ -24,10 +24,10 @@ export interface Gig {
 
 
 export interface GigSearchParamsProps {
-  params: Promise<{
+  searchParams: {
     title: string;
     userId: string;
-  }>;
+  };
 }
 
 export interface GigTier {
