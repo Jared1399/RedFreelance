@@ -25,8 +25,6 @@ const errorNotify = () => toast.success('Solicitud enviada!', {
   theme: "dark",
 });
 
-
-
 export default function RequestBtn({ gigTiers, gigId }: { gigTiers: GigTier[], gigId: string }) {
   const searchParams = useSearchParams()!;
   const { data } = useSession();
@@ -110,6 +108,8 @@ export default function RequestBtn({ gigTiers, gigId }: { gigTiers: GigTier[], g
   useEffect(() => {
     setCurrentGigId(gigId);
   }, [gigId]);
+
+  if (!data) return;
 
   return (
     <>

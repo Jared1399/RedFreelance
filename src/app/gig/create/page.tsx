@@ -4,7 +4,7 @@ import useCategory from '@/context/Category/useCategory';
 import { useSession } from "next-auth/react";
 import useUser from '@/context/User/useUser';
 import clsx from 'clsx';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import AuthMiddleware from "@/components/ClientAuthMiddleware";
 import PoolSelect from '@/components/UI/PoolSelect';
@@ -46,9 +46,9 @@ const inputCls = clsx(
 export default function CreateGig() {
   const router = useRouter();
 
-  const { status } = useSession();
+  const { status, data: session } = useSession();
   const { state: categoryState, actions: categoryActions } = useCategory({ skip: 0, limit: 10 });
-  const { state: userState } = useUser();
+  const { state: userState, actions: userActions } = useUser();
   const { state: tierState, actions: tierActions } = useTier();
 
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
@@ -144,6 +144,10 @@ export default function CreateGig() {
       </div>
     )
   );
+
+  useEffect(() => {
+    userActions.fetchUserData();
+  }, [session?.userId]);
 
   return (
     <AuthMiddleware status={status}>

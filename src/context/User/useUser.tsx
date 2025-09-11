@@ -9,12 +9,11 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 const useUser = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { data: session } = useSession();
-  const userMail = session?.user?.email ?? '';
 
   const actions = {
     async fetchUserData() {
-      if (userMail) {
-        const res = await fetch(`${BASE_URL}/api/user/email/${userMail}`);
+      if (session?.userId) {
+        const res = await fetch(`${BASE_URL}/api/user/id/${session?.userId}`);
         const data = await res.json();
 
         delete data["passwordHash"];

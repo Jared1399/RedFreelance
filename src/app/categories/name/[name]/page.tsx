@@ -4,6 +4,7 @@ import { GigParams } from '../../types/Gig';
 import categoryService from '../../category.service';
 import { Gig } from "../../types/Gig";
 
+export const dynamic = "force-dynamic";
 
 export default async function CategoryName({ params }: GigParams) {
   const param = await params;

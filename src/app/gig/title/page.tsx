@@ -36,10 +36,6 @@ const GigName = async ({
 
   const gigInfo: Gig = await fetchGig.json();
 
-  if (!gigInfo || !gigInfo.id) {
-    return <div>No se encontró el gig solicitado o la respuesta es inválida.</div>;
-  }
-
   const { gigTiers, creator } = await gigService.fetchGigDetails(gigInfo.id, gigInfo.userId);
 
   return (
