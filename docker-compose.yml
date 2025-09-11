@@ -10,7 +10,7 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"  # solo si quieres acceder desde fuera (opcional)
+      - "5432:5432" 
 
   web:
     build: .
@@ -24,6 +24,12 @@ services:
       DATABASE_URL: postgres://redfreelance:secret@db:5432/redfreelance
     depends_on:
       - db
+
+  socket:
+    build: .
+    command: node ./socketServer.js
+    ports:
+      - "4000:4000"
 
 volumes:
   db-data:
