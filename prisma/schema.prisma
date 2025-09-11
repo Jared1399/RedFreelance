@@ -22,7 +22,7 @@ model User {
   passwordHash           String?
   identification         String?          @unique
   phone                  String?
-  userImg                String?
+  userImg                String?          @default("/not_found.png")
   isFreelancer           Boolean          @default(false)
   rankCommunity          Float            @default(0)
   rankPlatform           Float            @default(0)

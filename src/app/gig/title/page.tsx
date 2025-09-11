@@ -4,16 +4,23 @@ import formatDateES from "@/lib/timeago";
 import { capitalizeFirst, queryBuilder } from "@/lib/utils";
 import Link from "next/link";
 import gigService from "../gig.service";
-import { Gig, GigSearchParamsProps } from "../types/gig";
+import { Gig } from "../types/gig";
 
 
 export const dynamic = "force-dynamic";
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 
-const GigName = async ({ searchParams }: GigSearchParamsProps) => {
+const GigName = async ({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) => {
 
-  const { title, userId } = searchParams;
+  const resolvedParams = await searchParams;
+
+  const title = resolvedParams?.title as string | undefined;
+  const userId = resolvedParams?.userId as string | undefined;
 
   const decodedTitle = title ?? "";
 

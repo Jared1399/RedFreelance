@@ -22,7 +22,6 @@ export interface Gig {
   }
 }
 
-
 export interface GigSearchParamsProps {
   searchParams: {
     title: string;

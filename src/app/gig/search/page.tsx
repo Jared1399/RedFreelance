@@ -1,5 +1,5 @@
 import React from 'react';
-import { Gig, GigSearchParamsProps } from "../types/gig";
+import { Gig } from "../types/gig";
 import { queryBuilder } from "@/lib/utils";
 import Grid from '@/components/UI/Grid';
 import Card from '@/components/UI/GigCard';
@@ -8,9 +8,13 @@ import Card from '@/components/UI/GigCard';
 export const dynamic = "force-dynamic";
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
-export default async function Searchgig({ searchParams }: GigSearchParamsProps) {
-  const { title } = searchParams;
-
+export default async function SearchGig({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
+  const resolvedParams = await searchParams;
+  const title = resolvedParams?.title as string | undefined;
   const decodedTitle = title ?? "";
 
   const gigQuery = queryBuilder({
