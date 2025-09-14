@@ -13,7 +13,9 @@ services:
       - "5432:5432" 
 
   web:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile   
     container_name: redfreelance-web
     env_file:
       - .env
@@ -24,13 +26,17 @@ services:
       DATABASE_URL: postgres://redfreelance:secret@db:5432/redfreelance
     depends_on:
       - db
-
+      
   socket:
-    build: .
+    build:
+      context: .               
+      dockerfile: Dockerfile.socket  
     container_name: redfreelance-socket
-    command: node ./socketServer.js
+    restart: always           
     ports:
       - "4000:4000"
+    depends_on:
+      - web                   
 
 volumes:
   db-data:
