@@ -17,7 +17,7 @@ const successNotify = () => toast.success('Solicitud enviada!', {
   theme: "dark",
 });
 
-const errorNotify = () => toast.success('Solicitud enviada!', {
+const errorNotify = () => toast.error('Algo fallo! por favor vuelve a intentar', {
   position: "bottom-right",
   autoClose: 3000,
   hideProgressBar: false,
@@ -91,16 +91,20 @@ export default function RequestBtn({ gigTiers, gigId }: { gigTiers: GigTier[], g
 
   useEffect(() => {
     const fetchFreelancer = async () => {
-      const u = await gigService.fetchUserInfo(freelancerId ?? "");
-      setFreelancer(u);
+      if (freelancerId) {
+        const u = await gigService.fetchUserInfo(freelancerId);
+        setFreelancer(u);
+      }
     };
     fetchFreelancer();
   }, [freelancerId]);
 
   useEffect(() => {
     const fetchClient = async () => {
-      const u = await gigService.fetchUserByEmail(clientMail ?? "");
-      setClient(u);
+      if (clientMail) {
+        const u = await gigService.fetchUserByEmail(clientMail ?? "");
+        setClient(u);
+      }
     };
     fetchClient();
   }, [clientMail]);
