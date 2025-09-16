@@ -2,15 +2,14 @@ import { TransactionInterface } from "../../types/Transaction";
 
 interface Action {
   type: string;
-  payload: {
-    [key: string]: unknown;
-  };
+  // eslint-disable-next-line
+  payload: { [key: string]: any };
 }
 
 type InitialState = {
-  userTransactions: TransactionInterface[],
-  currentTransaction: TransactionInterface | undefined
-}
+  userTransactions: TransactionInterface[];
+  currentTransaction: TransactionInterface | undefined;
+};
 
 const initialState: InitialState = {
   userTransactions: [],
@@ -29,6 +28,16 @@ const reducer = (state: InitialState = initialState, action: Action): InitialSta
       return {
         ...state,
         userTransactions: action.payload.userTransactions as TransactionInterface[]
+      };
+    },
+    UPDATE_TRANSACTION_LIFECYCLE: () => {
+      return {
+        ...state,
+        currentTransaction: {
+          ...state.currentTransaction,
+          lifecycleId: action.payload.updatedTransaction.lifecycleId,
+          lifecycle: action.payload.newLifecycle
+        } as TransactionInterface
       };
     }
   };

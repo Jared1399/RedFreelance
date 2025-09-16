@@ -33,13 +33,15 @@ const transactionService = {
     return userData;
   },
   async getConversationByTransactionId(transactionId: string, limit?: string) {
-    const conversationQuery = queryBuilder({ transactionId, limit: limit ?? null });
-    const url = `${BASE_URL}/api/chat${conversationQuery}`;
+    if (transactionId) {
+      const conversationQuery = queryBuilder({ transactionId, limit: limit ?? null });
+      const url = `${BASE_URL}/api/chat${conversationQuery}`;
 
-    const fetchConversation = await fetch(url);
-    const conversation = await fetchConversation.json();
+      const fetchConversation = await fetch(url);
+      const conversation = await fetchConversation.json();
 
-    return conversation;
+      return conversation;
+    }
   },
   async createConversation(clientId: string, freelancerId: string, transactionId: string) {
     const url = `${BASE_URL}/api/chat`;
@@ -53,7 +55,9 @@ const transactionService = {
     };
 
     const newConversation = await fetch(url, options);
-    return newConversation;
+
+    const conversation = await newConversation.json();
+    return conversation;
   },
   async sendMessage(senderId: string, conversationId: string, text: string,) {
     const url = `${BASE_URL}/api/chat/message`;
@@ -69,6 +73,41 @@ const transactionService = {
 
     const newMessage = await fetch(url, options);
     return newMessage;
+  },
+  async updateTransactionLifecycle(nextId: string, transactionId: string) {
+    const lifecycleQuery = queryBuilder({ name: nextId });
+
+    const getLifecycleUrl = `${BASE_URL}/api/lifecycle${lifecycleQuery}`;
+
+    const fetchLifecycleDetails = await fetch(getLifecycleUrl);
+    const { lifecycle } = await fetchLifecycleDetails.json();
+
+    const data = { nextLifecycle: lifecycle.id, transactionId };
+
+    const updateTransactionUrl = `${BASE_URL}/api/user/transaction/update`;
+    const options = {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    const updateTransaction = await fetch(updateTransactionUrl, options);
+
+    const transaction = await updateTransaction.json();
+
+    return transaction;
+  },
+  async fetchLifecycleInfo(name: string) {
+    const lifecycleQuery = queryBuilder({ name });
+    const getLifecycleUrl = `${BASE_URL}/api/lifecycle${lifecycleQuery}`;
+
+    const fetchLifecycleDetails = await fetch(getLifecycleUrl);
+
+    const { lifecycle } = await fetchLifecycleDetails.json();
+
+    return lifecycle;
   }
 };
 

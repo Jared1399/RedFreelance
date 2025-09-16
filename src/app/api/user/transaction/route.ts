@@ -2,6 +2,15 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { apiHandler } from "@/lib/apiHandler";
 
+function endOfDay(baseDate: Date, daysToAdd: number): Date {
+  const d = new Date(
+    baseDate.getFullYear(),
+    baseDate.getMonth(),
+    baseDate.getDate() + daysToAdd,
+    23, 59, 59, 999
+  );
+  return d;
+}
 
 export const GET = apiHandler(async (req: Request) => {
   const { searchParams } = new URL(req.url);
@@ -33,7 +42,8 @@ export const POST = apiHandler(async (req: Request) => {
     clientId,
     gigId,
     requestDetails,
-    amount
+    amount,
+    baseConditions
   } = await req.json();
 
   const commissionRate = 0.10;
@@ -48,7 +58,9 @@ export const POST = apiHandler(async (req: Request) => {
       requestDetails,
       amount,
       commission,
-      commissionRate
+      commissionRate,
+      expirationDate: endOfDay(new Date(), 7),
+      baseConditions
     }
   });
 

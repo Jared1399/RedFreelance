@@ -85,7 +85,7 @@ const GigName = async ({
         </div>
 
         <div className="w-[40%] h-full flex justify-center items-center p-4">
-          <GigTiers gigTiers={gigTiers} gigId={gigInfo.id} />
+          <GigTiers gigTiers={gigTiers} gig={gigInfo} />
         </div>
       </div>
 

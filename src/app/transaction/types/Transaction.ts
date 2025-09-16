@@ -4,6 +4,13 @@ export interface TransactionInterface {
   clientId: string;
   gigId: string;
   lifecycleId: number;
+  lifecycle: {
+    id: number;
+    name: string;
+    description: string;
+    createdAt: Date;
+    updatedAt: Date;
+  }
   tierId: string;
   amount: number;
   requestDetails: string;
@@ -12,8 +19,14 @@ export interface TransactionInterface {
   paymentId: string;
   escrowStatus: string;
   completed: boolean;
+  dueDate?: Date;
+  expirationDate: Date;
   createdAt: Date;
   updatedAt: Date;
+  description: {
+    description: string;
+    selectedTierId: string;
+  }
   gig: {
     id: string;
     gigImg: string;

@@ -2,9 +2,9 @@ import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/UI/shadcn/tabs";
 import { capitalizeFirst } from '@/lib/utils';
 import RequestBtn from './RequestBtn';
-import { GigTier } from '../../types/gig';
+import { Gig, GigTier } from '../../types/gig';
 
-const GigTiers = ({ gigTiers, gigId }: { gigTiers: GigTier[], gigId: string }) => {
+const GigTiers = ({ gigTiers, gig }: { gigTiers: GigTier[], gig: Gig }) => {
 
   const tierTabs = gigTiers.map((tier: GigTier, i: number) => {
     return <TabsTrigger key={i} value={tier.name}>{tier.name}</TabsTrigger>;
@@ -26,7 +26,7 @@ const GigTiers = ({ gigTiers, gigId }: { gigTiers: GigTier[], gigId: string }) =
           {tier.description}
         </div>
 
-        <RequestBtn gigTiers={gigTiers} gigId={gigId} />
+        <RequestBtn gigTiers={gigTiers} gig={gig} />
 
       </TabsContent>
     );

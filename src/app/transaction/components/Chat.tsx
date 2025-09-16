@@ -1,166 +1,211 @@
 "use client";
-import { useEffect, useState, useRef, useContext } from "react";
+import { useEffect, useState, useRef, useContext, useCallback } from "react";
 import io, { Socket } from "socket.io-client";
 import Message from "./Message";
 import transactionService from "../transaction.service";
-import { ConversationInterface, MessageInterface } from "../types/Chat";
+import { ConversationInterface, MessageInterface, LocalMsg } from "../types/Chat";
 import { useSession } from "next-auth/react";
 import { TransactionContext } from "../hooks/UseTransaction/context";
+import ConfirmationModal from "./ConfirmationModal";
+import TimeOutBanner from "./TimeOutBanner";
 
+
+const disableChatInput = (lifecycleId: number) => {
+  const disabledIds = [6, 7, 10, 11];
+
+  return disabledIds.some((id) => lifecycleId == id);
+};
 
 export default function Chat() {
   const { data: session } = useSession();
-  const { state } = useContext(TransactionContext);
+  const { state, actions } = useContext(TransactionContext);
 
-  const [messages, setMessages] = useState<{ text: string; sender: string }[]>([]);
+  const [messages, setMessages] = useState<LocalMsg[]>([]);
   const [input, setInput] = useState("");
-  const [conversation, setConversation] = useState<ConversationInterface>();
+  const [conversation, setConversation] = useState<ConversationInterface | null>(null);
 
-  const socketRef = useRef<Socket>(null);
+  const socketRef = useRef<Socket | null>(null);
+  const messagesContainerRef = useRef<HTMLDivElement | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
-  const messagesContainerRef = useRef<HTMLDivElement>(null);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  const scrollToBottom = () => {
-    if (!messagesContainerRef.current || !messagesEndRef.current) return;
-    messagesContainerRef.current.scrollTop = messagesEndRef.current.offsetTop;
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-
-
-  useEffect(() => {
-    socketRef.current = io(process.env.NEXT_PUBLIC_SOCKET_URL);
-
-    socketRef.current.on("message", (msg: { text: string; sender: string }) => {
-      setMessages((prev) => [...prev, msg]);
-    });
-
-    return () => {
-      socketRef.current?.disconnect();
-    };
+  const scrollToBottom = useCallback(() => {
+    const container = messagesContainerRef.current;
+    if (!container) return;
+    container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
   }, []);
 
   useEffect(() => {
+    scrollToBottom();
+  }, [messages, scrollToBottom]);
+
+  useEffect(() => {
+    const url = process.env.NEXT_PUBLIC_SOCKET_URL;
+    if (!url) return;
+
+    socketRef.current = io(url);
+
+    const handleMessage = (msg: { text: string; senderId?: string }) => {
+      const sender: LocalMsg["sender"] = msg.senderId === session?.userId ? "me" : "other";
+      setMessages((prev) => [...prev, { text: msg.text, sender }]);
+    };
+
+    socketRef.current.on("message", handleMessage);
+
+    return () => {
+      socketRef.current?.off("message", handleMessage);
+      socketRef.current?.disconnect();
+      socketRef.current = null;
+    };
+  }, [session?.userId]);
+
+  useEffect(() => {
+    let mounted = true;
+
     const fetchConversation = async () => {
       try {
-        if (!state.currentTransaction) return;
+        const transactionRef = state.currentTransaction;
+        if (!transactionRef) return;
 
-        setMessages([{
-          text: state.currentTransaction.requestDetails,
-          sender: state.currentTransaction.clientId == session?.userId ? "me" : "other"
-        }]);
-
-        const { conversation } = await transactionService
-          .getConversationByTransactionId(state.currentTransaction.id);
-
-        if (!conversation) {
-          const createConversation = await transactionService.createConversation(
-            state.currentTransaction.clientId,
-            state.currentTransaction.freelancerId,
-            state.currentTransaction.id
-          );
-          const res = await createConversation.json();
-
-          if (res.ok) {
-            const { conversation } = await transactionService
-              .getConversationByTransactionId(state.currentTransaction.id);
-            setConversation(conversation);
-          }
-        }
-
-        if (!conversation) return;
-        const firstMessage = {
-          text: state.currentTransaction.requestDetails,
-          sender: state.currentTransaction.clientId == session?.userId ? "me" : "other"
+        const initialMsg: LocalMsg = {
+          text: transactionRef.requestDetails || "",
+          sender: transactionRef.clientId === session?.userId ? "me" : "other",
         };
 
-        const msgList = conversation.messages.map((msg: MessageInterface) => ({
-          text: msg.text,
-          sender: msg.senderId === session?.userId ? "me" : "other"
-        }));
-        setConversation(conversation);
-        setMessages([firstMessage, msgList].flat());
+        setMessages([initialMsg]);
 
+        const convRes = await transactionService.getConversationByTransactionId(transactionRef.id);
+
+        const conv = convRes?.conversation ?? convRes ?? null;
+
+        if (!conv) {
+          const body = await transactionService.createConversation(
+            transactionRef.clientId,
+            transactionRef.freelancerId,
+            transactionRef.id
+          );
+
+          if (body?.ok) {
+            const newConvRes = await transactionService
+              .getConversationByTransactionId(transactionRef.id);
+
+            const newConv = newConvRes?.conversation ?? newConvRes ?? null;
+            if (mounted) setConversation(newConv ?? null);
+          }
+
+          return;
+        }
+
+        const loaded: LocalMsg[] = conv.messages.map((m: MessageInterface) => ({
+          text: m.text,
+          sender: m.senderId === session?.userId ? "me" : "other",
+        }));
+
+        if (mounted) {
+          setConversation(conv);
+          setMessages([initialMsg, ...loaded]);
+        }
       } catch (error) {
         console.error("Error fetching conversation:", error);
       }
     };
 
     fetchConversation();
-  }, [state.currentTransaction]);
 
-  const sendMessage = () => {
+    return () => {
+      mounted = false;
+    };
+  }, [state.currentTransaction, session?.userId]);
+
+  const sendMessage = useCallback(async () => {
     if (!input.trim()) return;
 
-    const newMsg = {
-      text: input,
-      senderId: session?.userId,
-    };
+    const text = input.trim();
 
+    const payload = { text, senderId: session?.userId };
 
-    transactionService.sendMessage(
-      session?.userId ?? "",
-      conversation?.id ?? "",
-      newMsg.text
-    );
+    try {
+      if (conversation?.id) {
+        await transactionService.sendMessage(session?.userId ?? "", conversation.id, text);
+      }
+    } catch (err) {
+      console.error("Failed to send message to API", err);
+    }
 
-    socketRef.current?.emit("message", newMsg);
-    setMessages((prev) => [...prev, { ...newMsg, sender: "me" }]);
-
+    socketRef.current?.emit("message", payload);
+    setMessages((prev) => [...prev, { text, sender: "me" }]);
     setInput("");
-  };
+  }, [input, conversation, session?.userId]);
+
+  const confirmationModal = state.currentTransaction?.lifecycleId == 1 &&
+    <ConfirmationModal handler={actions.updateTransactionLifeCycle} />;
+
+  const disabledChat = disableChatInput(state.currentTransaction?.lifecycleId ?? 0);
 
   return (
     <>
       {state.currentTransaction ? (
         <div
-          className="flex 
-      flex-col 
-      h-screen 
-      bg-gray-100 
-      mx-2 
-      dark:bg-card 
-      dark:border 
-      rounded-lg
-      "
+          className="
+            flex 
+            flex-col 
+            h-screen 
+            bg-gray-100 
+            mx-2 
+            dark:bg-card 
+            dark:border 
+            rounded-lg 
+            overflow-x-hidden
+          "
         >
-          <div className="bg-accent text-white font-bold  p-4">
-            {`${state.currentTransaction?.gig?.title} - ${state.currentTransaction?.tier?.name} `}
+          <div className="bg-accent text-white font-bold p-4 relative">
+            {`${state.currentTransaction?.gig?.title} - ${state.currentTransaction?.tier?.name}`}
+            <TimeOutBanner date={state.currentTransaction.expirationDate} />
           </div>
           <div
-            className="flex-1 overflow-y-auto p-4 space-y-2"
-            style={{ maxHeight: "100%", scrollBehavior: "smooth" }}
             ref={messagesContainerRef}
+            className="flex-1 overflow-y-auto p-4 space-y-2"
+            style={{ maxHeight: "100%" }}
           >
-            {messages.map((msg, idx) => <Message key={idx} msg={msg} />)}
+            {messages.map((msg, idx) => (
+              <Message key={idx} msg={msg} />
+            ))}
             <div ref={messagesEndRef} />
           </div>
-          <div className="flex items-center p-4 bg-neutral-300 border-t rounded-b-lg ">
+
+          <div className="flex items-center p-4 bg-neutral-300 border-t rounded-b-lg relative">
+            {confirmationModal}
             <input
               type="text"
-              className="
-            flex-1 
-            border 
-            borderbg-neutral-700 
-            rounded-lg 
-            px-4 
-            py-2 
-            mr-2 
-            focus:outline-none 
-            text-black
-          "
-              placeholder="Escribe un mensaje..."
+              className={`
+                flex-1 
+                border 
+                rounded-lg 
+                px-4 
+                py-2 
+                mr-2 
+                focus:outline-none 
+                text-black
+                ${disabledChat ? "border-red-800 border-4" : ""}
+                `}
+              placeholder={
+                `${disabledChat ?
+                  "Este chat ya no esta disponible" :
+                  "Escribe un mensaje..."
+                }`
+              }
               value={input}
+              disabled={disabledChat}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && sendMessage()}
             />
             <button
+              className="bg-neutral-300 outline px-4 py-2 mx-2 rounded-lg cursor-pointer"
+            >
+              📎
+            </button>
+            <button
               onClick={sendMessage}
-              className="bg-amber-700 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+              className="bg-amber-700 text-white px-4 py-2 rounded-lg hover:bg-amber-900"
             >
               Enviar
             </button>
@@ -168,7 +213,6 @@ export default function Chat() {
         </div>
       ) : (
         <div>Selecciona o crea una transaccion para continuar</div>
-
       )}
     </>
   );

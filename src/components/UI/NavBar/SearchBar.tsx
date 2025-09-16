@@ -9,7 +9,7 @@ import { queryBuilder } from '@/lib/utils';
 
 
 const inputCls = clsx(
-  "w-100",
+  "w-fit",
   "border",
   "border-solid",
   "border-white",
@@ -51,7 +51,7 @@ export default function SearchBar() {
   };
 
   const searchResults = (
-    <div className='absolute top-9 left-0 w-full rounded-b-lg'>
+    <div className='absolute top-9 left-0 min-w-1 rounded-b-lg'>
       {search && showResults && state.searchGigs.map((gig) => (
         <div
           className="w-full bg-neutral-700 h-fit px-2 py-1 hover:bg-neutral-800 cursor-pointer"

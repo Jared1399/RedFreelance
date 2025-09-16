@@ -25,3 +25,6 @@ export interface ConversationInterface {
   ],
   messages: MessageInterface[];
 }
+
+
+export type LocalMsg = { text: string; sender: "me" | "other" }; 

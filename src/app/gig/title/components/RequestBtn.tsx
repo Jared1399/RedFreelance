@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, FormEvent } from 'react';
-import { GigTier } from '../../types/gig';
+import { Gig, GigTier } from '../../types/gig';
 import { useSearchParams } from 'next/navigation';
 import gigService from '../../gig.service';
 import { User } from '../../types/User';
@@ -25,7 +25,7 @@ const errorNotify = () => toast.error('Algo fallo! por favor vuelve a intentar',
   theme: "dark",
 });
 
-export default function RequestBtn({ gigTiers, gigId }: { gigTiers: GigTier[], gigId: string }) {
+export default function RequestBtn({ gigTiers, gig }: { gigTiers: GigTier[], gig: Gig }) {
   const searchParams = useSearchParams()!;
   const { data } = useSession();
 
@@ -54,7 +54,10 @@ export default function RequestBtn({ gigTiers, gigId }: { gigTiers: GigTier[], g
       gigId: currentGigId,
       requestDetails: formData.get("requestDetails"),
       amount: selectedTier.price,
-
+      baseConditions: {
+        selectedTierId: selectedTier.id,
+        description: gig.description
+      }
     };
 
     const res = await fetch("/api/user/transaction", {
@@ -74,7 +77,6 @@ export default function RequestBtn({ gigTiers, gigId }: { gigTiers: GigTier[], g
     } else {
       errorNotify();
     }
-
 
   }
 
@@ -110,8 +112,8 @@ export default function RequestBtn({ gigTiers, gigId }: { gigTiers: GigTier[], g
   }, [clientMail]);
 
   useEffect(() => {
-    setCurrentGigId(gigId);
-  }, [gigId]);
+    setCurrentGigId(gig.id);
+  }, [gig.id]);
 
   if (!data) return;
 

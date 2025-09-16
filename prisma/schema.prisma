@@ -182,28 +182,30 @@ model Lifecycle {
 }
 
 model Transaction {
-  id             String       @id @default(uuid())
+  id             String         @id @default(uuid())
   freelancerId   String
   clientId       String
   gigId          String
-  lifecycleId    Int          @default(1)
+  lifecycleId    Int            @default(1)
   tierId         String
   amount         Decimal
   requestDetails String
   commission     Decimal
-  commissionRate Float        @default(0.10)
+  commissionRate Float          @default(0.10)
   paymentId      String?
-  escrowStatus   EscrowStatus @default(held)
-  completed      Boolean      @default(false)
-  createdAt      DateTime?    @default(now())
-  updatedAt      DateTime?    @updatedAt
-
-  tier         GigTier        @relation(fields: [tierId], references: [id])
-  freelancer   User           @relation("FreelancerTransactions", fields: [freelancerId], references: [id])
-  client       User           @relation("ClientTransactions", fields: [clientId], references: [id])
-  gig          Gig            @relation(fields: [gigId], references: [id])
-  lifecycle    Lifecycle      @relation(fields: [lifecycleId], references: [id])
-  Conversation Conversation[]
+  escrowStatus   EscrowStatus   @default(held)
+  dueDate        DateTime?
+  expirationDate DateTime
+  completed      Boolean        @default(false)
+  createdAt      DateTime?      @default(now())
+  updatedAt      DateTime?      @updatedAt
+  baseConditions Json
+  tier           GigTier        @relation(fields: [tierId], references: [id])
+  freelancer     User           @relation("FreelancerTransactions", fields: [freelancerId], references: [id])
+  client         User           @relation("ClientTransactions", fields: [clientId], references: [id])
+  gig            Gig            @relation(fields: [gigId], references: [id])
+  lifecycle      Lifecycle      @relation(fields: [lifecycleId], references: [id])
+  Conversation   Conversation[]
 }
 
 model Blog {
