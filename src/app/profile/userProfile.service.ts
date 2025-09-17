@@ -57,7 +57,8 @@ const userProfileService = {
     return user;
   },
   async uploadProfilePicture(file: File, userId: string) {
-    const tokenRes = await fetch(`${BASE_URL}/api/upload?userId=${userId}`);
+    const pfpQuery = queryBuilder({ userId, destination: "profile.png" });
+    const tokenRes = await fetch(`${BASE_URL}/api/upload/user${pfpQuery}`);
     const tokenData = await tokenRes.json();
 
     const { uploadUrl, key } = tokenData;

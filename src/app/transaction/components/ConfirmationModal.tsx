@@ -8,7 +8,7 @@ export default function ConfirmationModal({ handler }: { handler: (nextId: strin
         <div className="flex flex-row w-full justify-around">
           <button
             className="bg-green-800 px-8 py-1 rounded-lg"
-            onClick={() => handler("accepted")}
+            onClick={() => handler("payment_pending")}
           >
             Si
           </button>

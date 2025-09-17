@@ -59,9 +59,9 @@ const transactionService = {
     const conversation = await newConversation.json();
     return conversation;
   },
-  async sendMessage(senderId: string, conversationId: string, text: string,) {
+  async sendMessage(senderId: string, conversationId: string, text: string, metadata?: object) {
     const url = `${BASE_URL}/api/chat/message`;
-    const data = { senderId, conversationId, text };
+    const data = { senderId, conversationId, text, metadata };
 
     const options = {
       method: "POST",
@@ -108,7 +108,50 @@ const transactionService = {
     const { lifecycle } = await fetchLifecycleDetails.json();
 
     return lifecycle;
-  }
+  },
+  async sendAttachment(file: File, userId: string, transactionId: string) {
+    const destination = `${transactionId}/${userId}/${file.lastModified + file.name}`;
+
+    const pfpQuery = queryBuilder({ userId, destination, type: file.type });
+
+    const tokenRes = await fetch(`${BASE_URL}/api/upload/transaction${pfpQuery}`);
+    const tokenData = await tokenRes.json();
+
+    const { uploadUrl, key } = tokenData;
+    if (!uploadUrl || !key) {
+      throw new Error('Missing uploadUrl or key');
+    }
+
+    const uploadRes = await fetch(uploadUrl, {
+      method: 'PUT',
+      headers: { 'Content-Type': file.type },
+      body: file,
+    });
+
+    if (!uploadRes.ok) {
+      const text = await uploadRes.text().catch(() => '');
+      throw new Error(`Upload failed: ${uploadRes.status} ${text}`);
+    }
+
+    const publicUrl = `https://pub-dfd719a7c85b4b75aaeebef2fb7c8e21.r2.dev/redfreelance/${key}`;
+
+    const updated = await this.sendMessage(
+      userId,
+      transactionId,
+      file.name,
+      { type: "multimedia", url: publicUrl }
+    );
+
+    return {
+      ok: true,
+      message: {
+        text: file.name,
+        metadata: { type: "multimedia", url: publicUrl }
+      },
+      updated
+    };
+  },
+
 };
 
 

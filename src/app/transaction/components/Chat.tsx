@@ -8,12 +8,23 @@ import { useSession } from "next-auth/react";
 import { TransactionContext } from "../hooks/UseTransaction/context";
 import ConfirmationModal from "./ConfirmationModal";
 import TimeOutBanner from "./TimeOutBanner";
+import AddMedia from "./AddMedia";
 
 
-const disableChatInput = (lifecycleId: number) => {
-  const disabledIds = [6, 7, 10, 11];
+const disableChatInput = (lifecycle: { name: string }) => {
+  const disabledStates = [
+    "cancelled_by_client",
+    "cancelled_by_freelancer",
+    "rejected_on_request",
+    "transaction_timeout",
+    "payment_failed",
+    "completed",
+    ""
+  ];
 
-  return disabledIds.some((id) => lifecycleId == id);
+  if (!lifecycle) return;
+
+  return disabledStates.some((state) => state == lifecycle.name);
 };
 
 export default function Chat() {
@@ -23,10 +34,15 @@ export default function Chat() {
   const [messages, setMessages] = useState<LocalMsg[]>([]);
   const [input, setInput] = useState("");
   const [conversation, setConversation] = useState<ConversationInterface | null>(null);
-
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [resetFile, setResetFile] = useState(false);
   const socketRef = useRef<Socket | null>(null);
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  const handleFileChange = (file: File | null) => {
+    setSelectedFile(file);
+  };
 
   const scrollToBottom = useCallback(() => {
     const container = messagesContainerRef.current;
@@ -98,6 +114,7 @@ export default function Chat() {
         const loaded: LocalMsg[] = conv.messages.map((m: MessageInterface) => ({
           text: m.text,
           sender: m.senderId === session?.userId ? "me" : "other",
+          metadata: m.metadata
         }));
 
         if (mounted) {
@@ -117,29 +134,49 @@ export default function Chat() {
   }, [state.currentTransaction, session?.userId]);
 
   const sendMessage = useCallback(async () => {
-    if (!input.trim()) return;
-
-    const text = input.trim();
-
-    const payload = { text, senderId: session?.userId };
+    if (!input.trim() && !selectedFile) return;
 
     try {
-      if (conversation?.id) {
-        await transactionService.sendMessage(session?.userId ?? "", conversation.id, text);
-      }
-    } catch (err) {
-      console.error("Failed to send message to API", err);
-    }
+      const newMsgs: LocalMsg[] = [];
 
-    socketRef.current?.emit("message", payload);
-    setMessages((prev) => [...prev, { text, sender: "me" }]);
-    setInput("");
-  }, [input, conversation, session?.userId]);
+      if (selectedFile && session?.userId && state.currentTransaction?.id && conversation) {
+        const { ok, message } = await transactionService.sendAttachment(
+          selectedFile,
+          session.userId,
+          conversation?.id
+        );
+        if (ok && message) {
+          newMsgs.push({ ...message, sender: "me" });
+        }
+        setSelectedFile(null);
+        setResetFile(!resetFile);
+      }
+
+      // 2️⃣ Enviar mensaje de texto si existe
+      if (input.trim() && session?.userId && conversation?.id) {
+        const text = input.trim();
+        await transactionService.sendMessage(session.userId, conversation.id, text);
+        newMsgs.push({ text, sender: "me" });
+      }
+
+      // 3️⃣ Actualizar estado y socket
+      if (newMsgs.length > 0) {
+        setMessages(prev => [...prev, ...newMsgs]);
+        newMsgs.forEach(msg =>
+          socketRef.current?.emit("message", { ...msg, senderId: session!.userId })
+        );
+      }
+
+      setInput(""); // limpiar input
+    } catch (err) {
+      console.error("Error sending message or attachment", err);
+    }
+  }, [input, conversation, session?.userId, selectedFile]);
 
   const confirmationModal = state.currentTransaction?.lifecycleId == 1 &&
     <ConfirmationModal handler={actions.updateTransactionLifeCycle} />;
 
-  const disabledChat = disableChatInput(state.currentTransaction?.lifecycleId ?? 0);
+  const disabledChat = disableChatInput(state.currentTransaction?.lifecycle ?? { name: "" });
 
   return (
     <>
@@ -198,11 +235,7 @@ export default function Chat() {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && sendMessage()}
             />
-            <button
-              className="bg-neutral-300 outline px-4 py-2 mx-2 rounded-lg cursor-pointer"
-            >
-              📎
-            </button>
+            <AddMedia onFileChange={handleFileChange} reset={resetFile} />
             <button
               onClick={sendMessage}
               className="bg-amber-700 text-white px-4 py-2 rounded-lg hover:bg-amber-900"

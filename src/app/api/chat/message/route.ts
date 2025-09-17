@@ -7,7 +7,8 @@ export const POST = apiHandler(async (request: Request) => {
   const {
     conversationId,
     senderId,
-    text
+    text,
+    metadata
   } = await request.json();
 
   const newMessage = await prisma.message.create({
@@ -15,7 +16,7 @@ export const POST = apiHandler(async (request: Request) => {
       conversationId: conversationId,
       senderId,
       text,
-      metadata: { read: false }
+      metadata: { ...metadata, read: false }
     }
   });
 
