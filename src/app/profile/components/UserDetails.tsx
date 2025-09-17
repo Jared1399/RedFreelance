@@ -3,6 +3,7 @@ import { UserData } from '../types/User';
 import Image from '@/components/UI/Image';
 import formatDateES from '@/lib/timeago';
 import { capitalizeFirst } from '@/lib/utils';
+import EditProfileModal from './EditProfileModal';
 
 const translateLevel = (levelEng: string): string => {
   const valuesES: Record<string, string> = {
@@ -35,8 +36,12 @@ export default function UserDetails({ details }: { details: UserData }) {
 
 
       <div>
-        <div className='flex flex-row items-center mb-4'>
-          <Image alt='user-profile-pic' src={details.userImg} className="
+        <div className='flex flex-row items-center mb-4 relative'>
+
+          <Image
+            alt='user-profile-pic'
+            src={details.userImg}
+            className="
               w-15
               h-15
               mr-4
@@ -44,7 +49,9 @@ export default function UserDetails({ details }: { details: UserData }) {
               outline-3
               outline-amber-50
               outline-offset-4
-             " />
+             "
+          />
+          <EditProfileModal user={details} />
           <div className='text-3xl'>
             {
               capitalizeFirst(

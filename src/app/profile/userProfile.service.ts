@@ -38,6 +38,66 @@ const userProfileService = {
     const gigDetails = await fetchGigDetails.json();
 
     return gigDetails;
+  },
+  async updateProfilePic(userId: string, imgUrl: string) {
+    const data = { userId, userImg: imgUrl };
+    const url = `${BASE_URL}/api/user/update`;
+
+    const options = {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const updatedUser = await fetch(url, options);
+
+    const user = await updatedUser.json();
+
+    return user;
+  },
+  async uploadProfilePicture(file: File, userId: string) {
+    const tokenRes = await fetch(`${BASE_URL}/api/upload?userId=${userId}`);
+    const tokenData = await tokenRes.json();
+
+    const { uploadUrl, key } = tokenData;
+    if (!uploadUrl || !key) {
+      throw new Error('Missing uploadUrl or key');
+    }
+
+    const uploadRes = await fetch(uploadUrl, {
+      method: 'PUT',
+      headers: { 'Content-Type': file.type },
+      body: file,
+    });
+
+    if (!uploadRes.ok) {
+      const text = await uploadRes.text().catch(() => '');
+      throw new Error(`Upload failed: ${uploadRes.status} ${text}`);
+    }
+
+    const publicUrl = `https://pub-dfd719a7c85b4b75aaeebef2fb7c8e21.r2.dev/redfreelance/${key}`;
+
+    const updated = await this.updateProfilePic(userId, publicUrl);
+    return { ok: true, url: publicUrl, updated };
+
+  },
+  async updateUserInfo(newInfo: object, userId: string) {
+    const data = { ...newInfo, userId };
+    const url = `${BASE_URL}/api/user/update`;
+
+    const options = {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const updatedUser = await fetch(url, options);
+
+    const user = await updatedUser.json();
+
+    return user;
   }
 };
 
