@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { apiHandler } from "@/lib/apiHandler";
 
-export const GET = apiHandler(async (request: Request) => {
+export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
 
   const name = searchParams.get("name");
@@ -17,4 +16,4 @@ export const GET = apiHandler(async (request: Request) => {
   }
 
   return NextResponse.json({ ok: true, lifecycle: [] });
-});
+};

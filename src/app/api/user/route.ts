@@ -1,13 +1,12 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { apiHandler } from "@/lib/apiHandler";
 
-export const GET = apiHandler(async () => {
+export async function GET() {
   const users = await prisma.user.findMany();
   return NextResponse.json({ ok: true, users });
-});
+};
 
-export const POST = apiHandler(async (request: Request) => {
+export async function POST(request: Request) {
   const {
     firstName,
     lastName,
@@ -29,4 +28,4 @@ export const POST = apiHandler(async (request: Request) => {
   });
 
   return NextResponse.json({ ok: true, user: newUser }, { status: 201 });
-});
+};

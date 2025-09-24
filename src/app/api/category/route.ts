@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { apiHandler } from "@/lib/apiHandler";
 
-export const GET = apiHandler(async (request: Request) => {
+export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
 
   const skip = parseInt(searchParams.get("skip") ?? "0", 10);
@@ -14,9 +13,9 @@ export const GET = apiHandler(async (request: Request) => {
   });
 
   return NextResponse.json({ ok: true, category });
-});
+};
 
-export const POST = apiHandler(async (request: Request) => {
+export async function POST(request: Request) {
   const {
     name,
     description
@@ -30,4 +29,4 @@ export const POST = apiHandler(async (request: Request) => {
   });
 
   return NextResponse.json({ ok: true, user: newCategory }, { status: 201 });
-});
+};

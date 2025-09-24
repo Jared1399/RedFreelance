@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { apiHandler } from "@/lib/apiHandler";
 
 function endOfDay(baseDate: Date, daysToAdd: number): Date {
   const d = new Date(
@@ -12,7 +11,7 @@ function endOfDay(baseDate: Date, daysToAdd: number): Date {
   return d;
 }
 
-export const GET = apiHandler(async (req: Request) => {
+export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
 
   const userId = searchParams.get("userId");
@@ -32,10 +31,9 @@ export const GET = apiHandler(async (req: Request) => {
   });
 
   return NextResponse.json(transaction);
-});
+};
 
-export const POST = apiHandler(async (req: Request) => {
-
+export async function POST(req: Request) {
   const {
     tierId,
     freelancerId,
@@ -65,4 +63,4 @@ export const POST = apiHandler(async (req: Request) => {
   });
 
   return NextResponse.json(newTransaction);
-}); 
+}; 

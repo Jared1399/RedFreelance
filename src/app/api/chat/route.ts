@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { apiHandler } from "@/lib/apiHandler";
 
-export const GET = apiHandler(async (request: Request) => {
+export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
 
   const transactionId = searchParams.get("transactionId");
@@ -23,9 +22,9 @@ export const GET = apiHandler(async (request: Request) => {
   });
 
   return NextResponse.json({ ok: true, conversation });
-});
+};
 
-export const POST = apiHandler(async (request: Request) => {
+export async function POST(request: Request) {
   const {
     clientId,
     freelancerId,
@@ -93,4 +92,4 @@ export const POST = apiHandler(async (request: Request) => {
   }
 
   return NextResponse.json({ ok: true, conversation });
-});
+};

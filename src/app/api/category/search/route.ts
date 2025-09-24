@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { apiHandler } from "@/lib/apiHandler";
 
 
-export const GET = apiHandler(async (req: Request) => {
+export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
 
   const name = searchParams.get("name") ?? undefined;
@@ -17,4 +16,4 @@ export const GET = apiHandler(async (req: Request) => {
   });
 
   return NextResponse.json(gig);
-});
+};

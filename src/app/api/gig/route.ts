@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { apiHandler } from "@/lib/apiHandler";
+
 
 interface Tier {
   localId: number;
@@ -12,7 +12,7 @@ interface Tier {
 
 
 
-export const GET = apiHandler(async (request: Request) => {
+export async function GET(request: Request) {
 
   const { searchParams } = new URL(request.url);
 
@@ -36,9 +36,9 @@ export const GET = apiHandler(async (request: Request) => {
     { ok: true, gigs }
   );
 
-});
+};
 
-export const POST = apiHandler(async (request: Request) => {
+export async function POST(request: Request) {
   const {
     title,
     description,
@@ -77,4 +77,4 @@ export const POST = apiHandler(async (request: Request) => {
 
   return NextResponse.json(newGig);
 
-});
+};

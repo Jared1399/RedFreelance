@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { apiHandler } from "@/lib/apiHandler";
 
 
-export const GET = apiHandler(async () => {
+export async function GET() {
   const gigCount = await prisma.gig.aggregate({
     _count: {
       id: true
@@ -13,4 +12,4 @@ export const GET = apiHandler(async () => {
   return NextResponse.json(
     { ok: true, gigCount }
   );
-});
+};

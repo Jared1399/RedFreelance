@@ -1,17 +1,13 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { apiHandler } from "@/lib/apiHandler";
 
 
-export const GET = apiHandler(async () => {
-
+export async function GET() {
   const blogs = await prisma.blog.findMany();
-
   return NextResponse.json({ ok: true, blogs });
+};
 
-});
-
-export const POST = apiHandler(async (request: Request) => {
+export async function POST(request: Request) {
   const {
     title,
     content,
@@ -31,5 +27,4 @@ export const POST = apiHandler(async (request: Request) => {
   });
 
   return NextResponse.json(newBlog);
-
-});
+};

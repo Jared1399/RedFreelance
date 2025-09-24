@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { apiHandler } from "@/lib/apiHandler";
 
-export const POST = apiHandler(async (request: Request) => {
+export async function POST(request: Request) {
   const {
     nextLifecycle,
     transactionId
@@ -18,4 +17,4 @@ export const POST = apiHandler(async (request: Request) => {
   });
 
   return NextResponse.json({ ok: true, updatedTransaction });
-});
+};

@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { apiHandler } from "@/lib/apiHandler";
 
 
-export const POST = apiHandler(async (request: Request) => {
+export async function POST(request: Request) {
   const {
     conversationId,
     senderId,
@@ -21,4 +20,4 @@ export const POST = apiHandler(async (request: Request) => {
   });
 
   return NextResponse.json({ ok: true, newMessage }, { status: 201 });
-});
+};
