@@ -214,7 +214,7 @@ model Blog {
   content    String
   createdAt  DateTime       @default(now())
   authorId   String
-  categoryId BlogCategory[]
+  categories BlogCategory[]
   comments   BlogComment[]
 
   author User @relation(fields: [authorId], references: [id])

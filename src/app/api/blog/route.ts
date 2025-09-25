@@ -1,30 +1,56 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-
 export async function GET() {
   const blogs = await prisma.blog.findMany();
   return NextResponse.json({ ok: true, blogs });
 };
 
 export async function POST(request: Request) {
-  const {
-    title,
-    content,
-    categories,
-    authorId
-  } = await request.json();
+  try {
+    const { title, content, authorId, categories } = await request.json();
 
-  const newBlog = await prisma.blog.create({
-    data: {
-      title: title.toLowerCase(),
-      content,
-      authorId,
-      categoryId: {
-        connect: categories.map((id: number) => ({ id }))
-      }
+    const user = await prisma.user.findUnique({
+      where: { id: authorId },
+    });
+    if (!user) {
+      return NextResponse.json(
+        { ok: false, error: "Usuario no encontrado" },
+        { status: 404 }
+      );
     }
-  });
 
-  return NextResponse.json(newBlog);
-};
+    let categoriesToConnect;
+    if (categories && categories.length > 0) {
+      const existingCategories = await prisma.blogCategory.findMany({
+        where: { id: { in: categories } },
+      });
+
+      if (existingCategories.length !== categories.length) {
+        return NextResponse.json(
+          { ok: false, error: "Alguna categoría no existe" },
+          { status: 400 }
+        );
+      }
+
+      categoriesToConnect = { connect: categories.map((id: number) => ({ id })) };
+    }
+
+    const newBlog = await prisma.blog.create({
+      data: {
+        title: title.toLowerCase(),
+        content,
+        authorId,
+        categories: categoriesToConnect,
+      },
+    });
+
+    return NextResponse.json({ ok: true, blog: newBlog });
+  } catch (error) {
+    console.error("Error creando blog:", error);
+    return NextResponse.json(
+      { ok: false, error: "Error interno del servidor" },
+      { status: 500 }
+    );
+  }
+}
