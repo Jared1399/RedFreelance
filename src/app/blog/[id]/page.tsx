@@ -108,10 +108,7 @@ export default function BlogDetail({ params }: { params: Promise<{ id: number }>
 
   return (
     <div className="max-w-4xl mx-auto my-10 px-4">
-      {/* Título del blog */}
       <h1 className="text-3xl font-bold mb-6 text-gray-900 dark:text-gray-100">{blog.title}</h1>
-
-      {/* Contenido Markdown */}
       <Markdown
         remarkPlugins={[remarkGfm]}
         components={components}

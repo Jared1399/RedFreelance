@@ -1,0 +1,31 @@
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+
+export async function POST(request: Request) {
+  const {
+    transactionId,
+    nextState
+  } = await request.json();
+
+  const lifecycle = await prisma.lifecycle.findFirst({
+    where: {
+      name: nextState
+    }
+  });
+
+  if (!lifecycle) {
+    return NextResponse.json(
+      { ok: false, error: "Non existent lyfecycle name" },
+      { status: 404 }
+    );
+  }
+
+  const newCategory = await prisma.transaction.update({
+    where: { id: transactionId },
+    data: {
+      lifecycleId: lifecycle.id
+    }
+  });
+
+  return NextResponse.json({ ok: true, user: newCategory }, { status: 201 });
+};
