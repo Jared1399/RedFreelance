@@ -36,6 +36,7 @@ export default function Chat() {
   const [conversation, setConversation] = useState<ConversationInterface | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [resetFile, setResetFile] = useState(false);
+
   const socketRef = useRef<Socket | null>(null);
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -152,14 +153,12 @@ export default function Chat() {
         setResetFile(!resetFile);
       }
 
-      // 2️⃣ Enviar mensaje de texto si existe
       if (input.trim() && session?.userId && conversation?.id) {
         const text = input.trim();
         await transactionService.sendMessage(session.userId, conversation.id, text);
         newMsgs.push({ text, sender: "me" });
       }
 
-      // 3️⃣ Actualizar estado y socket
       if (newMsgs.length > 0) {
         setMessages(prev => [...prev, ...newMsgs]);
         newMsgs.forEach(msg =>
@@ -167,7 +166,7 @@ export default function Chat() {
         );
       }
 
-      setInput(""); // limpiar input
+      setInput("");
     } catch (err) {
       console.error("Error sending message or attachment", err);
     }

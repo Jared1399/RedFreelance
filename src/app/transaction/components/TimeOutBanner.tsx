@@ -3,6 +3,10 @@ import React, { useState } from 'react';
 
 export default function TimeOutBanner({ date }: { date?: Date }) {
   const [showModal, setShowModal] = useState(true);
+  const today = new Date();
+  const expiration = new Date(date ?? "");
+
+  const isExpired = today > expiration;
 
   return (
     <>
@@ -18,7 +22,14 @@ export default function TimeOutBanner({ date }: { date?: Date }) {
             className="absolute top-14 inset-x-0 flex justify-center bg-neutral-700/50 py-2 z-10"
           >
             <p className="font-normal">
-              Esta conversacion esta disponible hasta dentro de {formatDateES(date ?? "")}
+              {
+                isExpired ?
+                  (<>Esta conversacion ya no esta disponible</>)
+                  :
+                  (<>
+                    Esta conversacion esta disponible hasta dentro de {formatDateES(date ?? "")}
+                  </>)
+              }
             </p>
           </div>
         )

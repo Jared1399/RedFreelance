@@ -1,12 +1,12 @@
 // server.js
-const { createServer } = require("http");
-const express = require("express");
-const { Server } = require("socket.io");
+import { createServer } from "http";
+import express from "express";
+import { Server as SocketIOServer } from "socket.io";
 
 const app = express();
 const httpServer = createServer(app);
 
-const io = new Server(httpServer, {
+const io = new SocketIOServer(httpServer, {
   cors: {
     origin: ["http://localhost:3000", "https://redfreelance.cl", "https://www.redfreelance.cl"],
     methods: ["GET", "POST"],
