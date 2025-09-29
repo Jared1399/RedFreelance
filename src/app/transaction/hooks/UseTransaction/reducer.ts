@@ -34,7 +34,8 @@ const reducer = (state: InitialState = initialState, action: Action): InitialSta
       return {
         ...state,
         currentTransaction: {
-          ...state.currentTransaction,
+          ...(state.currentTransaction || {}),
+          ...(action.payload.updatedTransaction || {}),
           lifecycleId: action.payload.updatedTransaction.lifecycleId,
           lifecycle: action.payload.newLifecycle
         } as TransactionInterface

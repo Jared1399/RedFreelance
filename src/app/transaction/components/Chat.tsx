@@ -29,7 +29,7 @@ const disableChatInput = (lifecycle: { name: string }) => {
 
 export default function Chat() {
   const { data: session } = useSession();
-  const { state, actions } = useContext(TransactionContext);
+  const { state } = useContext(TransactionContext);
 
   const [messages, setMessages] = useState<LocalMsg[]>([]);
   const [input, setInput] = useState("");
@@ -40,6 +40,8 @@ export default function Chat() {
   const socketRef = useRef<Socket | null>(null);
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  const currTransaction = state.currentTransaction;
 
   const handleFileChange = (file: File | null) => {
     setSelectedFile(file);
@@ -80,7 +82,7 @@ export default function Chat() {
 
     const fetchConversation = async () => {
       try {
-        const transactionRef = state.currentTransaction;
+        const transactionRef = currTransaction;
         if (!transactionRef) return;
 
         const initialMsg: LocalMsg = {
@@ -132,7 +134,7 @@ export default function Chat() {
     return () => {
       mounted = false;
     };
-  }, [state.currentTransaction, session?.userId]);
+  }, [currTransaction, session?.userId]);
 
   const sendMessage = useCallback(async () => {
     if (!input.trim() && !selectedFile) return;
@@ -140,7 +142,7 @@ export default function Chat() {
     try {
       const newMsgs: LocalMsg[] = [];
 
-      if (selectedFile && session?.userId && state.currentTransaction?.id && conversation) {
+      if (selectedFile && session?.userId && currTransaction?.id && conversation) {
         const { ok, message } = await transactionService.sendAttachment(
           selectedFile,
           session.userId,
@@ -172,14 +174,14 @@ export default function Chat() {
     }
   }, [input, conversation, session?.userId, selectedFile]);
 
-  const confirmationModal = state.currentTransaction?.lifecycleId == 1 &&
-    <ConfirmationModal handler={actions.updateTransactionLifeCycle} />;
+  const confirmationModal = currTransaction?.lifecycleId == 1 &&
+    <ConfirmationModal />;
 
-  const disabledChat = disableChatInput(state.currentTransaction?.lifecycle ?? { name: "" });
+  const disabledChat = disableChatInput(currTransaction?.lifecycle ?? { name: "" });
 
   return (
     <>
-      {state.currentTransaction ? (
+      {currTransaction ? (
         <div
           className="
             flex 
@@ -194,8 +196,8 @@ export default function Chat() {
           "
         >
           <div className="bg-accent text-white font-bold p-4 relative">
-            {`${state.currentTransaction?.gig?.title} - ${state.currentTransaction?.tier?.name}`}
-            <TimeOutBanner date={state.currentTransaction.expirationDate} />
+            {`${currTransaction?.gig?.title} - ${currTransaction?.tier?.name}`}
+            <TimeOutBanner />
           </div>
           <div
             ref={messagesContainerRef}

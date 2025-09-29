@@ -23,20 +23,24 @@ const useTransaction = ({ transactionId, userId }: { transactionId?: string, use
       dispatch({ type: 'SET_USER_TRANSACTIONS', payload: { userTransactions } });
     },
     async updateTransactionLifeCycle(nextState: string) {
-      if (state.currentTransaction?.id) {
-        const { updatedTransaction } = await transactionService.
-          updateTransactionLifecycle(nextState, state.currentTransaction.id);
+      if (!state.currentTransaction?.id) return;
 
-        const newLifecycle = await transactionService.fetchLifecycleInfo(nextState);
+      const { updatedTransaction } = await transactionService.updateTransactionLifecycle(
+        nextState,
+        state.currentTransaction.id,
+        state.currentTransaction.tier.deliveryTime
+      );
 
-        dispatch(
-          {
-            type: 'UPDATE_TRANSACTION_LIFECYCLE',
-            payload: { updatedTransaction, newLifecycle }
-          }
-        );
-      }
+      const newLifecycle = await transactionService.fetchLifecycleInfo(nextState);
+
+      dispatch(
+        {
+          type: 'UPDATE_TRANSACTION_LIFECYCLE',
+          payload: { updatedTransaction, newLifecycle }
+        }
+      );
     }
+
   };
 
   useEffect(() => {

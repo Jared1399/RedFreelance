@@ -1,6 +1,9 @@
-import React from 'react';
+import { useContext } from 'react';
+import { TransactionContext } from '../hooks/UseTransaction/context';
 
-export default function ConfirmationModal({ handler }: { handler: (nextId: string) => void }) {
+export default function ConfirmationModal() {
+  const { actions } = useContext(TransactionContext);
+
   return (
     <div className="absolute inset-x-0 bottom-25 flex justify-center bg-neutral-800/50 py-2 z-10">
       <div>
@@ -8,13 +11,13 @@ export default function ConfirmationModal({ handler }: { handler: (nextId: strin
         <div className="flex flex-row w-full justify-around">
           <button
             className="bg-green-800 px-8 py-1 rounded-lg"
-            onClick={() => handler("payment_pending")}
+            onClick={() => actions.updateTransactionLifeCycle("payment_pending")}
           >
             Si
           </button>
           <button
             className="bg-red-700 px-8 py-1 rounded-lg"
-            onClick={() => handler("rejected_on_request")}
+            onClick={() => actions.updateTransactionLifeCycle("rejected_on_request")}
           >
             No
           </button>

@@ -74,15 +74,10 @@ const transactionService = {
     const newMessage = await fetch(url, options);
     return newMessage;
   },
-  async updateTransactionLifecycle(nextId: string, transactionId: string) {
-    const lifecycleQuery = queryBuilder({ name: nextId });
+  async updateTransactionLifecycle(nextId: string, transactionId: string, deliveryTime: number) {
+    const lifecycle = await this.fetchLifecycleInfo(nextId);
 
-    const getLifecycleUrl = `${BASE_URL}/api/lifecycle${lifecycleQuery}`;
-
-    const fetchLifecycleDetails = await fetch(getLifecycleUrl);
-    const { lifecycle } = await fetchLifecycleDetails.json();
-
-    const data = { nextLifecycle: lifecycle.id, transactionId };
+    const data = { nextLifecycle: lifecycle.id, transactionId, deliveryTime };
 
     const updateTransactionUrl = `${BASE_URL}/api/user/transaction/update`;
     const options = {
