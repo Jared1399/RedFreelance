@@ -36,7 +36,15 @@ services:
     ports:
       - "4000:4000"
     depends_on:
-      - web                   
+      - web          
+  
+  cron:
+    build: .
+    container_name: redfreelance_cron
+    command: ["pm2-runtime", "ecosystem.config.cjs"]
+    restart: always
+    environment:
+      - NODE_ENV=production         
 
 volumes:
   db-data:
