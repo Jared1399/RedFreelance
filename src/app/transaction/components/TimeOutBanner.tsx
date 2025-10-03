@@ -1,22 +1,15 @@
 import formatDateES from '@/lib/timeago';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { TransactionContext } from '../hooks/UseTransaction/context';
 
 export default function TimeOutBanner() {
   const { state } = useContext(TransactionContext);
+  const [showModal, setShowModal] = useState(true);
 
   const date = state.currentTransaction?.expirationDate;
-  const today = new Date();
-  const expiration = date ? new Date(date) : new Date();
-
-  const [showModal, setShowModal] = useState(true);
-  const [isExpired, setIsExpired] = useState(today > expiration);
-
-  useEffect(() => {
-    setIsExpired(today > expiration);
-  }, [date, today, expiration]);
 
   const formattedDate = date ? formatDateES(date.toString()) : '';
+  const conversationUnavailable = state.currentTransaction?.disabledChat ?? false;
 
   return (
     <>
@@ -33,7 +26,7 @@ export default function TimeOutBanner() {
           >
             <p className="font-normal">
               {
-                isExpired ?
+                conversationUnavailable ?
                   (<>Esta conversación ya no está disponible</>)
                   :
                   (<>

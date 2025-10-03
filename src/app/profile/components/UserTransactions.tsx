@@ -31,31 +31,52 @@ export default async function UserTransactions(
       const transactionQuery = queryBuilder({ transactionId: t.id });
 
       return (
-        <div key={t.id}
+        <div
+          key={t.id}
           className="
-          w-[95%] 
-          h-fit 
-          py-3 
-          px-4 
-          my-2 
-          dark:bg-card 
-          dark:border 
-          rounded-lg 
-          flex 
-          flex-row
-          justify-center 
+          w-full
+          md:w-[95%]
+          py-3
+          px-4
+          my-2
+          dark:bg-card
+          dark:border
+          rounded-lg
+          flex
+          flex-col
+          md:flex-row
+          justify-between
           items-start
+          gap-4
         "
         >
-          <div className='flex flex-col'>
-            <p>{gigInfo.title}</p>
-            <p>Monto: {t.amount}</p>
-            <p>Estado: {transLateTransaction(t.lifecycle.name)}</p>
+          <div className="flex flex-col flex-1 space-y-1 overflow-hidden">
+            <p className="font-semibold text-white truncate">{gigInfo.title}</p>
+            <p className="text-sm text-gray-300">
+              Monto: {t.amount}
+            </p>
+            <p className="text-sm text-gray-300">
+              Estado: {transLateTransaction(t.lifecycle.name)}
+            </p>
           </div>
-          <Link href={`/transaction${transactionQuery}`}>
+
+          <Link
+            href={`/transaction${transactionQuery}`}
+            className="
+              mt-2
+              md:mt-0
+              text-sm
+              font-medium
+              text-white
+              underline
+              hover:text-amber-600
+              whitespace-nowrap
+            "
+          >
             Detalles
           </Link>
         </div>
+
       );
 
     })

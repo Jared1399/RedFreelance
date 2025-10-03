@@ -46,8 +46,8 @@ export interface TransactionInterface {
     description: string;
     deliveryTime: number;
     gigId: string;
-  }
-
+  },
+  disabledChat: boolean;
 }
 
 

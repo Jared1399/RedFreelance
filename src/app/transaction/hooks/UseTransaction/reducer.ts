@@ -1,4 +1,5 @@
 import { TransactionInterface } from "../../types/Transaction";
+import { disabledStatus, disabledByDate } from "./utils";
 
 interface Action {
   type: string;
@@ -16,12 +17,19 @@ const initialState: InitialState = {
   currentTransaction: {} as TransactionInterface
 };
 
+
 const reducer = (state: InitialState = initialState, action: Action): InitialState => {
   const actions: { [key: string]: () => InitialState } = {
     SET_CURRENT_TRANSACTION: () => {
+      const transaction = action.payload.transaction as TransactionInterface;
+
       return {
         ...state,
-        currentTransaction: action.payload.transaction as TransactionInterface
+        currentTransaction: {
+          ...transaction,
+          disabledChat:
+            disabledStatus(transaction?.lifecycle) || disabledByDate(transaction?.expirationDate)
+        }
       };
     },
     SET_USER_TRANSACTIONS: () => {

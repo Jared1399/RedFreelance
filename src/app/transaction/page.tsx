@@ -18,7 +18,7 @@ const TransactionContent = () => {
     userId: session?.userId ?? undefined
   });
 
-  if (!transactionId || !session?.userId) {
+  if (!session?.userId) {
     return <div>Loading...</div>;
   }
 
