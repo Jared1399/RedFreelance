@@ -1,8 +1,20 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-export async function GET() {
-  const blogs = await prisma.blog.findMany();
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+
+  const skip = parseInt(searchParams.get("skip") ?? "0", 10);
+  const limit = parseInt(searchParams.get("limit") ?? "0", 10);
+
+  const blogs = await prisma.blog.findMany({
+    skip: skip || undefined,
+    take: limit || undefined,
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
   return NextResponse.json({ ok: true, blogs });
 };
 

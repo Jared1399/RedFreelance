@@ -3,6 +3,8 @@
 import React, { useEffect } from 'react';
 import Image from "@/components/UI/Image";
 import useBlog from '@/context/Blog/useBlog';
+import Link from 'next/link';
+import BlogItem from './BlogItem';
 
 interface Blog {
   title: string;
@@ -19,40 +21,7 @@ export default function BlogEntry() {
   }, []);
 
   const blogs = state.blogList.map((blog: Blog) => {
-    return (
-      <div key={blog.id}
-        className="
-        bg-neutral-700
-        py-8
-        px-8
-        rounded-lg
-        shadow-md
-        hover:shadow-lg
-        transition-shadow
-        duration-200
-        flex
-        flex-col
-        justify-between
-        h-[200px]
-        md:h-[250px]
-        my-4"
-      >
-        <h3 className="text-xl font-bold text-white mb-2 line-clamp-2">
-          {blog.title}
-        </h3>
-
-        <p className="text-white text-sm line-clamp-3 mb-4">
-          {blog.content}
-        </p>
-        <a
-          className="cursor-pointer mt-4 text-white font-semibold underline hover:text-amber-600"
-          href={`/blog/${blog.id}`}
-        >
-          Leer más
-        </a>
-      </div>
-
-    );
+    return <BlogItem blog={blog} key={blog.id} />;
   });
 
   return (
@@ -81,7 +50,12 @@ export default function BlogEntry() {
           px-4
           rounded-lg'
       >
-        {blogs}
+        <span className='text-sm text-amber-600 underline'>
+          <Link href={"/blog"}>Ver todos</Link>
+        </span>
+        <div className='overflow-auto'>
+          {blogs}
+        </div>
       </div>
     </div>
   );
