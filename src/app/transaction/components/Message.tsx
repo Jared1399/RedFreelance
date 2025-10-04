@@ -1,10 +1,6 @@
 import React from 'react';
-
-interface Message {
-  sender: string;
-  text: string;
-  metadata?: { type: string; url: string, read: boolean };
-}
+import { LocalMsg } from '../types/Chat';
+import DeliveryMsg from './DeliveryMsg';
 
 async function downloadFile(url: string, filename: string) {
   const res = await fetch(url, { mode: 'cors' });
@@ -23,23 +19,29 @@ async function downloadFile(url: string, filename: string) {
   URL.revokeObjectURL(blobUrl);
 }
 
-export default function Message({ msg }: { msg: Message }) {
+const messageOptions = (msg: LocalMsg): React.ReactNode => {
+  if (!msg.metadata?.type) return msg.text;
 
-  const msgContent = msg.metadata?.type === "multimedia" && msg.metadata.url ?
-    (
+  const messageTypes: Record<string, React.ReactNode> = {
+    multimedia: (
       <span>
         <a
-          onClick={() => downloadFile(msg.metadata!.url, msg.text)}
+          onClick={() => msg.metadata?.url && downloadFile(msg.metadata.url, msg.text)}
           className="cursor-pointer underline"
         >
           📁{msg.text}
         </a>
       </span>
-    )
-    :
-    (
-      msg.text
-    );
+    ),
+    delivery: <DeliveryMsg msg={msg} downloadHandler={downloadFile} />,
+  };
+
+  return messageTypes[msg.metadata.type] ?? msg.text;
+};
+
+export default function Message({ msg }: { msg: LocalMsg }) {
+
+  const msgContent = messageOptions(msg);
 
   return (
     <div className={`flex ${msg.sender === "me" ? "justify-end" : "justify-start"}`}>
@@ -52,6 +54,7 @@ export default function Message({ msg }: { msg: Message }) {
           whitespace-normal
           break-words
           ${msg.sender === "me" ? "bg-amber-700 text-white" : "bg-gray-300 text-black"}
+          ${msg.metadata?.type === "delivery" ? "border-2 border-white" : ""}
           ${msg.metadata?.type == "multimedia" ? "font-bold underline cursor-pointer" : ""}
           `}
       >

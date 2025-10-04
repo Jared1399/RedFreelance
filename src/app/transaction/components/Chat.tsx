@@ -7,6 +7,8 @@ import ConfirmationModal from "./ConfirmationModal";
 import TimeOutBanner from "./TimeOutBanner";
 import AddMedia from "./AddMedia";
 import { useChat } from "../hooks/useChat";
+import DeliveryModal from "./DeliveryModal";
+import { LocalMsg } from "../types/Chat";
 
 
 export default function Chat() {
@@ -52,6 +54,10 @@ export default function Chat() {
 
   const disabledChat = currTransaction?.disabledChat ?? false;
 
+  const messageList = messages.map((msg, idx) => (
+    <Message key={msg.id ?? idx} msg={msg as LocalMsg} />
+  ));
+
   return (
     <>
       {currTransaction ? (
@@ -77,14 +83,13 @@ export default function Chat() {
             className="flex-1 overflow-y-auto p-4 space-y-2"
             style={{ maxHeight: "100%" }}
           >
-            {messages.map((msg, idx) => (
-              <Message key={idx} msg={msg} />
-            ))}
+            {messageList}
             <div ref={messagesEndRef} />
           </div>
 
           <div className="flex items-center p-4 bg-neutral-300 border-t rounded-b-lg relative">
             {confirmationModal}
+            {(session?.userId == currTransaction.freelancerId) && <DeliveryModal />}
             <input
               type="text"
               className={`
@@ -110,6 +115,8 @@ export default function Chat() {
               onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), send())}
             />
             <AddMedia onFileChange={handleFileChange} reset={resetFile} />
+
+
             <button
               onClick={() => send()}
               className="bg-amber-700 text-white px-4 py-2 rounded-lg hover:bg-amber-900"

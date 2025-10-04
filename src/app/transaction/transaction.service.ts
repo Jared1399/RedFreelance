@@ -74,7 +74,7 @@ const transactionService = {
     const newMessage = await fetch(url, options);
     return newMessage;
   },
-  async updateTransactionLifecycle(nextId: string, transactionId: string, deliveryTime: number) {
+  async updateTransactionLifecycle(nextId: string, transactionId: string, deliveryTime?: number) {
     const lifecycle = await this.fetchLifecycleInfo(nextId);
 
     const data = { nextLifecycle: lifecycle.id, transactionId, deliveryTime };
@@ -104,7 +104,13 @@ const transactionService = {
 
     return lifecycle;
   },
-  async sendAttachment(file: File, userId: string, transactionId: string) {
+  async sendAttachment(
+    file: File,
+    userId: string,
+    transactionId: string,
+    type?: string,
+    text?: string
+  ) {
     const destination = `${transactionId}/${userId}/${file.lastModified + file.name}`;
 
     const pfpQuery = queryBuilder({ userId, destination, type: file.type });
@@ -130,20 +136,19 @@ const transactionService = {
 
     const publicUrl = `https://pub-dfd719a7c85b4b75aaeebef2fb7c8e21.r2.dev/redfreelance/${key}`;
 
-    const updated = await this.sendMessage(
+    await this.sendMessage(
       userId,
       transactionId,
-      file.name,
-      { type: "multimedia", url: publicUrl }
+      text ?? file.name,
+      { type: type ?? "multimedia", url: publicUrl }
     );
 
     return {
       ok: true,
       message: {
         text: file.name,
-        metadata: { type: "multimedia", url: publicUrl }
-      },
-      updated
+        metadata: { type: type ?? "multimedia", url: publicUrl }
+      }
     };
   },
 

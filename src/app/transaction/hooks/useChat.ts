@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import io, { Socket } from "socket.io-client";
 import transactionService from "../transaction.service";
-import { ConversationInterface, MessageInterface, LocalMsg } from "../types/Chat";
+import { ConversationInterface, MessageInterface, LocalMsg, Metadata } from "../types/Chat";
 import { TransactionInterface } from "../types/Transaction";
 
 type UseChatReturn = {
@@ -12,7 +12,7 @@ type UseChatReturn = {
   setSelectedFile: (f: File | null) => void;
   resetFile: boolean;
   setResetFile: (v: boolean) => void;
-  sendMessage: (text?: string, file?: File | null) => Promise<boolean>;
+  sendMessage: (text?: string, file?: File | null, metadata?: Metadata) => Promise<boolean>;
   messagesContainerRef: React.RefObject<HTMLDivElement | null>;
   messagesEndRef: React.RefObject<HTMLDivElement | null>;
 };
@@ -36,9 +36,9 @@ export function useChat(
 
     socketRef.current = io(url);
 
-    const handleMessage = (msg: { text: string; senderId?: string }) => {
+    const handleMessage = (msg: { text: string; senderId?: string, metadata?: Metadata }) => {
       const sender: LocalMsg["sender"] = msg.senderId === sessionUserId ? "me" : "other";
-      setMessages((prev) => [...prev, { text: msg.text, sender }]);
+      setMessages((prev) => [...prev, { text: msg.text, sender, metadata: msg.metadata }]);
     };
 
     socketRef.current.on("message", handleMessage);
@@ -110,37 +110,45 @@ export function useChat(
   }, [currTransaction, sessionUserId]);
 
   const sendMessage = useCallback(
-    async (text?: string, file?: File | null) => {
+    async (text?: string, file?: File | null, metadata?: Metadata) => {
       try {
         if ((!text || !text.trim()) && !file) return false;
-
         const newMsgs: LocalMsg[] = [];
 
         if (file && sessionUserId && currTransaction?.id && conversation) {
+
           const { ok, message } = await transactionService.sendAttachment(
             file,
             sessionUserId,
-            conversation.id
+            conversation.id,
+            metadata?.type,
+            text
           );
 
           if (ok && message) {
-            newMsgs.push({ ...message, sender: "me" });
+            newMsgs.push({ ...message, sender: "me", metadata: message.metadata });
           }
           setSelectedFile(null);
           setResetFile(!resetFile);
         }
 
-        if (text && text.trim() && sessionUserId && conversation?.id) {
+        if (
+          text &&
+          text.trim() &&
+          sessionUserId &&
+          conversation?.id &&
+          metadata?.type != 'delivery'
+        ) {
           const t = text.trim();
-          await transactionService.sendMessage(sessionUserId, conversation.id, t);
-          newMsgs.push({ text: t, sender: "me" });
+          await transactionService.sendMessage(sessionUserId, conversation.id, t, metadata);
+          newMsgs.push({ text: t, sender: "me", metadata });
         }
 
         if (newMsgs.length > 0) {
           setMessages((prev) => [...prev, ...newMsgs]);
           newMsgs.forEach((msg) => socketRef.current?.emit(
             "message",
-            { ...msg, senderId: sessionUserId }
+            { ...msg, senderId: sessionUserId, metadata: msg.metadata }
           ));
         }
 

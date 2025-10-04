@@ -28,8 +28,8 @@ export async function POST(request: Request) {
     },
     data: {
       lifecycleId: nextLifecycle,
-      dueDate: newDueDate,
-      expirationDate: newDueDate
+      dueDate: deliveryTime ? newDueDate : undefined,
+      expirationDate: deliveryTime ? newDueDate : undefined
     }
   });
 

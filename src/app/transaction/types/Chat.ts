@@ -3,11 +3,15 @@ export interface MessageInterface {
   text: string;
   createdAt: Date;
   senderId: string;
-  metadata: {
-    read: boolean;
-  };
+  metadata?: Metadata
   conversationId: string;
   sender: string;
+}
+
+export interface Metadata {
+  read?: boolean;
+  type?: string;
+  url?: string
 }
 
 export interface ConversationInterface {
@@ -27,4 +31,4 @@ export interface ConversationInterface {
 }
 
 
-export type LocalMsg = { text: string; sender: "me" | "other" }; 
+export type LocalMsg = { id?: string; text: string; sender: "me" | "other"; metadata?: Metadata };
