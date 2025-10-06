@@ -134,14 +134,16 @@ export default function DeliveryModal({ freelancerId }: DeliveryModalProps) {
 
       <div className="
         relative 
-        bg-white 
-        dark:bg-gray-800 
+        bg-gray-100 
+        dark:bg-card 
         rounded-lg 
         w-full 
         max-w-2xl 
         mx-4 
         p-6 
         z-10
+        border
+        dark:border
       ">
         <div className="flex justify-between items-center mb-6">
           <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -156,8 +158,8 @@ export default function DeliveryModal({ freelancerId }: DeliveryModalProps) {
               dark:hover:text-gray-200 
               text-2xl 
               font-bold
-              ">
-            x
+            ">
+            ×
           </button>
         </div>
 
@@ -179,9 +181,11 @@ export default function DeliveryModal({ freelancerId }: DeliveryModalProps) {
                 py-2 
                 focus:outline-none 
                 focus:ring-2 
-                focus:ring-blue-500 
-                dark:bg-gray-700 
+                focus:ring-amber-500 
+                bg-white
+                dark:bg-neutral-700 
                 dark:text-white
+                text-black
               "
               rows={4}
               placeholder="Describe tu entrega, incluye instrucciones o detalles importantes..."
@@ -205,8 +209,10 @@ export default function DeliveryModal({ freelancerId }: DeliveryModalProps) {
                 py-2 
                 focus:outline-none 
                 focus:ring-2 
-                focus:ring-blue-500 
-                dark:bg-gray-700 
+                focus:ring-amber-800 
+                bg-amber-50
+                dark:bg-neutral-700 
+                text-black
                 dark:text-white 
                 file:mr-4 
                 file:py-2 
@@ -215,13 +221,23 @@ export default function DeliveryModal({ freelancerId }: DeliveryModalProps) {
                 file:border-0 
                 file:text-sm 
                 file:font-semibold 
-                file:bg-blue-50 
-                file:text-blue-700 
-                hover:file:bg-blue-100
-                "/>
+                file:bg-amber-50 
+                file:text-neutral-900 
+                hover:file:bg-amber-700
+              "/>
 
             {filePreviewUrl && selectedFile && (
-              <div className="mt-3 p-3 border border-gray-200 dark:border-gray-600 rounded-lg">
+              <div
+                className="
+                  mt-3 
+                  p-3 
+                  border 
+                  border-gray-200 
+                  dark:border-gray-600 
+                  rounded-lg 
+                  bg-white 
+                  dark:bg-gray-700
+                ">
                 <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Vista previa:
                 </p>
@@ -232,14 +248,18 @@ export default function DeliveryModal({ freelancerId }: DeliveryModalProps) {
                       alt="Preview"
                       className="max-h-48 rounded-lg border"
                     />
-                    <p className="text-sm text-gray-500 mt-2">{selectedFile.name}</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                      {selectedFile.name}
+                    </p>
                   </div>
                 ) : (
                   <div className="flex items-center space-x-3">
                     <div className="text-2xl">📄</div>
                     <div>
-                      <p className="font-medium">{selectedFile.name}</p>
-                      <p className="text-sm text-gray-500">
+                      <p className="font-medium text-gray-900 dark:text-white">
+                        {selectedFile.name}
+                      </p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
                         {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
                       </p>
                     </div>
@@ -265,6 +285,8 @@ export default function DeliveryModal({ freelancerId }: DeliveryModalProps) {
                 hover:bg-gray-50 
                 dark:hover:bg-gray-700 
                 transition-colors
+                bg-white
+                dark:bg-card
               "
               disabled={sending}
             >
@@ -276,10 +298,10 @@ export default function DeliveryModal({ freelancerId }: DeliveryModalProps) {
               className="
                 px-6 
                 py-2 
-                bg-blue-600 
+                bg-amber-700 
                 text-white 
                 rounded-lg 
-                hover:bg-blue-700 
+                hover:bg-amber-900 
                 disabled:opacity-50 
                 disabled:cursor-not-allowed 
                 transition-colors
