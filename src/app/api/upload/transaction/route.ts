@@ -4,7 +4,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { r2 } from "@/lib/r2";
 
 export async function GET(req: Request) {
-  const allowedTypes = ["image/png", "image/jpeg", "video/mp4"];
+  const allowedTypes = ["image/png", "image/jpeg", "video/mp4", "image/webp"];
 
   const { searchParams } = new URL(req.url);
 

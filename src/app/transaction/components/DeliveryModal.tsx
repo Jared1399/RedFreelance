@@ -233,10 +233,10 @@ export default function DeliveryModal({ freelancerId }: DeliveryModalProps) {
                   p-3 
                   border 
                   border-gray-200 
-                  dark:border-gray-600 
+                  dark:border-white 
                   rounded-lg 
                   bg-white 
-                  dark:bg-gray-700
+                  dark:bg-neutral-800
                 ">
                 <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Vista previa:

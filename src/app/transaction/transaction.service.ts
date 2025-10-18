@@ -108,7 +108,7 @@ const transactionService = {
     file: File,
     userId: string,
     transactionId: string,
-    type?: string,
+    type: string,
     text?: string
   ) {
     const destination = `${transactionId}/${userId}/${file.lastModified + file.name}`;
@@ -140,14 +140,14 @@ const transactionService = {
       userId,
       transactionId,
       text ?? file.name,
-      { type: type ?? "multimedia", url: publicUrl }
+      { type: type, url: publicUrl }
     );
 
     return {
       ok: true,
       message: {
         text: file.name,
-        metadata: { type: type ?? "multimedia", url: publicUrl }
+        metadata: { type: type, url: publicUrl }
       }
     };
   },

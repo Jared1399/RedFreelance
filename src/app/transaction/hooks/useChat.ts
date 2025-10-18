@@ -15,6 +15,7 @@ type UseChatReturn = {
   sendMessage: (text?: string, file?: File | null, metadata?: Metadata) => Promise<boolean>;
   messagesContainerRef: React.RefObject<HTMLDivElement | null>;
   messagesEndRef: React.RefObject<HTMLDivElement | null>;
+  uploadingFile: boolean
 };
 
 export function useChat(
@@ -25,6 +26,7 @@ export function useChat(
   const [conversation, setConversation] = useState<ConversationInterface | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [resetFile, setResetFile] = useState(false);
+  const [uploadingFile, setUploadingFile] = useState(false);
 
   const socketRef = useRef<Socket | null>(null);
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
@@ -112,44 +114,84 @@ export function useChat(
   const sendMessage = useCallback(
     async (text?: string, file?: File | null, metadata?: Metadata) => {
       try {
-        if ((!text || !text.trim()) && !file) return false;
         const newMsgs: LocalMsg[] = [];
 
-        if (file && sessionUserId && currTransaction?.id && conversation) {
+        if (!conversation || !sessionUserId || !currTransaction?.id) return false;
+        if (metadata?.type == 'multimedia' && !file) return false;
+        if (metadata?.type == 'delivery' && !file) return false;
+
+        const emitMessages = () => {
+          if (newMsgs.length > 0) {
+            setMessages((prev) => [...prev, ...newMsgs]);
+            newMsgs.forEach((msg) => socketRef.current?.emit(
+              "message",
+              { ...msg, senderId: sessionUserId, metadata: msg.metadata }
+            ));
+          }
+        };
+
+        if (metadata?.type == 'text') {
+          if (text && text.trim()) {
+            const t = text.trim();
+            await transactionService.sendMessage(sessionUserId, conversation.id, t, metadata);
+            newMsgs.push({ text: t, sender: "me", metadata });
+          }
+          emitMessages();
+        }
+
+        if (metadata?.type == 'multimedia' && file) {
+          setUploadingFile(true);
 
           const { ok, message } = await transactionService.sendAttachment(
             file,
             sessionUserId,
             conversation.id,
             metadata?.type,
-            text
+          );
+
+          if (ok && message) {
+            newMsgs.push({ ...message, sender: "me", metadata: message.metadata });
+
+            setSelectedFile(null);
+            setResetFile(!resetFile);
+          }
+
+
+          if (text && text.trim()) {
+            const t = text.trim();
+            await transactionService.sendMessage(
+              sessionUserId,
+              conversation.id,
+              t,
+              { type: "text" }
+            );
+            newMsgs.push({ text: t, sender: "me", metadata: { type: "text" } });
+          }
+
+          setUploadingFile(false);
+          emitMessages();
+        }
+
+        if (metadata?.type == 'delivery' && file) {
+          setUploadingFile(true);
+
+          const { ok, message } = await transactionService.sendAttachment(
+            file,
+            sessionUserId,
+            conversation.id,
+            metadata?.type,
+            text?.trim() ? text : file.name
           );
 
           if (ok && message) {
             newMsgs.push({ ...message, sender: "me", metadata: message.metadata });
           }
+
           setSelectedFile(null);
           setResetFile(!resetFile);
-        }
+          setUploadingFile(false);
 
-        if (
-          text &&
-          text.trim() &&
-          sessionUserId &&
-          conversation?.id &&
-          metadata?.type != 'delivery'
-        ) {
-          const t = text.trim();
-          await transactionService.sendMessage(sessionUserId, conversation.id, t, metadata);
-          newMsgs.push({ text: t, sender: "me", metadata });
-        }
-
-        if (newMsgs.length > 0) {
-          setMessages((prev) => [...prev, ...newMsgs]);
-          newMsgs.forEach((msg) => socketRef.current?.emit(
-            "message",
-            { ...msg, senderId: sessionUserId, metadata: msg.metadata }
-          ));
+          emitMessages();
         }
 
         return true;
@@ -171,5 +213,6 @@ export function useChat(
     sendMessage,
     messagesContainerRef,
     messagesEndRef,
+    uploadingFile
   };
 }

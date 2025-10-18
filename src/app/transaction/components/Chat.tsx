@@ -27,6 +27,7 @@ export default function Chat() {
     sendMessage,
     messagesContainerRef,
     messagesEndRef,
+    uploadingFile
   } = useChat(currTransaction, session?.userId);
 
   const handleFileChange = (file: File | null) => {
@@ -45,8 +46,10 @@ export default function Chat() {
 
 
   const send = useCallback(async () => {
-    await sendMessage(input, selectedFile);
+    await sendMessage(input, selectedFile, { type: selectedFile ? "multimedia" : "text" });
     setInput("");
+    if (selectedFile) setSelectedFile(null);
+
   }, [input, selectedFile, sendMessage]);
 
   const confirmationModal = currTransaction?.lifecycleId == 1 &&
@@ -101,7 +104,7 @@ export default function Chat() {
                 mr-2 
                 focus:outline-none 
                 text-black
-                ${disabledChat ? "border-red-800 border-4" : ""}
+                disabled:border-neutral-400
                 `}
               placeholder={
                 `${disabledChat ?
@@ -110,18 +113,30 @@ export default function Chat() {
                 }`
               }
               value={input}
-              disabled={disabledChat}
+              disabled={disabledChat || uploadingFile}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), send())}
             />
-            <AddMedia onFileChange={handleFileChange} reset={resetFile} />
 
+            <AddMedia onFileChange={handleFileChange} reset={resetFile} />
 
             <button
               onClick={() => send()}
-              className="bg-amber-700 text-white px-4 py-2 rounded-lg hover:bg-amber-900"
+              className={
+                `
+                bg-amber-700 
+                text-white 
+                px-4 
+                py-2 
+                rounded-lg 
+                hover:bg-amber-900
+              disabled:bg-neutral-400 
+                disabled:cursor-not-allowed
+              disabled:text-gray-400
+                ` }
+              disabled={uploadingFile}
             >
-              Enviar
+              {uploadingFile ? "..." : "Enviar"}
             </button>
           </div>
         </div>

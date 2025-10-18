@@ -1,10 +1,14 @@
 'use client';
+import { watermarkImg } from "@/lib/watermarkImg";
 import { useEffect, useRef, useState } from "react";
+
 interface AddMediaProps {
   onFileChange: (file: File | null) => void;
   reset?: boolean;
 
 }
+
+const watermarkSvg = "/watermark.svg";
 
 export default function AddMedia({ onFileChange, reset }: AddMediaProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -20,13 +24,29 @@ export default function AddMedia({ onFileChange, reset }: AddMediaProps) {
       setPreview(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
     }
+
   }, [reset]);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] ?? null;
-    setSelectedFile(file);
-    setPreview(file ? URL.createObjectURL(file) : null);
-    onFileChange(file);
+
+    if (file && file.type.startsWith('image/')) {
+      try {
+        const processedFile = await watermarkImg(file, watermarkSvg);
+        setSelectedFile(processedFile);
+        setPreview(URL.createObjectURL(processedFile));
+        onFileChange(processedFile);
+      } catch (error) {
+        console.error('Error procesando imagen:', error);
+        setSelectedFile(file);
+        setPreview(URL.createObjectURL(file));
+        onFileChange(file);
+      }
+    } else {
+      setSelectedFile(file);
+      setPreview(file ? URL.createObjectURL(file) : null);
+      onFileChange(file);
+    }
   };
 
   return (
