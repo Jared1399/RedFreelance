@@ -68,10 +68,9 @@ export function useChat(
         setMessages([initialMsg]);
 
         const convRes = await transactionService.getConversationByTransactionId(transactionRef.id);
-
         const conv = convRes?.conversation ?? convRes ?? null;
 
-        if (!conv) {
+        if (!conv?.id) {
           const body = await transactionService.createConversation(
             transactionRef.clientId,
             transactionRef.freelancerId,
@@ -83,13 +82,16 @@ export function useChat(
               transactionRef.id
             );
             const newConv = newConvRes?.conversation ?? newConvRes ?? null;
-            if (mounted) setConversation(newConv ?? null);
+            if (mounted && newConv?.id) {
+              setConversation(newConv);
+            }
           }
-
           return;
         }
 
-        const loaded: LocalMsg[] = conv.messages.map((m: MessageInterface) => ({
+        const msgList = conv.messages ?? [];
+
+        const loaded: LocalMsg[] = msgList.map((m: MessageInterface) => ({
           text: m.text,
           sender: m.senderId === sessionUserId ? "me" : "other",
           metadata: m.metadata,

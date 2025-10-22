@@ -26,7 +26,6 @@ const transactionService = {
     const fetchUserData = await fetch(`${BASE_URL}/api/user/id/${userId}`);
     const userData = await fetchUserData.json();
 
-    delete userData["passwordHash"];
     delete userData["rankCommunity"];
     delete userData["rankPlatform"];
 

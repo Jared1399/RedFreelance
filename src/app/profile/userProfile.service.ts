@@ -10,7 +10,6 @@ const userProfileService = {
     const fetchUserData = await fetch(`${BASE_URL}/api/user/email/${userEmail}`);
     const userData: UserData = await fetchUserData.json();
 
-    delete userData["passwordHash"];
     delete userData["rankCommunity"];
     delete userData["rankPlatform"];
 

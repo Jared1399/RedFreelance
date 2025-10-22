@@ -11,6 +11,9 @@ export async function GET(request: Request, { params }: { params: Promise<{ emai
     include: {
       followers: true,
       following: true
+    },
+    omit: {
+      passwordHash: true
     }
   });
 

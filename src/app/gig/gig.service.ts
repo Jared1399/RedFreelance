@@ -27,7 +27,6 @@ const gigService = {
     const fetchUserData = await fetch(`${BASE_URL}/api/user/email/${userEmail}`);
     const userData = await fetchUserData.json();
 
-    delete userData["passwordHash"];
     delete userData["rankCommunity"];
     delete userData["rankPlatform"];
 

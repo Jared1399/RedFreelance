@@ -61,6 +61,8 @@ export default function Chat() {
     <Message key={msg.id ?? idx} msg={msg as LocalMsg} />
   ));
 
+  const isFreelancer = session?.userId == currTransaction?.freelancerId;
+
   return (
     <>
       {currTransaction ? (
@@ -91,8 +93,8 @@ export default function Chat() {
           </div>
 
           <div className="flex items-center p-4 bg-neutral-300 border-t rounded-b-lg relative">
-            {confirmationModal}
-            {(session?.userId == currTransaction.freelancerId) && <DeliveryModal />}
+            {isFreelancer && confirmationModal}
+            {isFreelancer && <DeliveryModal />}
             <input
               type="text"
               className={`

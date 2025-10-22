@@ -25,39 +25,7 @@ export async function GET(request: Request) {
 };
 
 export async function POST(request: Request) {
-  const {
-    clientId,
-    freelancerId,
-    transactionId
-  } = await request.json();
-
-  const clientParticipant = await prisma.conversationParticipant.findFirst({
-    where: {
-      userId: clientId
-    }
-  });
-
-  if (!clientParticipant) {
-    await prisma.conversationParticipant.create({
-      data: {
-        userId: clientId
-      }
-    });
-  }
-
-  const freelanceParticipant = await prisma.conversationParticipant.findFirst({
-    where: {
-      userId: freelancerId
-    }
-  });
-
-  if (!freelanceParticipant) {
-    await prisma.conversationParticipant.create({
-      data: {
-        userId: freelancerId
-      }
-    });
-  }
+  const { clientId, freelancerId, transactionId } = await request.json();
 
   const existingConversation = await prisma.conversation.findFirst({
     where: {
@@ -70,26 +38,24 @@ export async function POST(request: Request) {
     include: { participants: true },
   });
 
-  let conversation = existingConversation;
-
-
-  if (!conversation) {
-    const participantData = clientId === freelancerId
-      ? [{ userId: clientId }]
-      : [{ userId: clientId }, { userId: freelancerId }];
-
-    conversation = await prisma.conversation.create({
-      data: {
-        transactionId,
-        participants: {
-          create: participantData
-        }
-      },
-      include: {
-        participants: { include: { user: true } }
-      }
-    });
+  if (existingConversation) {
+    return NextResponse.json({ ok: true, conversation: existingConversation });
   }
 
+  const conversation = await prisma.conversation.create({
+    data: {
+      transactionId,
+      participants: {
+        create: [
+          { userId: clientId },
+          { userId: freelancerId }
+        ]
+      }
+    },
+    include: {
+      participants: { include: { user: true } }
+    }
+  });
+
   return NextResponse.json({ ok: true, conversation });
-};
+}

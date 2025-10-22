@@ -7,6 +7,9 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   const user = await prisma.user.findFirst({
     where: {
       id: param.id
+    },
+    omit: {
+      passwordHash: true
     }
   });
 
