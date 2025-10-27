@@ -1,11 +1,14 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: Request) {
   const {
     nextLifecycle,
     transactionId,
-    deliveryTime
+    deliveryTime,
+    newDelivery
   } = await request.json();
 
   const transaction = await prisma.transaction.findUnique({
@@ -27,9 +30,10 @@ export async function POST(request: Request) {
       id: transactionId
     },
     data: {
-      lifecycleId: nextLifecycle,
+      lifecycleId: nextLifecycle ? nextLifecycle : undefined,
       dueDate: deliveryTime ? newDueDate : undefined,
-      expirationDate: deliveryTime ? newDueDate : undefined
+      expirationDate: deliveryTime ? newDueDate : undefined,
+      delivery_count: newDelivery ? transaction.delivery_count + 1 : undefined
     }
   });
 

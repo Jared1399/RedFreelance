@@ -1,0 +1,5 @@
+.text-sm.delivery-msg p,
+.text-sm.delivery-msg ul,
+.text-sm.delivery-msg li {
+  color: black !important;
+}

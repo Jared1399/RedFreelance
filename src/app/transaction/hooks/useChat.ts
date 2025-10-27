@@ -176,13 +176,13 @@ export function useChat(
 
         if (metadata?.type == 'delivery' && file) {
           setUploadingFile(true);
-
           const { ok, message } = await transactionService.sendAttachment(
             file,
             sessionUserId,
             conversation.id,
             metadata?.type,
-            text?.trim() ? text : file.name
+            text ? text.trim() : file.name,
+            currTransaction.id
           );
 
           if (ok && message) {

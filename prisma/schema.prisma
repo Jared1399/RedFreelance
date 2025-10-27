@@ -200,6 +200,7 @@ model Transaction {
   createdAt      DateTime?      @default(now())
   updatedAt      DateTime?      @updatedAt
   baseConditions Json
+  delivery_count Int            @default(0)
   tier           GigTier        @relation(fields: [tierId], references: [id])
   freelancer     User           @relation("FreelancerTransactions", fields: [freelancerId], references: [id])
   client         User           @relation("ClientTransactions", fields: [clientId], references: [id])

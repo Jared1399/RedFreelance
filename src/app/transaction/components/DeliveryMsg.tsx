@@ -1,7 +1,7 @@
 import React from 'react';
 import { LocalMsg, Metadata } from '../types/Chat';
 import MarkdownViewer from '@/components/MarkdownViewer';
-
+import './index.css';
 
 export default function DeliveryMsg(
   { msg, downloadHandler }:
@@ -15,7 +15,7 @@ export default function DeliveryMsg(
       <div className="space-y-2">
         <div className="font-semibold">Entrega</div>
 
-        <div className="text-sm">
+        <div className={`text-sm ${msg.sender == 'other' ? 'delivery-msg' : ''}`}>
           <MarkdownViewer content={msg.text} />
         </div>
         {url && (

@@ -93,6 +93,25 @@ const transactionService = {
 
     return transaction;
   },
+  async newDelivery(transactionId: string) {
+    const data = { newDelivery: true, transactionId };
+
+    const newDeliveryUrl = `${BASE_URL}/api/user/transaction/update`;
+    const options = {
+
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    const updateDelivery = await fetch(newDeliveryUrl, options);
+
+    const transaction = await updateDelivery.json();
+
+    return transaction;
+  },
   async fetchLifecycleInfo(name: string) {
     const lifecycleQuery = queryBuilder({ name });
     const getLifecycleUrl = `${BASE_URL}/api/lifecycle${lifecycleQuery}`;
@@ -106,15 +125,16 @@ const transactionService = {
   async sendAttachment(
     file: File,
     userId: string,
-    transactionId: string,
+    chatId: string,
     type: string,
-    text?: string
+    text?: string,
+    transactionId?: string
   ) {
-    const destination = `${transactionId}/${userId}/${file.lastModified + file.name}`;
 
-    const pfpQuery = queryBuilder({ userId, destination, type: file.type });
+    const destination = `${chatId}/${userId}/${file.lastModified + file.name}`;
+    const uploadQuery = queryBuilder({ userId, destination, type: file.type });
 
-    const tokenRes = await fetch(`${BASE_URL}/api/upload/transaction${pfpQuery}`);
+    const tokenRes = await fetch(`${BASE_URL}/api/upload/transaction${uploadQuery}`);
     const tokenData = await tokenRes.json();
 
     const { uploadUrl, key } = tokenData;
@@ -137,15 +157,19 @@ const transactionService = {
 
     await this.sendMessage(
       userId,
-      transactionId,
+      chatId,
       text ?? file.name,
       { type: type, url: publicUrl }
     );
 
+    if (transactionId && type == 'delivery') {
+      this.newDelivery(transactionId);
+    }
+
     return {
       ok: true,
       message: {
-        text: file.name,
+        text: text ?? file.name,
         metadata: { type: type, url: publicUrl }
       }
     };
