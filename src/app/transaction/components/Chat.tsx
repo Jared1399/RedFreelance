@@ -52,8 +52,17 @@ export default function Chat() {
 
   }, [input, selectedFile, sendMessage]);
 
-  const confirmationModal = currTransaction?.lifecycleId == 1 &&
-    <ConfirmationModal />;
+  const acceptTransaction = currTransaction?.lifecycle.name == 'requested' &&
+    <ConfirmationModal
+      label="Comenzar con este trabajo?"
+      options={{ accept: "payment_pending", deny: "rejected_on_request" }}
+    />;
+
+  const acceptDelivery = currTransaction?.lifecycle.name == 'on_review' &&
+    <ConfirmationModal
+      label="La entrega ha sido realizada, aceptar y finalizar trabajo?"
+      options={{ accept: "completed", deny: "disputed" }}
+    />;
 
   const disabledChat = currTransaction?.disabledChat ?? false;
 
@@ -93,7 +102,8 @@ export default function Chat() {
           </div>
 
           <div className="flex items-center p-4 bg-neutral-300 border-t rounded-b-lg relative">
-            {isFreelancer && confirmationModal}
+            {isFreelancer && acceptTransaction}
+            {!isFreelancer && acceptDelivery}
             {isFreelancer && <DeliveryModal />}
             <input
               type="text"
