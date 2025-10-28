@@ -15,13 +15,13 @@ export default function ConfirmationModal({ options, label }: { options: Options
         <p>{label}</p>
         <div className="flex flex-row w-full justify-around">
           <button
-            className="bg-green-800 px-8 py-1 rounded-lg"
+            className="bg-green-800 px-8 py-1 rounded-lg cursor-pointer"
             onClick={() => actions.updateTransactionLifeCycle(options.accept)}
           >
             Si
           </button>
           <button
-            className="bg-red-700 px-8 py-1 rounded-lg"
+            className="bg-red-700 px-8 py-1 rounded-lg cursor-pointer"
             onClick={() => actions.updateTransactionLifeCycle(options.deny)}
           >
             No

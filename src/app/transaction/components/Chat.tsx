@@ -4,11 +4,12 @@ import Message from "./Message";
 import { useSession } from "next-auth/react";
 import { TransactionContext } from "../hooks/UseTransaction/context";
 import ConfirmationModal from "./ConfirmationModal";
-import TimeOutBanner from "./TimeOutBanner";
+import InfoBanner from "./InfoBanner";
 import AddMedia from "./AddMedia";
 import { useChat } from "../hooks/useChat";
 import DeliveryModal from "./DeliveryModal";
 import { LocalMsg } from "../types/Chat";
+import formatDateES from '@/lib/timeago';
 
 
 export default function Chat() {
@@ -30,20 +31,47 @@ export default function Chat() {
     uploadingFile
   } = useChat(currTransaction, session?.userId);
 
+
+  const isFreelancer = session?.userId == currTransaction?.freelancerId;
+
+  const disabledChat = !!currTransaction?.disabledChat;
+
+  const date = state.currentTransaction?.expirationDate;
+  const formattedDate = date ? formatDateES(date.toString()) : '';
+
+  const isAvailableBanner = currTransaction?.lifecycle?.name === 'completed' ?
+    "Este trabajo ha sido completado exitosamente" :
+    disabledChat ?
+      "Esta conversación ya no está disponible"
+      :
+      `Esta conversación está disponible hasta dentro de ${formattedDate}`;
+
   const handleFileChange = (file: File | null) => {
     setSelectedFile(file);
   };
+
+  const acceptTransaction = currTransaction?.lifecycle?.name == 'requested' &&
+    <ConfirmationModal
+      label="Comenzar con este trabajo?"
+      options={{ accept: "payment_pending", deny: "rejected_on_request" }}
+    />;
+
+  const acceptDelivery = currTransaction?.lifecycle?.name == 'on_review' &&
+    <ConfirmationModal
+      label="La entrega ha sido realizada, aceptar y finalizar trabajo?"
+      options={{ accept: "completed", deny: "disputed" }}
+    />;
+
+
+  const messageList = messages.map((msg, idx) => (
+    <Message key={msg.id ?? idx} msg={msg as LocalMsg} />
+  ));
 
   const scrollToBottom = useCallback(() => {
     const container = messagesContainerRef.current;
     if (!container) return;
     container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
   }, [messagesContainerRef]);
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages, scrollToBottom]);
-
 
   const send = useCallback(async () => {
     await sendMessage(input, selectedFile, { type: selectedFile ? "multimedia" : "text" });
@@ -52,25 +80,9 @@ export default function Chat() {
 
   }, [input, selectedFile, sendMessage]);
 
-  const acceptTransaction = currTransaction?.lifecycle.name == 'requested' &&
-    <ConfirmationModal
-      label="Comenzar con este trabajo?"
-      options={{ accept: "payment_pending", deny: "rejected_on_request" }}
-    />;
-
-  const acceptDelivery = currTransaction?.lifecycle.name == 'on_review' &&
-    <ConfirmationModal
-      label="La entrega ha sido realizada, aceptar y finalizar trabajo?"
-      options={{ accept: "completed", deny: "disputed" }}
-    />;
-
-  const disabledChat = currTransaction?.disabledChat ?? false;
-
-  const messageList = messages.map((msg, idx) => (
-    <Message key={msg.id ?? idx} msg={msg as LocalMsg} />
-  ));
-
-  const isFreelancer = session?.userId == currTransaction?.freelancerId;
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, scrollToBottom]);
 
   return (
     <>
@@ -90,8 +102,9 @@ export default function Chat() {
         >
           <div className="bg-accent text-white font-bold p-4 relative">
             {`${currTransaction?.gig?.title} - ${currTransaction?.tier?.name}`}
-            <TimeOutBanner />
+            <InfoBanner content={isAvailableBanner} icon="🛈" />
           </div>
+
           <div
             ref={messagesContainerRef}
             className="flex-1 overflow-y-auto p-4 space-y-2"
@@ -102,9 +115,11 @@ export default function Chat() {
           </div>
 
           <div className="flex items-center p-4 bg-neutral-300 border-t rounded-b-lg relative">
+
             {isFreelancer && acceptTransaction}
+            {!disabledChat && (isFreelancer && <DeliveryModal />)}
             {!isFreelancer && acceptDelivery}
-            {isFreelancer && <DeliveryModal />}
+
             <input
               type="text"
               className={`
@@ -130,7 +145,7 @@ export default function Chat() {
               onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), send())}
             />
 
-            <AddMedia onFileChange={handleFileChange} reset={resetFile} />
+            {!disabledChat && <AddMedia onFileChange={handleFileChange} reset={resetFile} />}
 
             <button
               onClick={() => send()}
@@ -144,9 +159,9 @@ export default function Chat() {
                 hover:bg-amber-900
               disabled:bg-neutral-400 
                 disabled:cursor-not-allowed
-              disabled:text-gray-400
+              disabled:text-gray-100
                 ` }
-              disabled={uploadingFile}
+              disabled={uploadingFile || disabledChat}
             >
               {uploadingFile ? "..." : "Enviar"}
             </button>
