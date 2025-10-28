@@ -4,7 +4,8 @@ import { prisma } from "@/lib/prisma";
 export async function POST(request: Request) {
   const {
     transactionId,
-    nextState
+    nextState,
+    completed
   } = await request.json();
 
   const lifecycle = await prisma.lifecycle.findFirst({
@@ -23,7 +24,8 @@ export async function POST(request: Request) {
   const newCategory = await prisma.transaction.update({
     where: { id: transactionId },
     data: {
-      lifecycleId: lifecycle.id
+      lifecycleId: lifecycle.id,
+      completed: completed
     }
   });
 

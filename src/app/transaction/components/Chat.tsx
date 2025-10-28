@@ -62,7 +62,6 @@ export default function Chat() {
       options={{ accept: "completed", deny: "disputed" }}
     />;
 
-
   const messageList = messages.map((msg, idx) => (
     <Message key={msg.id ?? idx} msg={msg as LocalMsg} />
   ));

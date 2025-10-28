@@ -76,7 +76,9 @@ const transactionService = {
   async updateTransactionLifecycle(nextId: string, transactionId: string, deliveryTime?: number) {
     const lifecycle = await this.fetchLifecycleInfo(nextId);
 
-    const data = { nextLifecycle: lifecycle.id, transactionId, deliveryTime };
+    const completed = nextId == 'completed';
+
+    const data = { nextLifecycle: lifecycle.id, transactionId, deliveryTime, completed };
 
     const updateTransactionUrl = `${BASE_URL}/api/user/transaction/update`;
     const options = {

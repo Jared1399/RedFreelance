@@ -7,7 +7,8 @@ export async function POST(request: Request) {
     nextLifecycle,
     transactionId,
     deliveryTime,
-    newDelivery
+    newDelivery,
+    completed
   } = await request.json();
 
   const transaction = await prisma.transaction.findUnique({
@@ -32,7 +33,8 @@ export async function POST(request: Request) {
       lifecycleId: nextLifecycle ? nextLifecycle : undefined,
       dueDate: deliveryTime ? newDueDate : undefined,
       expirationDate: deliveryTime ? newDueDate : undefined,
-      delivery_count: newDelivery ? transaction.delivery_count + 1 : undefined
+      delivery_count: newDelivery ? transaction.delivery_count + 1 : undefined,
+      completed: completed
     }
   });
 
