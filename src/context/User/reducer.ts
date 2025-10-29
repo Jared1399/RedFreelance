@@ -7,6 +7,7 @@ interface Action {
 
 interface UserData {
   id: string;
+  balance: number
   firstName: string;
   lastName: string;
   email: string;

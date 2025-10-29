@@ -1,4 +1,4 @@
-import { useReducer } from 'react';
+import { useEffect, useReducer } from 'react';
 import { reducer, initialState } from './reducer';
 import { useSession } from "next-auth/react";
 import { queryBuilder } from '@/lib/utils';
@@ -32,6 +32,10 @@ const useUser = () => {
 
     }
   };
+
+  useEffect(() => {
+    actions.fetchUserData();
+  }, [session?.userId]);
 
   return {
     actions,

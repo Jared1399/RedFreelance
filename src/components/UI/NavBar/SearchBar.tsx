@@ -9,14 +9,12 @@ import { queryBuilder } from '@/lib/utils';
 
 
 const inputCls = clsx(
-  "w-fit",
+  "w-full",
   "border",
   "border-solid",
   "border-white",
   "rounded",
-  "px-2",
   "py-1",
-  "relative"
 );
 
 export default function SearchBar() {
@@ -51,10 +49,20 @@ export default function SearchBar() {
   };
 
   const searchResults = (
-    <div className='absolute top-9 left-0 min-w-1 rounded-b-lg'>
+    <div className='
+      absolute 
+      top-10 
+      right 
+      w-[100%] 
+      min-w-1 
+      rounded-lg 
+      z-100 
+      bg-neutral-700 
+      overflow-hidden'
+    >
       {search && showResults && state.searchGigs.map((gig) => (
         <div
-          className="w-full bg-neutral-700 h-fit px-2 py-1 hover:bg-neutral-800 cursor-pointer"
+          className="w-full h-fit px-2 py-1 hover:bg-neutral-800 cursor-pointer"
           key={gig.id}
           onClick={() => handleSearchGig(gig)}
         >
@@ -64,7 +72,7 @@ export default function SearchBar() {
     </div>);
 
   return (
-    <>
+    <div className='relative'>
       <input
         type="text"
         autoComplete="off"
@@ -81,6 +89,6 @@ export default function SearchBar() {
 
       />
       {searchResults}
-    </>
+    </div>
   );
 }

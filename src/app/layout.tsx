@@ -28,15 +28,17 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning >
       <body
-        className={`${inter.variable} antialiased`}
+        className={`${inter.variable} antialiased w-full`}
       >
         <AuthProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <NavBar />
-            <div className="mt-6 min-h-[40vh]">
-              {children}
+            <div className="w-full">
+              <NavBar />
+              <div className="mt-6 min-h-[40vh]">
+                {children}
+              </div>
+              <Footer />
             </div>
-            <Footer />
           </ThemeProvider>
         </AuthProvider>
       </body>
