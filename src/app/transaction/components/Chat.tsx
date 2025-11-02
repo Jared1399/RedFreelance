@@ -122,25 +122,29 @@ export default function Chat() {
       {currTransaction ? (
         <div
           className="
-            flex 
-            flex-col 
-            h-screen 
-            bg-gray-100 
-            mx-2 
-            dark:bg-card 
-            dark:border 
-            rounded-lg 
-            overflow-x-hidden
-          "
+        flex 
+        flex-col 
+        h-dvh 
+        md:h-screen
+        bg-gray-100 
+        mx-0 
+        dark:bg-card 
+        dark:border 
+        rounded-none md:rounded-lg 
+        overflow-x-hidden
+        w-full
+      "
         >
-          <div className="bg-accent text-white font-bold p-4 relative">
-            {`${currTransaction?.gig?.title} - ${currTransaction?.tier?.name}`}
+          <div className="bg-accent text-white font-bold p-3 md:p-4 relative">
+            <div className="text-sm md:text-base truncate">
+              {`${currTransaction?.gig?.title} - ${currTransaction?.tier?.name}`}
+            </div>
             <InfoBanner content={isAvailableBanner} icon="🛈" />
           </div>
 
           <div
             ref={messagesContainerRef}
-            className="flex-1 overflow-y-auto p-4 space-y-2"
+            className="flex-1 overflow-y-auto p-3 md:p-4 space-y-2"
             style={{ maxHeight: "100%" }}
           >
             {messageList}
@@ -148,7 +152,7 @@ export default function Chat() {
 
           </div>
 
-          <div className="flex items-center p-4 bg-neutral-300 border-t rounded-b-lg relative">
+          <div className="flex items-center p-3 md:p-4 bg-neutral-300 border-t rounded-b-lg gap-2">
 
             {isFreelancer && acceptTransaction}
             {showDeliveryModal}
@@ -160,13 +164,14 @@ export default function Chat() {
                 flex-1 
                 border 
                 rounded-lg 
-                px-4 
+                px-3 md:px-4 
                 py-2 
-                mr-2 
+                text-sm md:text-base
                 focus:outline-none 
                 text-black
                 disabled:border-neutral-400
-                `}
+                min-w-0
+              `}
               placeholder={
                 `${disabledChat ?
                   "Este chat ya no esta disponible" :
@@ -183,18 +188,20 @@ export default function Chat() {
 
             <button
               onClick={() => send()}
-              className={
-                `
-                bg-amber-700 
-                text-white 
-                px-4 
-                py-2 
-                rounded-lg 
-                hover:bg-amber-900
-              disabled:bg-neutral-400 
-                disabled:cursor-not-allowed
-              disabled:text-gray-100
-                ` }
+              className={`
+            bg-amber-700 
+            text-white 
+            px-3 md:px-4 
+            py-2 
+            rounded-lg 
+            hover:bg-amber-900
+            disabled:bg-neutral-400 
+            disabled:cursor-not-allowed
+            disabled:text-gray-100
+            text-sm md:text-base
+            whitespace-nowrap
+            flex-shrink-0
+          `}
               disabled={uploadingFile || disabledChat}
             >
               {uploadingFile ? "..." : "Enviar"}
@@ -202,7 +209,7 @@ export default function Chat() {
           </div>
         </div>
       ) : (
-        <div>Selecciona o crea una transaccion para continuar</div>
+        <div className="p-4 text-center">Selecciona o crea una transacción para continuar</div>
       )}
     </>
   );

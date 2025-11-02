@@ -18,27 +18,14 @@ import Image from "../Image";
 import SearchBar from "./SearchBar";
 import useUser from "@/context/User/useUser";
 
-
 export function NavBar() {
   const { data: session } = useSession();
   const { state: userState } = useUser();
 
-  const profileLink = session ? (
-    <>
-      <NavigationMenuItem>
-        <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-          <Link href="/profile">
-            Perfil
-          </Link>
-        </NavigationMenuLink>
-      </NavigationMenuItem>
-    </>
-  ) : null;
-
-
   return (
-    <div className="w-full bg-background z-50 pt-2">
-      <div className="flex items-center w-full px-4 pt-4">
+    <div className="w-full bg-background z-50">
+      {/* Desktop */}
+      <div className="hidden md:flex items-center w-full px-4 pt-4">
         <div className="flex-1 flex items-center gap-4">
           <NavigationMenu>
             <NavigationMenuList>
@@ -68,7 +55,6 @@ export function NavBar() {
                   <Link href="/gig">Trabajos</Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
-
             </NavigationMenuList>
           </NavigationMenu>
 
@@ -79,10 +65,16 @@ export function NavBar() {
 
         <NavigationMenu>
           <NavigationMenuList className="flex items-center gap-4">
-            {profileLink}
+            {session && (
+              <>
+                <NavigationMenuItem>
+                  <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+                    <Link href="/profile">
+                      Perfil
+                    </Link>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
 
-            {
-              session && (
                 <NavigationMenuItem>
                   <NavigationMenuLink
                     asChild
@@ -91,8 +83,8 @@ export function NavBar() {
                     <span>CLP {userState.userData.balance}</span>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
-              )
-            }
+              </>
+            )}
 
             <NavigationMenuItem>
               <NavigationMenuTrigger className={navigationMenuTriggerStyle()}>
@@ -104,9 +96,117 @@ export function NavBar() {
                 </div>
               </NavigationMenuContent>
             </NavigationMenuItem>
-
           </NavigationMenuList>
         </NavigationMenu>
+      </div>
+
+      <div className="md:hidden">
+        <div className="flex items-center justify-between w-full px-4 pt-4 pb-2">
+          <div>
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+                    <Link href="/">
+                      <Image alt="RedFreelance Home" src="/Logo_RF_sm.svg" className="w-8" />
+                    </Link>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
+          </div>
+
+          <div className="flex items-center gap-2">
+            {session && (
+              <>
+                <NavigationMenu>
+                  <NavigationMenuList>
+                    <NavigationMenuItem>
+                      <NavigationMenuLink
+                        asChild
+                        className={`${navigationMenuTriggerStyle()} text-primary font-medium text-sm`}
+                      >
+                        <span>${userState.userData.balance}</span>
+                      </NavigationMenuLink>
+                    </NavigationMenuItem>
+                  </NavigationMenuList>
+                </NavigationMenu>
+
+                <NavigationMenu>
+                  <NavigationMenuList>
+                    <NavigationMenuItem>
+                      <NavigationMenuTrigger className={navigationMenuTriggerStyle()}>
+                        👤
+                      </NavigationMenuTrigger>
+                      <NavigationMenuContent>
+                        <div className="p-4 min-w-[150px]">
+                          <div className="space-y-2">
+                            <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+                              <Link href="/profile" className="block w-full text-center">
+                                Mi Perfil
+                              </Link>
+                            </NavigationMenuLink>
+                            <div className="pt-2 border-t">
+                              <UiLoginBtn />
+                            </div>
+                          </div>
+                        </div>
+                      </NavigationMenuContent>
+                    </NavigationMenuItem>
+                  </NavigationMenuList>
+                </NavigationMenu>
+              </>
+            )}
+
+            {!session && (
+              <NavigationMenu>
+                <NavigationMenuList>
+                  <NavigationMenuItem>
+                    <NavigationMenuTrigger className={navigationMenuTriggerStyle()}>
+                      Entrar
+                    </NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                      <div className="p-4 min-w-[200px]">
+                        <UiLoginBtn />
+                      </div>
+                    </NavigationMenuContent>
+                  </NavigationMenuItem>
+                </NavigationMenuList>
+              </NavigationMenu>
+            )}
+          </div>
+        </div>
+
+        <div className="flex justify-center w-full px-4 pb-2">
+          <div className="w-full max-w-2xl">
+            <SearchBar />
+          </div>
+        </div>
+
+        <div className="flex justify-center w-full px-4 pb-4">
+          <NavigationMenu>
+            <NavigationMenuList className="flex items-center gap-4">
+              <NavigationMenuItem>
+                <NavigationMenuTrigger className="text-sm">
+                  Categorías
+                </NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <ul className="grid w-[300px] gap-2">
+                    <CategoryList />
+                  </ul>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+
+              <NavigationMenuItem>
+                <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+                  <Link href="/gig" className="text-sm">
+                    Trabajos
+                  </Link>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
+        </div>
       </div>
     </div>
   );
@@ -131,6 +231,5 @@ export function ListItem({
     </li>
   );
 }
-
 
 export default NavBar;

@@ -41,7 +41,6 @@ const useTransaction = ({ transactionId, userId }: { transactionId?: string, use
       );
     },
     async handleDeliveryLocal() {
-
       const deliveredLifecycle = await transactionService.fetchLifecycleInfo('on_review');
 
       dispatch({
@@ -51,7 +50,6 @@ const useTransaction = ({ transactionId, userId }: { transactionId?: string, use
         }
       });
     }
-
   };
 
   useEffect(() => {

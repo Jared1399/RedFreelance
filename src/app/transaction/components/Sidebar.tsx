@@ -1,20 +1,49 @@
 'use client';
 import React, { useContext, useState } from "react";
-import { Home } from "lucide-react";
+import { Home, Menu, X } from "lucide-react";
 import { TransactionInterface } from "../types/Transaction";
 import { TransactionContext } from "../hooks/UseTransaction/context";
-
 
 export default function Sidebar(
   { children, sidebarItems }:
     { children: React.ReactNode, sidebarItems: [] }
 ) {
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   return (
     <div className="flex">
-      <SidebarBody sidebarItems={sidebarItems} />
+      {isMobileOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+          onClick={() => setIsMobileOpen(false)}
+        />
+      )}
 
-      <div className="flex-1">
+      <SidebarBody
+        sidebarItems={sidebarItems}
+        isMobileOpen={isMobileOpen}
+        setIsMobileOpen={setIsMobileOpen}
+      />
+
+      <div className="flex-1 relative">
+        <button
+          onClick={() => setIsMobileOpen(true)}
+          className="
+            md:hidden 
+            fixed 
+            top-5 
+            left-4 
+            z-30 
+            bg-amber-700 
+            text-white 
+            p-2 
+            rounded-md 
+            shadow-lg
+          "
+        >
+          <Menu size={20} />
+        </button>
+
         {children}
       </div>
     </div>
@@ -26,12 +55,21 @@ type SidebarItemProps = {
   text: string;
   open: boolean;
   id: string;
+  isMobile?: boolean;
 };
 
-const SidebarBody = ({ sidebarItems }: { sidebarItems: [] }) => {
+const SidebarBody = ({
+  sidebarItems,
+  isMobileOpen,
+  setIsMobileOpen
+}: {
+  sidebarItems: [];
+  isMobileOpen: boolean;
+  setIsMobileOpen: (open: boolean) => void;
+}) => {
   const [open, setOpen] = useState(true);
 
-  if (!sidebarItems.length) return;
+  if (!sidebarItems.length) return null;
 
   const items = sidebarItems.map((item: TransactionInterface, i: number) => {
     const trimTitle = `${item.gig.title} - ${item.tier.name}`.slice(0, 15).concat("...");
@@ -43,32 +81,61 @@ const SidebarBody = ({ sidebarItems }: { sidebarItems: [] }) => {
         open={open}
         id={item.id}
         key={i}
+        isMobile={isMobileOpen}
+        onItemClick={() => setIsMobileOpen(false)}
       />
     );
   });
 
   return (
     <div
-      className={`${open ? "w-60" : "w-16"
-        } bg-neutral-700 text-white h-screen p-4 transition-all duration-300 flex flex-col`}
+      className={`
+        bg-neutral-700 text-white h-dvh p-4 transition-all duration-300 flex flex-col
+        fixed md:relative z-50 top-0 left-0 mr-2
+        ${open ? "w-60" : "w-16"}
+        ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
+        md:translate-x-0
+      `}
     >
-      <button
-        onClick={() => setOpen(!open)}
-        className="mb-6 text-gray-300 hover:text-white place-self-start"
-      >
-        {open ? "⏪" : "⏩"}
-      </button>
+      <div className="flex items-center justify-between mb-6">
+        <button
+          onClick={() => setOpen(!open)}
+          className="text-gray-300 hover:text-white"
+        >
+          {open ? "⏪" : "⏩"}
+        </button>
 
-      <nav className="flex flex-col gap-4">
+        <button
+          onClick={() => setIsMobileOpen(false)}
+          className="md:hidden text-gray-300 hover:text-white"
+        >
+          <X size={20} />
+        </button>
+      </div>
+
+      <nav className="flex flex-col gap-4 flex-1">
         {items}
       </nav>
     </div>
   );
 };
 
-
-function SidebarItem({ icon, text, open, id }: SidebarItemProps) {
+function SidebarItem({
+  icon,
+  text,
+  open,
+  id,
+  isMobile,
+  onItemClick
+}: SidebarItemProps & { onItemClick?: () => void }) {
   const { actions, state } = useContext(TransactionContext);
+
+  const handleClick = () => {
+    actions.setCurrentTransaction(id);
+    if (isMobile && onItemClick) {
+      onItemClick();
+    }
+  };
 
   return (
     <div
@@ -85,7 +152,7 @@ function SidebarItem({ icon, text, open, id }: SidebarItemProps) {
         duration-300
         ${state.currentTransaction?.id == id ? 'bg-amber-700' : ""}
       `}
-      onClick={() => actions.setCurrentTransaction(id)}
+      onClick={handleClick}
     >
       {icon}
       <span
@@ -94,7 +161,7 @@ function SidebarItem({ icon, text, open, id }: SidebarItemProps) {
           transition-opacity 
           duration-200 
           ${open ? "opacity-100" : "opacity-0"}
-          `}
+        `}
       >
         {text}
       </span>
