@@ -34,9 +34,25 @@ export async function POST(request: Request) {
       dueDate: deliveryTime ? newDueDate : undefined,
       expirationDate: deliveryTime ? newDueDate : undefined,
       delivery_count: newDelivery ? transaction.delivery_count + 1 : undefined,
-      completed: completed
+      completed: completed,
     }
   });
+
+  if (completed) {
+    const amountToAdd = Math.trunc(
+      transaction.amount.toNumber() * (1 - transaction.commissionRate)
+    );
+    const updateFreelancer = await prisma.user.update({
+      where: { id: transaction.freelancerId },
+      data: {
+        balance: {
+          increment: amountToAdd
+        }
+      }
+    });
+
+    return NextResponse.json({ ok: true, updatedTransaction, updateFreelancer });
+  }
 
   return NextResponse.json({ ok: true, updatedTransaction });
 };

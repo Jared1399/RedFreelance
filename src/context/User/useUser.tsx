@@ -16,9 +16,9 @@ const useUser = () => {
         const res = await fetch(`${BASE_URL}/api/user/id/${session?.userId}`);
         const data = await res.json();
 
-        delete data["passwordHash"];
         delete data["rankCommunity"];
         delete data["rankPlatform"];
+
         dispatch({ type: 'INIT', payload: { data } });
       }
     },

@@ -48,6 +48,16 @@ const reducer = (state: InitialState = initialState, action: Action): InitialSta
           lifecycle: action.payload.newLifecycle
         } as TransactionInterface
       };
+    },
+    HANDLE_DELIVERY_LOCALLY: () => {
+      return {
+        ...state,
+        currentTransaction: {
+          ...state.currentTransaction,
+          lifecycle: action.payload.lifecycle,
+          lifecycleId: action.payload.lifecycle.id
+        } as TransactionInterface
+      };
     }
   };
 

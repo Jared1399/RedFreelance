@@ -39,6 +39,17 @@ const useTransaction = ({ transactionId, userId }: { transactionId?: string, use
           payload: { updatedTransaction, newLifecycle }
         }
       );
+    },
+    async handleDeliveryLocal() {
+
+      const deliveredLifecycle = await transactionService.fetchLifecycleInfo('on_review');
+
+      dispatch({
+        type: 'HANDLE_DELIVERY_LOCALLY',
+        payload: {
+          lifecycle: deliveredLifecycle,
+        }
+      });
     }
 
   };

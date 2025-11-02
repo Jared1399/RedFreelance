@@ -81,14 +81,18 @@ export function NavBar() {
           <NavigationMenuList className="flex items-center gap-4">
             {profileLink}
 
-            <NavigationMenuItem>
-              <NavigationMenuLink
-                asChild
-                className={`${navigationMenuTriggerStyle()} text-primary font-medium`}
-              >
-                <span>CLP {userState.userData.balance}</span>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
+            {
+              session && (
+                <NavigationMenuItem>
+                  <NavigationMenuLink
+                    asChild
+                    className={`${navigationMenuTriggerStyle()} text-primary font-medium`}
+                  >
+                    <span>CLP {userState.userData.balance}</span>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              )
+            }
 
             <NavigationMenuItem>
               <NavigationMenuTrigger className={navigationMenuTriggerStyle()}>

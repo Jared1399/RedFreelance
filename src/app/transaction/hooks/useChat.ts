@@ -1,6 +1,7 @@
 "use client";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { RefObject, useCallback, useEffect, useRef, useState } from "react";
 import io, { Socket } from "socket.io-client";
+import { DefaultEventsMap } from '@socket.io/component-emitter';
 import transactionService from "../transaction.service";
 import { ConversationInterface, MessageInterface, LocalMsg, Metadata } from "../types/Chat";
 import { TransactionInterface } from "../types/Transaction";
@@ -15,7 +16,8 @@ type UseChatReturn = {
   sendMessage: (text?: string, file?: File | null, metadata?: Metadata) => Promise<boolean>;
   messagesContainerRef: React.RefObject<HTMLDivElement | null>;
   messagesEndRef: React.RefObject<HTMLDivElement | null>;
-  uploadingFile: boolean
+  uploadingFile: boolean,
+  socketRef: RefObject<Socket<DefaultEventsMap, DefaultEventsMap> | null>
 };
 
 export function useChat(
@@ -41,6 +43,11 @@ export function useChat(
     const handleMessage = (msg: { text: string; senderId?: string, metadata?: Metadata }) => {
       const sender: LocalMsg["sender"] = msg.senderId === sessionUserId ? "me" : "other";
       setMessages((prev) => [...prev, { text: msg.text, sender, metadata: msg.metadata }]);
+      if (msg.metadata?.type == 'delivery') {
+        window.document.dispatchEvent(new CustomEvent('newDelivery', {
+          detail: { success: true }
+        }));
+      }
     };
 
     socketRef.current.on("message", handleMessage);
@@ -91,11 +98,13 @@ export function useChat(
 
         const msgList = conv.messages ?? [];
 
-        const loaded: LocalMsg[] = msgList.map((m: MessageInterface) => ({
-          text: m.text,
-          sender: m.senderId === sessionUserId ? "me" : "other",
-          metadata: m.metadata,
-        }));
+        const loaded: LocalMsg[] = msgList.map((m: MessageInterface) => {
+          return {
+            text: m.text,
+            sender: m.senderId === sessionUserId ? "me" : "other",
+            metadata: m.metadata,
+          };
+        });
 
         if (mounted) {
           setConversation(conv);
@@ -153,7 +162,6 @@ export function useChat(
 
           if (ok && message) {
             newMsgs.push({ ...message, sender: "me", metadata: message.metadata });
-
             setSelectedFile(null);
             setResetFile(!resetFile);
           }
@@ -192,8 +200,8 @@ export function useChat(
           setSelectedFile(null);
           setResetFile(!resetFile);
           setUploadingFile(false);
-
           emitMessages();
+
         }
 
         return true;
@@ -215,6 +223,7 @@ export function useChat(
     sendMessage,
     messagesContainerRef,
     messagesEndRef,
-    uploadingFile
+    uploadingFile,
+    socketRef
   };
 }

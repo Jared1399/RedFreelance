@@ -21,13 +21,43 @@ export async function POST(request: Request) {
     );
   }
 
-  const newCategory = await prisma.transaction.update({
+  const updatedTransaction = await prisma.transaction.update({
     where: { id: transactionId },
     data: {
       lifecycleId: lifecycle.id,
-      completed: completed
+      completed: completed,
     }
   });
 
-  return NextResponse.json({ ok: true, user: newCategory }, { status: 201 });
+
+  if (completed) {
+    const transaction = await prisma.transaction.findUnique({
+      where: { id: transactionId }
+    });
+
+    if (!transaction) {
+      return NextResponse.json(
+        { ok: false, error: "Transacción no encontrada" },
+        { status: 404 }
+      );
+    }
+    const destinedId = nextState == "completed" ? transaction.freelancerId : transaction.clientId;
+
+    const amountToAdd = Math.trunc(
+      transaction.amount.toNumber() * (1 - transaction.commissionRate)
+    );
+
+    const updateFreelancer = await prisma.user.update({
+      where: { id: destinedId },
+      data: {
+        balance: {
+          increment: amountToAdd
+        }
+      }
+    });
+
+    return NextResponse.json({ ok: true, updateFreelancer });
+  }
+
+  return NextResponse.json({ ok: true, user: updatedTransaction }, { status: 201 });
 };

@@ -23,7 +23,7 @@ async function expireTransactions() {
 
   try {
     const timedOut = await prisma.lifecycle.findMany({
-      where: { name: { in: ["requested", "payment_pending"] } },
+      where: { name: { in: ["requested", "payment_pending", "on_review"] } },
     });
 
     const timeOutLifecycle = await prisma.lifecycle.findFirst({

@@ -14,7 +14,7 @@ import formatDateES from '@/lib/timeago';
 
 export default function Chat() {
   const { data: session } = useSession();
-  const { state } = useContext(TransactionContext);
+  const { state, actions } = useContext(TransactionContext);
 
   const [input, setInput] = useState("");
 
@@ -28,9 +28,54 @@ export default function Chat() {
     sendMessage,
     messagesContainerRef,
     messagesEndRef,
-    uploadingFile
+    uploadingFile,
   } = useChat(currTransaction, session?.userId);
 
+  const send = useCallback(async () => {
+    await sendMessage(input, selectedFile, { type: selectedFile ? "multimedia" : "text" });
+    setInput("");
+    if (selectedFile) setSelectedFile(null);
+
+  }, [input, selectedFile, sendMessage]);
+
+  useEffect(() => {
+    const handleGlobalMessage = async () => {
+      actions.handleDeliveryLocal();
+    };
+
+    window.document.addEventListener('newDelivery', handleGlobalMessage);
+
+    return () => {
+      window.document.removeEventListener('newDelivery', handleGlobalMessage);
+    };
+  }, [currTransaction]);
+
+  useEffect(() => {
+    if (messages.length === 0) return;
+
+    const forceScroll = () => {
+      const container = messagesContainerRef.current;
+      if (!container) return;
+
+      container.scrollTop = container.scrollHeight;
+
+      requestAnimationFrame(() => {
+        container.scrollTop = container.scrollHeight;
+        requestAnimationFrame(() => {
+          container.scrollTop = container.scrollHeight;
+        });
+      });
+    };
+
+    forceScroll();
+    const timers = [100, 200, 500].map(delay =>
+      setTimeout(forceScroll, delay)
+    );
+
+    return () => timers.forEach(clearTimeout);
+  }, [messages]);
+
+  if (!currTransaction) return;
 
   const isFreelancer = session?.userId == currTransaction?.freelancerId;
 
@@ -46,10 +91,6 @@ export default function Chat() {
       :
       `Esta conversación está disponible hasta dentro de ${formattedDate}`;
 
-  const handleFileChange = (file: File | null) => {
-    setSelectedFile(file);
-  };
-
   const acceptTransaction = currTransaction?.lifecycle?.name == 'requested' &&
     <ConfirmationModal
       label="Comenzar con este trabajo?"
@@ -62,26 +103,19 @@ export default function Chat() {
       options={{ accept: "completed", deny: "disputed" }}
     />;
 
+  const deliveryAllowed = ['payment_approved', 'disputed', 'on_review', 'delivered'];
+
+  const showDeliveryModal = deliveryAllowed.includes(currTransaction?.lifecycle?.name) &&
+    !disabledChat &&
+    (isFreelancer && <DeliveryModal />);
+
   const messageList = messages.map((msg, idx) => (
     <Message key={msg.id ?? idx} msg={msg as LocalMsg} />
   ));
 
-  const scrollToBottom = useCallback(() => {
-    const container = messagesContainerRef.current;
-    if (!container) return;
-    container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
-  }, [messagesContainerRef]);
-
-  const send = useCallback(async () => {
-    await sendMessage(input, selectedFile, { type: selectedFile ? "multimedia" : "text" });
-    setInput("");
-    if (selectedFile) setSelectedFile(null);
-
-  }, [input, selectedFile, sendMessage]);
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages, scrollToBottom]);
+  const handleFileChange = (file: File | null) => {
+    setSelectedFile(file);
+  };
 
   return (
     <>
@@ -111,12 +145,13 @@ export default function Chat() {
           >
             {messageList}
             <div ref={messagesEndRef} />
+
           </div>
 
           <div className="flex items-center p-4 bg-neutral-300 border-t rounded-b-lg relative">
 
             {isFreelancer && acceptTransaction}
-            {!disabledChat && (isFreelancer && <DeliveryModal />)}
+            {showDeliveryModal}
             {!isFreelancer && acceptDelivery}
 
             <input
