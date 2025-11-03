@@ -1,11 +1,12 @@
+'use client';
 import Link from "next/link";
 import { queryBuilder } from "@/lib/utils";
 import Image from "@/components/UI/Image";
 import clsx from 'clsx';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/UI/shadcn/avatar";
+import { useEffect, useState } from "react";
 
 type CardSize = 'sm' | 'md' | 'lg' | 'xl';
-
 interface SizeConfig {
   container: string;
   image: string;
@@ -14,41 +15,6 @@ interface SizeConfig {
   user: string;
   showUserInfo: boolean;
 }
-
-const SIZE_CONFIG: Record<CardSize, SizeConfig> = {
-  sm: {
-    container: "px-2 py-2 min-h-[200px]",
-    image: "h-24",
-    title: "text-sm line-clamp-2",
-    price: "text-xs",
-    user: "text-xs",
-    showUserInfo: false
-  },
-  md: {
-    container: "px-3 py-3 min-h-[260px]",
-    image: "h-32",
-    title: "text-base line-clamp-2",
-    price: "text-sm",
-    user: "text-xs",
-    showUserInfo: true
-  },
-  lg: {
-    container: "px-4 py-4 min-h-[320px]",
-    image: "h-40",
-    title: "text-lg line-clamp-3",
-    price: "text-base",
-    user: "text-sm",
-    showUserInfo: true
-  },
-  xl: {
-    container: "px-5 py-5 min-h-[380px]",
-    image: "h-48",
-    title: "text-xl line-clamp-3",
-    price: "text-lg",
-    user: "text-sm",
-    showUserInfo: true
-  }
-};
 
 interface GigCardProps {
   title: string;
@@ -60,6 +26,41 @@ interface GigCardProps {
   href?: string;
 }
 
+const SIZE_CONFIG: Record<CardSize, SizeConfig> = {
+  sm: {
+    container: "px-2 py-2",
+    image: "h-30",
+    title: "text-xs line-clamp-2 mt-2",
+    price: "text-xs",
+    user: "text-xs",
+    showUserInfo: false
+  },
+  md: {
+    container: "px-3 py-3",
+    image: "h-35",
+    title: "text-sm line-clamp-2",
+    price: "text-sm",
+    user: "text-xs mt-2",
+    showUserInfo: true
+  },
+  lg: {
+    container: "px-4 py-4",
+    image: "h-50",
+    title: "text-base line-clamp-3",
+    price: "text-base",
+    user: "text-sm mt-4",
+    showUserInfo: true
+  },
+  xl: {
+    container: "px-5 py-5",
+    image: "h-50",
+    title: "text-lg line-clamp-3",
+    price: "text-lg",
+    user: "text-sm mt-4",
+    showUserInfo: true
+  }
+};
+
 const GigCard: React.FC<GigCardProps> = ({
   title,
   price,
@@ -69,9 +70,42 @@ const GigCard: React.FC<GigCardProps> = ({
   size = 'md',
   href
 }) => {
+  const [responsiveSize, setResponsiveSize] = useState<CardSize>(size);
 
-  const config = SIZE_CONFIG[size];
-  const showUserInfo = config.showUserInfo && userName;
+  useEffect(() => {
+    const checkSize = () => {
+      const width = window.innerWidth;
+      if (width >= 1920) setResponsiveSize('xl');
+      else if (width >= 1650) setResponsiveSize('xl');
+      else if (width >= 1280) setResponsiveSize('lg');
+      else if (width >= 800) setResponsiveSize('md');
+      else if (width >= 768) setResponsiveSize('sm');
+      else setResponsiveSize('sm');
+    };
+
+    checkSize();
+    window.addEventListener('resize', checkSize);
+    return () => window.removeEventListener('resize', checkSize);
+  }, []);
+
+  const config = SIZE_CONFIG[responsiveSize];
+
+  const getDisplayTitle = (title: string, currentSize: CardSize) => {
+    switch (currentSize) {
+      case 'sm':
+        return title.length > 15 ? title.slice(0, 12) + '...' : title;
+      case 'md':
+        return title.length > 20 ? title.slice(0, 17) + '...' : title;
+      case 'lg':
+        return title.length > 25 ? title.slice(0, 22) + '...' : title;
+      case 'xl':
+        return title.length > 30 ? title.slice(0, 27) + '...' : title;
+      default:
+        return title;
+    }
+  };
+
+  const displayTitle = getDisplayTitle(title, responsiveSize);
 
   const cardContainerCls = clsx(
     "flex flex-col w-full h-full",
@@ -90,42 +124,39 @@ const GigCard: React.FC<GigCardProps> = ({
   });
 
   const fallBackUserImg = userImg?.trim() || "/not_found.png";
-
   return (
-    <Link href={`/gig/title${gigQuery}`} className="block h-full">
+    <Link href={`/gig/title${gigQuery}`} className="flex w-full h-full">
       <div className={cardContainerCls}>
-        <div className="w-full mb-3">
+        <div className={`w-full ${config.image} mb-1 flex-shrink-0`}>
           <Image
-            className={`rounded-lg w-full ${config.image} object-cover drop-shadow-color`}
+            className="rounded-lg w-full h-full object-cover drop-shadow-color"
             alt="gig-card-image"
           />
         </div>
 
-        {showUserInfo && (
+        {config.showUserInfo && userName && (
           <div className={
             `flex 
-            items-center 
-            ${config.user} 
-            text-gray-600 
-            dark:text-gray-400 
-            mb-2 
-            px-2`
+              items-center 
+              ${config.user} 
+              text-gray-600 
+              dark:text-gray-400 
+              mb-1 
+              flex-shrink-0`
           }>
-            <Avatar className="h-4 w-4 mr-2">
+            <Avatar className="h-4 w-4 mr-1">
               <AvatarImage src={fallBackUserImg} />
               <AvatarFallback>RF</AvatarFallback>
             </Avatar>
-            <span className="truncate">
-              Por <strong>{userName}</strong>
-            </span>
+            <span className="truncate">Por {userName}</span>
           </div>
         )}
 
-        <div className="flex-1 flex flex-col justify-between px-2 pb-2">
-          <h3 className={`${config.title} font-semibold mb-2`}>
-            {title}
+        <div className="flex flex-col flex-1 min-h-0 w-full justify-between">
+          <h3 className={`${config.title} font-semibold w-full`}>
+            {displayTitle}
           </h3>
-          <p className={`${config.price} text-amber-600 font-medium`}>
+          <p className={`${config.price} text-amber-600 font-medium w-full mt-1`}>
             Desde CLP {price.toLocaleString()}
           </p>
         </div>

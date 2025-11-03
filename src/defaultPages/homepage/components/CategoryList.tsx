@@ -23,9 +23,33 @@ export default async function CategoryList() {
   });
 
   return (
-    <div data-component="CategoryList" className='text-accent-foreground my-8 h-[235px]'>
-      <h2 className='text-lg font-bold pl-6 mb-4'>Puede que te interesen estas categorias</h2>
-      <SingleRowGrid >
+    <div
+      data-component="CategoryList"
+      className='
+        text-accent-foreground 
+        my-6 
+        sm:my-8 
+        lg:my-12 
+        h-auto 
+        min-h-[200px]
+        sm:min-h-[235px]
+      '
+    >
+      <h2 className='
+        text-lg 
+        sm:text-xl 
+        lg:text-2xl 
+        font-bold 
+        pl-4 
+        sm:pl-6 
+        mb-4 
+        sm:mb-6
+        text-center 
+        sm:text-left
+      '>
+        Puede que te interesen estas categorías
+      </h2>
+      <SingleRowGrid>
         {categoryList}
       </SingleRowGrid>
     </div>

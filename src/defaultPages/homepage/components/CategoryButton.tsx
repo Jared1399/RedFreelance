@@ -4,19 +4,45 @@ import Link from "next/link";
 export default function CategoryButton({ categoryName }: { categoryName: string }) {
   return (
     <div className="
-      bg-card
-      dark:bg-card
-      hover:bg-amber-700
-      dark:hover:bg-amber-700
-      hover:shadow-[0px_4px_6px_0px_rgba(81,_81,_81,_0.5)]
       flex
       items-center
       justify-center
-      h-[200px]
+      w-full
+      h-[120px]
+      sm:h-[140px]
+      md:h-[160px]
+      lg:h-[180px]
+      xl:h-[200px]
+      bg-card
+      dark:bg-card
       rounded-lg
       cursor-pointer
+      hover:bg-amber-700
+      dark:hover:bg-amber-700
+      hover:shadow-[0px_4px_6px_0px_rgba(81,_81,_81,_0.5)]
+      active:scale-95
+      transition-all
+      duration-200
+      ease-in-out
     ">
-      <Link className='my-auto' href={`/categories/name/${categoryName}`}>{categoryName}</Link>
+      <Link
+        className='
+          my-auto
+          text-center
+          text-sm
+          sm:text-base
+          md:text-lg
+          lg:text-xl
+          font-medium
+          px-2
+          line-clamp-2
+          break-words
+          hyphens-auto
+        '
+        href={`/categories/name/${categoryName}`}
+      >
+        {categoryName}
+      </Link>
     </div>
   );
 }

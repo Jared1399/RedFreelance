@@ -27,34 +27,62 @@ export default function BlogEntry() {
   return (
     <div className='
       text-zinc-800 
-      my-8 h-[560px] 
-      flex 
-      flex-row 
-      align-middle 
-      justify-between px-6 py-4'
+      my-6 
+      sm:my-8 
+      lg:my-12
+      px-4 
+      sm:px-6
+      lg:px-8'
     >
-      <div className='h-[100%] w-[50%]'>
-        <Image alt='blog-image' className='w-full h-full rounded-lg' />
-      </div>
-
       <div
         className='
-          h-[100%]
-          w-[50%]
           bg-neutral-900
-          ml-4
-          flex
+          rounded-lg
+          flex 
           flex-col
-          justify-between
-          py-8
-          px-4
-          rounded-lg'
+          lg:flex-row 
+          justify-between 
+          p-4
+          sm:p-6
+          lg:p-8
+          gap-6
+          lg:gap-8
+          min-h-[400px]
+          sm:min-h-[500px]
+          lg:min-h-[560px]'
       >
-        <span className='text-sm text-amber-600 underline'>
-          <Link href={"/blog"}>Ver todos</Link>
-        </span>
-        <div className='overflow-auto'>
-          {blogs}
+        <div className='
+          my-auto
+          h-full
+          lg:h-full 
+          w-full
+          lg:w-[50%] 
+          flex-shrink-0
+          rounded-lg
+          overflow-hidden'
+        >
+          <Image
+            alt='blog-image'
+            className='w-full h-full object-cover'
+          />
+        </div>
+
+        <div
+          className='
+            h-full
+            lg:h-full
+            w-full
+            lg:w-[50%]
+            flex
+            flex-col
+            justify-between'
+        >
+          <span className='text-sm sm:text-base text-amber-600 underline lg:mb-0'>
+            <Link href={"/blog"}>Ver todos los artículos</Link>
+          </span>
+          <div className='overflow-auto flex-1 space-y-4 lg:space-y-6'>
+            {blogs}
+          </div>
         </div>
       </div>
     </div>
