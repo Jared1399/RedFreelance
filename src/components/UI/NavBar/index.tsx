@@ -17,6 +17,7 @@ import CategoryList from "./CategoryList";
 import Image from "../Image";
 import SearchBar from "./SearchBar";
 import useUser from "@/context/User/useUser";
+import './index.css';
 
 export function NavBar() {
   const { data: session } = useSession();
@@ -24,7 +25,6 @@ export function NavBar() {
 
   return (
     <div className="w-full bg-background z-50">
-      {/* Desktop */}
       <div className="hidden md:flex items-center w-full px-4 pt-4">
         <div className="flex-1 flex items-center gap-4">
           <NavigationMenu>
@@ -137,13 +137,13 @@ export function NavBar() {
                   </NavigationMenuList>
                 </NavigationMenu>
 
-                <NavigationMenu>
-                  <NavigationMenuList>
+                <NavigationMenu id="container-dropdown">
+                  <NavigationMenuList  >
                     <NavigationMenuItem>
                       <NavigationMenuTrigger className={navigationMenuTriggerStyle()}>
                         👤
                       </NavigationMenuTrigger>
-                      <NavigationMenuContent>
+                      <NavigationMenuContent >
                         <div className="p-4 min-w-[150px]">
                           <div className="space-y-2">
                             <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>

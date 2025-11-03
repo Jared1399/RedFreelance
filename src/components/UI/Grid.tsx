@@ -3,7 +3,7 @@ import React, { ReactNode } from 'react';
 import clsx from 'clsx';
 interface GridProps {
   children: ReactNode,
-  className: string
+  className?: string
 }
 
 const Grid: React.FC<GridProps> = ({ children, className }) => {
