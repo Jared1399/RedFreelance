@@ -8,7 +8,7 @@ export default function Image(
     <img
       src={src ?? "/not_found.png"}
       alt={alt}
-      className={`object-cover w-full h-full ${className}`}
+      className={`object-cover ${className}`}
     />
   );
 }
