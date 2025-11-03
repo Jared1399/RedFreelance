@@ -43,12 +43,12 @@ const Gig = async () => {
 
 
   return (
-    <>
+    <div className='mx-2 sm:mx-8 md:mx-auto'>
       <h1 className='text-3xl pb-8'>Encuentra el servicio que mas te guste</h1>
       <Grid>
         {cardList}
       </Grid>
-    </>
+    </div>
   );
 };
 

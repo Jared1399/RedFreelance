@@ -41,54 +41,123 @@ const GigName = async ({
   return (
     <div>
       <div className="relative">
-        <Image alt="gig-image" className="w-full h-70 opacity-[0.5]" />
+        <Image
+          alt="gig-image"
+          className="w-full h-40 sm:h-50 md:h-60 lg:h-70 opacity-[0.5] object-cover"
+        />
 
-        <div className="absolute top-15 left-10 flex flex-row ">
-          <Link href={creator.id}>
+        <div
+          className="
+            absolute 
+            top-4 
+            sm:top-20 
+            md:top-8 
+            left-4 
+            sm:left-6 
+            md:left-10 
+            right-4 
+            sm:right-6 
+            md:right-10 
+            flex 
+            flex-row 
+            items-start 
+            gap-3 
+            sm:gap-4 
+            md:gap-6 
+            pt-8 
+          ">
+          <Link href={creator.id} className="flex-shrink-0 mt-1">
             <Image
               alt="profile-pic"
               className="
-              w-30
-              h-30
-              mr-4
-              mt-4
-              rounded-full
-              outline-6
-              outline-amber-50
-              outline-offset-4
-             "
+            w-12 h-12
+            sm:w-16 sm:h-16
+            md:w-20 md:h-20
+            lg:w-24 lg:h-24
+            xl:w-30 xl:h-30
+            rounded-full
+            outline-2
+            sm:outline-3
+            md:outline-4
+            lg:outline-5
+            xl:outline-6
+            outline-amber-50
+            outline-offset-1
+            sm:outline-offset-2
+            md:outline-offset-3
+            lg:outline-offset-4
+          "
             />
           </Link>
 
-          <div className="flex flex-col ml-4">
-            <Link href={creator.id}>
-              <span className="text-xl">
-                {creator.firstName} {creator.isVerified ? " ✅" : null}
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-row items-center gap-2 sm:gap-3 mb-1 sm:mb-2">
+              <Link href={creator.id}>
+                <span
+                  className="
+                    text-sm 
+                    sm:text-base 
+                    md:text-lg 
+                    lg:text-xl 
+                    font-semibold 
+                    whitespace-nowrap
+                  ">
+                  {creator.firstName} {creator.isVerified ? " ✅" : null}
+                </span>
+              </Link>
+              <span className="text-xs sm:text-sm md:text-base text-gray-300 whitespace-nowrap">
+                {creator.level}
               </span>
-            </Link>
-            <span className="text-lg">{creator.level}</span>
-            <p className="text-6xl">
+            </div>
+
+            <h1
+              className="
+                text-lg 
+                sm:text-2xl 
+                md:text-3xl 
+                lg:text-4xl 
+                xl:text-5xl 
+                font-bold 
+                leading-tight 
+                break-words  
+              ">
               {capitalizeFirst(decodedTitle)}
-            </p>
-            <small className="mt-4">{formatDateES(gigInfo?.created_at)}</small>
+            </h1>
+
+            <small className="mt-1 sm:mt-2 text-xs sm:text-sm text-gray-400">
+              {formatDateES(gigInfo?.created_at)}
+            </small>
           </div>
         </div>
       </div>
 
-      <div className="flex flex-row h-100 my-8">
-
-        <div className="w-[60%] py-14 px-8 h-full flex flex-col justify-start items-start">
-          <h2 className="mb-4 text-xl font-bold">Acerca de este trabajo</h2>
-          <p >
+      <div className="flex flex-col lg:flex-row h-auto my-4 sm:my-6 lg:my-8 gap-6 lg:gap-8">
+        <div
+          className="
+            w-full 
+            lg:w-[60%] 
+            py-6 
+            sm:py-10 
+            lg:py-14 
+            px-4 
+            sm:px-6 
+            lg:px-8 
+            h-full 
+            flex 
+            flex-col 
+            justify-start 
+            items-start
+          ">
+          <h2 className="mb-4 text-lg sm:text-xl lg:text-2xl font-bold">Acerca de este trabajo</h2>
+          <p className="text-sm sm:text-base lg:text-lg leading-relaxed">
             {gigInfo?.description}
           </p>
         </div>
 
-        <div className="w-[40%] h-full flex justify-center items-center p-4">
+        <div className="w-full lg:w-[40%] h-full flex justify-center items-center p-4 sm:p-6">
           <GigTiers gigTiers={gigTiers} gig={gigInfo} />
         </div>
       </div>
-
     </div>
   );
 };
