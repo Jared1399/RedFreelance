@@ -2,21 +2,22 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(request: Request) {
-  const {
-    transactionId,
-    nextState,
-    completed
-  } = await request.json();
+  const { transactionId, nextState, completed } = await request.json();
+
+  if (!transactionId || !nextState) {
+    return NextResponse.json(
+      { ok: false, error: "Datos incompletos" },
+      { status: 400 }
+    );
+  }
 
   const lifecycle = await prisma.lifecycle.findFirst({
-    where: {
-      name: nextState
-    }
+    where: { name: nextState }
   });
 
   if (!lifecycle) {
     return NextResponse.json(
-      { ok: false, error: "Non existent lyfecycle name" },
+      { ok: false, error: "Estado de transacción no válido" },
       { status: 404 }
     );
   }
@@ -29,10 +30,13 @@ export async function POST(request: Request) {
     }
   });
 
-
   if (completed) {
     const transaction = await prisma.transaction.findUnique({
-      where: { id: transactionId }
+      where: { id: transactionId },
+      include: {
+        freelancer: true,
+        client: true
+      }
     });
 
     if (!transaction) {
@@ -41,23 +45,33 @@ export async function POST(request: Request) {
         { status: 404 }
       );
     }
-    const destinedId = nextState == "completed" ? transaction.freelancerId : transaction.clientId;
 
-    const amountToAdd = Math.trunc(
-      transaction.amount.toNumber() * (1 - transaction.commissionRate)
-    );
+    const isRefund = nextState === "refunded";
+    const destinedId = isRefund ? transaction.clientId : transaction.freelancerId;
 
-    const updateFreelancer = await prisma.user.update({
+    const baseAmount = transaction.amount.toNumber();
+    const amountToAdd = isRefund
+      ? baseAmount * 0.9
+      : Math.trunc(baseAmount * (1 - transaction.commissionRate));
+
+    const updatedUser = await prisma.user.update({
       where: { id: destinedId },
       data: {
-        balance: {
-          increment: amountToAdd
-        }
+        balance: { increment: amountToAdd }
       }
     });
 
-    return NextResponse.json({ ok: true, updateFreelancer });
+    return NextResponse.json({
+      ok: true,
+      message: isRefund ? "Reembolso procesado" : "Pago completado",
+      amount: amountToAdd,
+      user: updatedUser
+    });
   }
 
-  return NextResponse.json({ ok: true, user: updatedTransaction }, { status: 201 });
-};
+  return NextResponse.json({
+    ok: true,
+    message: "Transacción actualizada",
+    transaction: updatedTransaction
+  }, { status: 200 });
+}
