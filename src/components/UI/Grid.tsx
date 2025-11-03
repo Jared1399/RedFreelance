@@ -2,10 +2,11 @@
 import React, { ReactNode } from 'react';
 import clsx from 'clsx';
 interface GridProps {
-  children: ReactNode
+  children: ReactNode,
+  className: string
 }
 
-const Grid: React.FC<GridProps> = ({ children }) => {
+const Grid: React.FC<GridProps> = ({ children, className }) => {
 
   if (!children) {
     return <div>No elements yet to show</div>;
@@ -15,7 +16,8 @@ const Grid: React.FC<GridProps> = ({ children }) => {
     'grid',
     'grid-cols-[repeat(auto-fill,minmax(250px,1fr))]',
     'gap-4',
-    'overflow-hidden'
+    'overflow-hidden',
+    className
   );
 
 

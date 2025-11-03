@@ -124,7 +124,12 @@ export function NavBar() {
                     <NavigationMenuItem>
                       <NavigationMenuLink
                         asChild
-                        className={`${navigationMenuTriggerStyle()} text-primary font-medium text-sm`}
+                        className={
+                          `${navigationMenuTriggerStyle()}
+                          text-primary
+                          font-medium 
+                          text-sm`
+                        }
                       >
                         <span>${userState.userData.balance}</span>
                       </NavigationMenuLink>

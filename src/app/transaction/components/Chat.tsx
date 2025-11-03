@@ -122,18 +122,18 @@ export default function Chat() {
       {currTransaction ? (
         <div
           className="
-        flex 
-        flex-col 
-        h-dvh 
-        md:h-screen
-        bg-gray-100 
-        mx-0 
-        dark:bg-card 
-        dark:border 
-        rounded-none md:rounded-lg 
-        overflow-x-hidden
-        w-full
-      "
+            flex 
+            flex-col 
+            h-dvh 
+            md:h-screen
+            bg-gray-100 
+            mx-0 
+            dark:bg-card 
+            dark:border 
+            rounded-none md:rounded-lg 
+            overflow-x-hidden
+            w-full
+          "
         >
           <div className="bg-accent text-white font-bold p-3 md:p-4 relative">
             <div className="text-sm md:text-base truncate">
@@ -149,14 +149,18 @@ export default function Chat() {
           >
             {messageList}
             <div ref={messagesEndRef} />
-
           </div>
 
           <div className="flex items-center p-3 md:p-4 bg-neutral-300 border-t rounded-b-lg gap-2">
-
             {isFreelancer && acceptTransaction}
-            {showDeliveryModal}
             {!isFreelancer && acceptDelivery}
+
+            <div className="flex flex-col md:flex-row gap-1 md:gap-2 flex-shrink-0">
+              {showDeliveryModal}
+              {!disabledChat && (
+                <AddMedia onFileChange={handleFileChange} reset={resetFile} />
+              )}
+            </div>
 
             <input
               type="text"
@@ -171,6 +175,8 @@ export default function Chat() {
                 text-black
                 disabled:border-neutral-400
                 min-w-0
+                h-full
+                min-h-[44px]
               `}
               placeholder={
                 `${disabledChat ?
@@ -184,24 +190,23 @@ export default function Chat() {
               onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), send())}
             />
 
-            {!disabledChat && <AddMedia onFileChange={handleFileChange} reset={resetFile} />}
-
             <button
               onClick={() => send()}
               className={`
-            bg-amber-700 
-            text-white 
-            px-3 md:px-4 
-            py-2 
-            rounded-lg 
-            hover:bg-amber-900
-            disabled:bg-neutral-400 
-            disabled:cursor-not-allowed
-            disabled:text-gray-100
-            text-sm md:text-base
-            whitespace-nowrap
-            flex-shrink-0
-          `}
+                bg-amber-700 
+                text-white 
+                px-3 md:px-4 
+                py-2 
+                rounded-lg
+                h-full 
+                hover:bg-amber-900
+                disabled:bg-neutral-400 
+                disabled:cursor-not-allowed
+                disabled:text-gray-100
+                text-sm md:text-base
+                whitespace-nowrap
+                flex-shrink-0
+              `}
               disabled={uploadingFile || disabledChat}
             >
               {uploadingFile ? "..." : "Enviar"}

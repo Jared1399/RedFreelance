@@ -17,18 +17,19 @@ export default async function ProfilePage() {
   return (
     <AuthMiddleware>
       <div>
-        <div className="w-full flex flex-row justify-between h-80">
-          <div className="w-[60%]">
-            <h2 className='text-lg font-bold pl-6'>Detalles de tu perfil</h2>
+        <div className="w-full flex flex-col lg:flex-row justify-between gap-6 lg:gap-8 mb-8">
+          <div className="w-full lg:w-[60%]">
+            <h2 className='text-lg font-bold pl-4 lg:pl-6 mb-4'>Detalles de tu perfil</h2>
             <UserDetails details={userData} />
           </div>
-          <div className="w-[40%]">
-            <h2 className='text-lg font-bold pl-6'>Tus transacciones</h2>
+
+          <div className="w-full lg:w-[40%]">
+            <h2 className='text-lg font-bold pl-4 lg:pl-6 mb-4'>Tus transacciones</h2>
             <UserTransactions transactionList={userTransactions} />
           </div>
         </div>
-        <div className="w-[95%] h-130 mx-auto">
-          <h2 className='text-lg font-bold pl-6 mb-4'>Tus publicaciones</h2>
+
+        <div className="w-full lg:w-[95%] mx-auto">
           <UserGigs gigList={userGigs} user={userData} />
         </div>
       </div>
