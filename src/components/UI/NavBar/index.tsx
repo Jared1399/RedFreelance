@@ -164,7 +164,7 @@ export function NavBar() {
             )}
 
             {!session && (
-              <NavigationMenu>
+              <NavigationMenu id="container-dropdown">
                 <NavigationMenuList>
                   <NavigationMenuItem>
                     <NavigationMenuTrigger className={navigationMenuTriggerStyle()}>

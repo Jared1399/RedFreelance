@@ -10,12 +10,36 @@ const UiLoginBtn = () => {
   }
 
   return session ? (
-    <>
-      Signed in as {session.user?.email} <br />
-      <button onClick={() => signOut()}>Sign out</button>
-    </>
+    <div className="w-full">
+      <div className="text-xs text-gray-500 mb-2 px-2">
+        Conectado como
+      </div>
+      <div className="text-sm font-medium truncate mb-3 px-2">
+        {session.user?.email}
+      </div>
+      <button
+        onClick={() => signOut()}
+        className="
+          w-full 
+          text-left 
+          px-3 
+          py-2 
+          text-sm 
+          hover:bg-gray-100 
+          rounded-md 
+          transition-colors
+        "
+      >
+        Cerrar sesión
+      </button>
+    </div>
   ) : (
-    <button onClick={() => signIn('google')}>Ingresar con Google</button>
+    <button
+      onClick={() => signIn('google')}
+      className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100 rounded-md transition-colors"
+    >
+      Ingresar con Google
+    </button>
   );
 };
 
