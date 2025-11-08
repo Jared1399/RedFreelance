@@ -23,7 +23,6 @@ const SingleRowGrid: React.FC<SingleRowGridProps> = ({ children }) => {
     'h-full',
     'overflow-x-auto',
     'lg:overflow-x-visible',
-    'overflow-y-hidden',
     'snap-x',
     'snap-mandatory',
     'lg:snap-none',

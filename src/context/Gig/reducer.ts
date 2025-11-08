@@ -31,12 +31,14 @@ interface Category {
 
 type InitialState = {
   gigList: Array<Gig>;
-  categoryInfo: Category
+  categoryInfo: Category,
+  gigDetail: Gig
 }
 
 const initialState: InitialState = {
   gigList: [],
-  categoryInfo: {} as Category
+  categoryInfo: {} as Category,
+  gigDetail: {} as Gig
 };
 
 const reducer = (state: InitialState = initialState, action: Action): InitialState => {
@@ -51,6 +53,12 @@ const reducer = (state: InitialState = initialState, action: Action): InitialSta
       return {
         ...state,
         categoryInfo: action.payload.categoryInfo as Category
+      };
+    },
+    SET_GIG_INFO: () => {
+      return {
+        ...state,
+        gigDetail: action.payload.gig as Gig
       };
     }
   };

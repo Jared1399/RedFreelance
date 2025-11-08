@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { useState } from 'react';
+import React, { useCallback } from 'react';
 
 interface Option {
   id?: string;
@@ -7,20 +7,18 @@ interface Option {
 }
 
 const Pill = (
-  { option, setOption, }:
-    { option: Option; setOption: (id: number) => void; }
+  { option, onToggle, isSelected }:
+    { option: Option; onToggle: (id: number) => void; isSelected?: boolean }
 ) => {
-  const [selectedPill, setSelectedPill] = useState(false);
-
   const handlePillClick = () => {
-    setSelectedPill(!selectedPill);
-    if (option.id) setOption(Number.parseInt(option.id));
+    if (option.id) onToggle(Number.parseInt(option.id));
   };
 
   const pillCls = clsx({
-    "w-fit px-2 py-1 outline outline-amber-50 rounded-full cursor-pointer": true,
-    "bg-amber-900": !selectedPill,
-    "bg-amber-700": selectedPill,
+    "w-fit px-3 py-2 sm:px-4 sm:py-2 outline outline-amber-50 ": true,
+    "rounded-full cursor-pointer text-sm sm:text-base": true,
+    "bg-amber-900": !isSelected,
+    "bg-amber-700": !!isSelected,
   });
 
   return (
@@ -33,38 +31,40 @@ const Pill = (
 interface PoolSelectProps {
   options: Option[];
   onChange: (selectedIds: number[]) => void;
+  selectedIds?: number[];
 }
 
-export default function PoolSelect({ options, onChange }: PoolSelectProps) {
-  const [optionList, setOption] = useState<number[]>([]);
+export default function PoolSelect({ options, onChange, selectedIds = [] }: PoolSelectProps) {
+  const toggleOption = useCallback((id: number) => {
+    const exists = selectedIds.includes(id);
+    const next = exists ? selectedIds.filter((x) => x !== id) : [...selectedIds, id];
+    onChange(next);
+  }, [onChange, selectedIds]);
 
-  const concatOption = (
-    originalList: number[],
-    setter: React.Dispatch<React.SetStateAction<number[]>>
-  ) => {
-    return (id: number) => {
-      const index = originalList.indexOf(id);
+  const seen = new Set();
+  const uniqueOptions = options.filter(op => {
+    const identifier = op.id ? `id-${op.id}` : `name-${op.name.toLowerCase()}`;
+    if (seen.has(identifier)) {
+      return false;
+    }
+    seen.add(identifier);
+    return true;
+  });
 
-      if (index === -1) {
-        setter([...originalList, id]);
-      } else {
-        setter([
-          ...originalList.slice(0, index),
-          ...originalList.slice(index + 1),
-        ]);
-      }
-    };
-  };
-
-  React.useEffect(() => {
-    onChange(optionList);
-  }, [optionList, onChange]);
-
-  const pillOptions = options.length
-    ? options.map((op, i) => (
-      <Pill option={op} setOption={concatOption(optionList, setOption)} key={i} />
+  const pillOptions = uniqueOptions.length
+    ? uniqueOptions.map((op, i) => (
+      <Pill
+        option={op}
+        onToggle={toggleOption}
+        key={`${op.id ?? op.name}-${i}`}
+        isSelected={op.id ? selectedIds.includes(Number.parseInt(op.id)) : false}
+      />
     ))
     : null;
 
-  return <div className="flex justify-evenly w-[80%] mx-auto">{pillOptions}</div>;
+  return (
+    <div className="flex flex-wrap justify-start gap-2 sm:gap-3 w-full mt-3 select-none">
+      {pillOptions}
+    </div>
+  );
 }

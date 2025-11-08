@@ -48,6 +48,16 @@ const useGig = (
       const data = await fetchGigs.json();
 
       dispatch({ type: 'SET_GIG_LIST', payload: { gigs: data } });
+    },
+    async fetchGigById(gigId: string, userId: string) {
+      const gigQuery = queryBuilder({ gigId, userId });
+
+      const fetchGigInfo = await fetch(`${BASE_URL}/api/gig${gigQuery}`);
+
+      const data = await fetchGigInfo.json();
+
+      dispatch({ type: 'SET_GIG_INFO', payload: { gig: data.gigDetails } });
+      return data.gigDetails;
     }
   };
 

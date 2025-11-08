@@ -18,6 +18,29 @@ export async function GET(request: Request) {
 
   const skip = parseInt(searchParams.get("skip") ?? "0", 10);
   const limit = parseInt(searchParams.get("limit") ?? "0", 10);
+  const gigId = searchParams.get("gigId");
+  const userId = searchParams.get("userId");
+
+  if (gigId && userId) {
+    const gigDetails = await prisma.gig.findFirst({
+      where: { AND: [{ id: gigId }, { userId: userId }] },
+      include: {
+        GigTier: true,
+        categories: true
+      }
+    });
+
+    if (!gigDetails || gigDetails.userId !== userId) {
+      return NextResponse.json(
+        { ok: false, error: "No gig found matching Id" },
+        { status: 400 }
+      );
+    }
+
+    return NextResponse.json(
+      { ok: true, gigDetails }
+    );
+  }
 
   const gigs = await prisma.gig.findMany({
     include: {

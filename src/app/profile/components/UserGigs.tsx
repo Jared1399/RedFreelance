@@ -1,10 +1,17 @@
+'use client';
 import React from 'react';
 import { Gig } from '../types/Gig';
 import Grid from '@/components/UI/Grid';
 import Card from '@/components/UI/GigCard';
 import { UserData } from '../types/User';
+import { useSession } from "next-auth/react";
+
 
 export default function UserGigs({ gigList, user }: { gigList: Gig[], user: UserData }) {
+  const { status, data: session } = useSession();
+
+  const canEditGig = (userId: string) => status == 'authenticated' && session.userId == userId;
+
   const list = gigList.map((gig: Gig, i: number) => {
     return (
       <Card
@@ -14,6 +21,8 @@ export default function UserGigs({ gigList, user }: { gigList: Gig[], user: User
         userId={gig.userId}
         userImg={user.userImg}
         userName={user.firstName}
+        editable={canEditGig(gig.userId)}
+        gigId={gig.id}
         size="md"
       />
     );

@@ -11,6 +11,8 @@ interface Tier {
   price: number;
   description: string;
   deliveryTime: number;
+  updatedAt: Date;
+
 }
 
 type InitialState = {

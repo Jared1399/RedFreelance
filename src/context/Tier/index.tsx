@@ -2,7 +2,8 @@ import { useReducer } from 'react';
 import { reducer, initialState } from './reducer';
 
 interface Tier {
-  localId: number;
+  id?: string;
+  localId?: number;
   name: string;
   price: number;
   description: string;
@@ -20,7 +21,6 @@ const useTier = () => {
       dispatch({ type: 'REMOVE_TIER', payload: { localId: localId } });
     },
     updateTier(tierToUpdate: Tier) {
-
       dispatch({ type: 'UPDATE_TIER', payload: { tierToUpdate } });
     }
   };

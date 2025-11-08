@@ -5,6 +5,7 @@ import { Gig } from '../types/Gig';
 import Link from 'next/link';
 import { queryBuilder } from '@/lib/utils';
 
+
 const transLateTransaction = (stateENG: string): string => {
   const valuesES: Record<string, string> = {
     requested: "Iniciada",
@@ -49,7 +50,6 @@ export default async function UserTransactions(
           sm:gap-4
         "
         >
-          {/* Información de la transacción */}
           <div className="flex flex-col flex-1 min-w-0 space-y-2 sm:space-y-1">
             <p className="font-semibold text-white truncate text-sm sm:text-base">
               {gigInfo.title}
@@ -64,7 +64,6 @@ export default async function UserTransactions(
             </div>
           </div>
 
-          {/* Enlace a detalles */}
           <Link
             href={`/transaction${transactionQuery}`}
             className="

@@ -8,7 +8,7 @@ import { FormEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import AuthMiddleware from "@/components/ClientAuthMiddleware";
 import PoolSelect from '@/components/UI/PoolSelect';
-import useTier from './hooks/useTier';
+import useTier from '@/context/Tier/index';
 import Image from '@/components/UI/Image';
 import TierForm from './components/TierForm';
 import AddTier from './components/AddTier';
@@ -36,11 +36,26 @@ interface Category {
 }
 
 const inputCls = clsx(
+  "w-full",
+  "px-4",
+  "py-3",
   "border",
-  "border-solid",
-  "border-white",
-  "rounded",
-  "mb-4"
+  "border-neutral-300",
+  "dark:border-neutral-600",
+  "rounded-lg",
+  "bg-white",
+  "dark:bg-neutral-800",
+  "text-neutral-900",
+  "dark:text-white",
+  "focus:outline-none",
+  "focus:border-amber-500",
+  "focus:ring-2",
+  "focus:ring-amber-200",
+  "dark:focus:ring-amber-800",
+  "transition-all",
+  "duration-200",
+  "placeholder-neutral-500",
+  "dark:placeholder-neutral-400",
 );
 
 export default function CreateGig() {
@@ -131,7 +146,7 @@ export default function CreateGig() {
 
   const searchResults = (
     search && categoryState.searchCategories.length && (
-      <div className='absolute top-14 left-0 w-full'>
+      <div className='absolute top-19 left-0 w-full rounded-lg overflow-hidden'>
         {categoryState.searchCategories.map((cat) => (
           <div
             className="w-full bg-neutral-700 h-fit px-2 py-1 hover:bg-neutral-800"
@@ -151,53 +166,138 @@ export default function CreateGig() {
 
   return (
     <AuthMiddleware status={status}>
+      <div
+        className='
+          flex 
+          flex-col 
+          lg:flex-row 
+          align-middle 
+          justify-center 
+          gap-6 
+          lg:gap-8 
+          mb-8 
+          lg:mb-15 
+          mx-2
+        '>
+        <div className={formContainerCls + " w-full lg:w-1/2 flex flex-col"}>
+          <h1
+            className='
+              text-2xl 
+              sm:text-3xl 
+              font-bold 
+              text-gray-900 
+              dark:text-white 
+              pb-6 
+              sm:pb-8 
+              text-center 
+              lg:text-left
+            '>
 
-      <div className='flex flex-row align-middle justify-center mb-15'>
-        <div className={formContainerCls}>
-          <h1 className='text-3xl pb-8 mx-auto'>Crear un nuevo trabajo</h1>
-          <form onSubmit={onSubmit} className='flex flex-col ' action="POST">
+            Crear un nuevo trabajo
+          </h1>
 
-            <label className={labelCls} htmlFor="title">Titulo</label>
-            <input type="text" name="title" autoComplete="off" className={inputCls} />
+          <form onSubmit={onSubmit} className='flex flex-col gap-6 sm:gap-8 flex-1' action="POST">
 
-            <label className={labelCls} htmlFor="description">Descripcion</label>
-            <input type="text" name="description" autoComplete="off" className={inputCls} />
+            <div className="space-y-2">
+              <label className={labelCls} htmlFor="title">Título del trabajo</label>
+              <input
+                type="text"
+                name="title"
+                autoComplete="off"
+                className={inputCls}
+                placeholder="Ej: Diseño de logo profesional"
+              />
+            </div>
 
-            <label className={labelCls} htmlFor="price">Precio base</label>
-            <input type="number" name="price" autoComplete="off" className={inputCls} />
+            <div className="space-y-2">
+              <label className={labelCls} htmlFor="description">Descripción</label>
+              <textarea
+                name="description"
+                autoComplete="off"
+                className={inputCls + " min-h-[100px] resize-none overflow-y-auto"}
+                placeholder="Describe los detalles de tu servicio..."
+                rows={4}
+              />
+            </div>
 
-            <div className='relative flex flex-col'>
-              <label className={labelCls} htmlFor="categories">Categorias</label>
+            <div className="space-y-2">
+              <label className={labelCls} htmlFor="price">Precio base (CLP)</label>
+              <div className="relative">
+                <span
+                  className="
+                    absolute 
+                    left-4 
+                    top-1/2 
+                    transform 
+                    -translate-y-1/2 
+                    text-gray-500 
+                    dark:text-gray-400
+                  ">
+                  $
+                </span>
+                <input
+                  type="number"
+                  name="price"
+                  autoComplete="off"
+                  className={inputCls + " pl-10"}
+                  placeholder="0"
+                  min="0"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2 relative">
+              <label className={labelCls} htmlFor="categories">Categorías</label>
               <input
                 type="text"
                 name="searchCategories"
                 autoComplete="off"
                 className={inputCls}
                 value={search}
+                placeholder="Buscar categorías..."
                 onChange={(e) => {
                   setSearch(e.target.value);
                   categoryActions.searchCategories(e.target.value);
                 }}
               />
+
               {searchResults == 0 ? null : searchResults}
 
-              <PoolSelect options={categoryState.categoryList} onChange={handleChange} />
+              <div className="mt-4">
+                <PoolSelect options={categoryState.categoryList} onChange={handleChange} />
+              </div>
+
               <input type="hidden" name="categories" value={selectedIds.join(",")} />
-
             </div>
-
-            <button
-              className="cursor-pointer rounded-full bg-amber-800 w-25 mx-auto mt-10"
-              type="submit"
-            >
-              Submit
-            </button>
+            <div className="hidden lg:flex mx-auto transform">
+              <button
+                className="
+                  cursor-pointer 
+                  rounded-full 
+                  bg-amber-600 
+                  hover:bg-amber-700 
+                  text-white 
+                  font-semibold 
+                  w-40 
+                  py-3 
+                  px-8 
+                  text-base 
+                  transition-colors 
+                  duration-200 
+                  shadow-lg 
+                  hover:shadow-xl
+                "
+                type="submit"
+              >
+                Crear Trabajo
+              </button>
+            </div>
           </form>
         </div>
 
-        <div className={tierListContainerCls}>
-          <div className='text-xl'>Niveles</div>
-          <span className='text-sm opacity-[0.5]'>
+        <div className={tierListContainerCls + " w-full lg:w-1/2"}>
+          <div className='text-lg sm:text-xl mb-2'>Niveles</div>
+          <span className='text-xs sm:text-sm opacity-[0.5] block mb-4 sm:mb-6'>
             Define los niveles en los que tus clientes pueden solicitar tus servicios
           </span>
 
@@ -205,17 +305,43 @@ export default function CreateGig() {
             {tierList}
             {
               !!tierState.tierList.length && (
-                <div onClick={() => addTier()} className='mt-2'>
+                <div onClick={() => addTier()} className='mt-4 flex justify-center'>
                   <Image
                     alt='add-tier-icon'
                     src='/plus_icon.svg'
-                    className='w-10 rounded-full cursor-pointer'
+                    className='w-8 sm:w-10 rounded-full cursor-pointer'
                   />
                 </div>
               )
             }
           </div>
         </div>
+
+        <div className="lg:hidden w-full mt-6">
+          <button
+            className="
+              cursor-pointer 
+              rounded-full 
+              bg-amber-600 
+              hover:bg-amber-700 
+              text-white 
+              font-semibold 
+              w-full 
+              py-4 
+              px-8 
+              text-base 
+              transition-colors 
+              duration-200 
+              shadow-lg 
+              hover:shadow-xl
+            "
+            type="submit"
+          >
+            Crear Trabajo
+          </button>
+        </div>
+
+
       </div>
     </AuthMiddleware>
 

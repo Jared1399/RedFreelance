@@ -4,7 +4,7 @@ export default function AddTier({ addTierHandler }: { addTierHandler: () => void
   return (
     <div
       className='
-        w-95 
+        w-full 
         py-3 
         px-4 
         my-2 

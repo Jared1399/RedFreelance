@@ -4,26 +4,32 @@ export const formContainerCls = clsx(
   `
     flex
     flex-col
-    justify-center
-    w-170
-    h-[80dvh]
-    mr-4 
+    w-full
     rounded-lg
     dark:bg-card
     dark:border
-    px-12 
-    py-2
-    mt-15
+    px-6
+    sm:px-8
+    lg:px-12 
+    py-6
+    sm:py-8
+    mt-8
+    lg:mt-15
     shadow-[0px_4px_6px_0px_rgba(81,_81,_81,_0.5)]
-  `);
-
+  `
+);
 export const tierListContainerCls = clsx(
   `
-    h-[80dvh]
-    w-110 
-    mt-15 
+    h-full
+    w-full
+    lg:w-110 
+    mt-6
+    lg:mt-15 
     px-4 
-    py-10 
+    sm:px-6
+    py-6
+    sm:py-8
+    lg:py-10 
     rounded-lg 
     flex 
     flex-col 
@@ -32,12 +38,17 @@ export const tierListContainerCls = clsx(
     shadow-[0px_4px_6px_0px_rgba(81,_81,_81,_0.5)]
   `);
 
+
 export const tierScrollListCls = clsx(
   `
-    h-full 
+    h-64
+    sm:h-72
     w-full 
-    mt-5 
-    py-1 
+    px-4
+    mt-4
+    lg:mt-5 
+    py-3
+    lg:py-1 
     dark:bg-black 
     opacity-[0.8] 
     dark:border 
@@ -46,4 +57,5 @@ export const tierScrollListCls = clsx(
     flex 
     flex-col 
     items-center
+    gap-3
   `);

@@ -5,6 +5,8 @@ import Image from "@/components/UI/Image";
 import clsx from 'clsx';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/UI/shadcn/avatar";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { MouseEvent } from 'react';
 
 type CardSize = 'sm' | 'md' | 'lg' | 'xl';
 interface SizeConfig {
@@ -24,6 +26,8 @@ interface GigCardProps {
   userId: string;
   size?: CardSize;
   href?: string;
+  editable?: boolean;
+  gigId?: string
 }
 
 const SIZE_CONFIG: Record<CardSize, SizeConfig> = {
@@ -67,10 +71,14 @@ const GigCard: React.FC<GigCardProps> = ({
   userId,
   userName,
   userImg,
+  editable,
+  gigId,
   size = 'md',
   href
 }) => {
   const [responsiveSize, setResponsiveSize] = useState<CardSize>(size);
+  const [formattedPrice, setFormattedPrice] = useState<string>('');
+  const router = useRouter();
 
   useEffect(() => {
     const checkSize = () => {
@@ -83,10 +91,12 @@ const GigCard: React.FC<GigCardProps> = ({
       else setResponsiveSize('sm');
     };
 
+    setFormattedPrice(price.toLocaleString());
     checkSize();
+
     window.addEventListener('resize', checkSize);
     return () => window.removeEventListener('resize', checkSize);
-  }, []);
+  }, [price]);
 
   const config = SIZE_CONFIG[responsiveSize];
 
@@ -112,7 +122,6 @@ const GigCard: React.FC<GigCardProps> = ({
     "rounded-lg dark:bg-card dark:border",
     "shadow-[0px_4px_6px_0px_rgba(81,_81,_81,_0.5)]",
     "hover:shadow-[0px_6px_8px_0px_rgba(81,_81,_81,_0.7)]",
-    "hover:scale-105",
     "transition-all duration-200",
     "cursor-pointer",
     config.container
@@ -123,11 +132,38 @@ const GigCard: React.FC<GigCardProps> = ({
     userId: userId
   });
 
+  const handleEditClick = (e: MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    router.push(`/gig/edit/${gigId}`);
+  };
+
   const fallBackUserImg = userImg?.trim() || "/not_found.png";
+
   return (
     <Link href={`/gig/title${gigQuery}`} className="flex w-full h-full">
       <div className={cardContainerCls}>
-        <div className={`w-full ${config.image} mb-1 flex-shrink-0`}>
+        <div className={`w-full ${config.image} mb-1 flex-shrink-0 relative`}>
+          {
+            (editable && gigId) && (
+              <div
+                onClick={(e) => handleEditClick(e)}
+                className="
+                  absolute 
+                  bg-amber-700 
+                  text-amber-50 
+                  right-2 
+                  top-2 
+                  p-2 
+                  rounded-lg 
+                  border 
+                  border-amber-50
+                "
+              >
+                🖊
+              </div>
+            )
+          }
           <Image
             className="rounded-lg w-full h-full object-cover drop-shadow-color"
             alt="gig-card-image"
@@ -157,7 +193,7 @@ const GigCard: React.FC<GigCardProps> = ({
             {displayTitle}
           </h3>
           <p className={`${config.price} text-amber-600 font-medium w-full mt-1`}>
-            Desde CLP {price.toLocaleString()}
+            Desde CLP {formattedPrice || price}
           </p>
         </div>
       </div>
