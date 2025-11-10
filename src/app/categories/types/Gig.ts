@@ -7,6 +7,7 @@ export type Gig = {
   price: number
   description: string
   userId: string
+  gigImg: string
   user: {
     firstName: string
     userImg: string

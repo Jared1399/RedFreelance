@@ -14,7 +14,8 @@ interface GigCardProps {
     userImg?: string;
     firstName?: string;
   } | null;
-  id: string
+  id: string;
+  gigImg?: string
 }
 
 const Gig = async () => {
@@ -39,6 +40,7 @@ const Gig = async () => {
         userImg={card.user?.userImg ?? "/not_found.png"}
         userName={card.user?.firstName}
         gigId={card.id}
+        gigImg={card.gigImg}
       />
     );
   }) : null;

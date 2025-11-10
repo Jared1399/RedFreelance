@@ -13,7 +13,8 @@ interface CardType {
   user: {
     firstName: string
     userImg: string
-  }
+  },
+  gigImg?: string;
 }
 
 export default async function WeeklyPopular() {
@@ -65,6 +66,7 @@ export default async function WeeklyPopular() {
                 userName={card.user.firstName}
                 size="md"
                 href={card.title}
+                gigImg={card.gigImg}
               />
             </div>
           );

@@ -13,6 +13,8 @@ import Image from '@/components/UI/Image';
 import TierForm from './components/TierForm';
 import AddTier from './components/AddTier';
 import { formContainerCls, tierListContainerCls, tierScrollListCls } from './styles';
+import UploadGigImg from './components/UploadGigImg';
+import gigService from '../gig.service';
 
 interface User {
   id: string;
@@ -67,6 +69,24 @@ export default function CreateGig() {
   const { state: tierState, actions: tierActions } = useTier();
 
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [search, setSearch] = useState("");
+  const [gigImgPreview, setGigImgPreview] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const addTier = () => {
+    const generatedId = Number.parseInt((Math.random() * 1000).toString());
+
+    tierActions.addTier(
+      {
+        localId: generatedId,
+        name: "",
+        price: 0,
+        description: "",
+        deliveryTime: 0
+      }
+    );
+  };
+
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -78,10 +98,10 @@ export default function CreateGig() {
       price: parseInt(formData.get("price") as string),
       categories: formData.get("categories") as string,
       tiers: tierState.tierList,
-      userId: (userState?.userData as User)?.id
+      userId: (userState?.userData as User)?.id,
     };
 
-    const res = await fetch("/api/gig", {
+    const createGig = await fetch("/api/gig", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -89,9 +109,16 @@ export default function CreateGig() {
       body: JSON.stringify(payload),
     });
 
-    if (res.ok) {
-      router.push('/gig');
+    const newGig = await createGig.json();
+
+    if (session?.userId && selectedFile && newGig.id) {
+      const uploadGigImg = await gigService.uploadGigImg(selectedFile, session?.userId, newGig.id);
+
+      if (uploadGigImg.ok) {
+        router.push('/gig');
+      }
     }
+
   }
 
   const labelCls = clsx(
@@ -114,36 +141,6 @@ export default function CreateGig() {
     );
   });
 
-  const addTier = () => {
-    const generatedId = Number.parseInt((Math.random() * 1000).toString());
-
-    tierActions.addTier(
-      {
-        localId: generatedId,
-        name: "",
-        price: 0,
-        description: "",
-        deliveryTime: 0
-      }
-    );
-  };
-
-  const tierList = tierComponents.length ? tierComponents : <AddTier addTierHandler={addTier} />;
-  const [search, setSearch] = useState("");
-
-  const handleSearchCategory = (cat: Category) => {
-    let repeated = false;
-    categoryState.categoryList.map((c) => {
-      if (c.name == cat.name) { repeated = true; }
-    });
-
-    if (!repeated) {
-      categoryActions.addCategory(cat);
-    }
-
-    setSearch("");
-  };
-
   const searchResults = (
     search && categoryState.searchCategories.length && (
       <div className='absolute top-19 left-0 w-full rounded-lg overflow-hidden'>
@@ -159,6 +156,22 @@ export default function CreateGig() {
       </div>
     )
   );
+
+  const tierList = tierComponents.length ? tierComponents : <AddTier addTierHandler={addTier} />;
+
+  const handleSearchCategory = (cat: Category) => {
+    let repeated = false;
+    categoryState.categoryList.map((c) => {
+      if (c.name == cat.name) { repeated = true; }
+    });
+
+    if (!repeated) {
+      categoryActions.addCategory(cat);
+    }
+
+    setSearch("");
+  };
+
 
   useEffect(() => {
     userActions.fetchUserData();
@@ -180,21 +193,44 @@ export default function CreateGig() {
           mx-2
         '>
         <div className={formContainerCls + " w-full lg:w-1/2 flex flex-col"}>
-          <h1
-            className='
+          <div className='flex flex-row relative align-sub mb-8'>
+            <Image
+              src={gigImgPreview}
+              alt='Upload new gig photo'
+              className='w-20 h-20 rounded-full'
+            />
+            <UploadGigImg
+              icon="🖊"
+              buttonText=""
+              buttonClassName="
+                absolute
+                top-10
+                left-13
+                w-10
+                h-10
+                bg-amber-700
+                hover:bg-amber-800
+                rounded-full
+              "
+              modalClassName="max-w-lg"
+              setPreview={setGigImgPreview}
+              fileSetter={setSelectedFile}
+            />
+            <h1
+              className='
               text-2xl 
               sm:text-3xl 
               font-bold 
               text-gray-900 
               dark:text-white 
-              pb-6 
-              sm:pb-8 
               text-center 
-              lg:text-left
+              self-center
+              ml-5
             '>
 
-            Crear un nuevo trabajo
-          </h1>
+              Crear un nuevo trabajo
+            </h1>
+          </div>
 
           <form onSubmit={onSubmit} className='flex flex-col gap-6 sm:gap-8 flex-1' action="POST">
 
@@ -242,6 +278,7 @@ export default function CreateGig() {
                   className={inputCls + " pl-10"}
                   placeholder="0"
                   min="0"
+                  defaultValue={0}
                 />
               </div>
             </div>
@@ -264,7 +301,11 @@ export default function CreateGig() {
               {searchResults == 0 ? null : searchResults}
 
               <div className="mt-4">
-                <PoolSelect options={categoryState.categoryList} onChange={handleChange} />
+                <PoolSelect
+                  options={categoryState.categoryList}
+                  onChange={handleChange}
+                  selectedIds={selectedIds}
+                />
               </div>
 
               <input type="hidden" name="categories" value={selectedIds.join(",")} />

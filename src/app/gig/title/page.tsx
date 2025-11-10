@@ -43,7 +43,8 @@ const GigName = async ({
       <div className="relative">
         <Image
           alt="gig-image"
-          className="w-full h-40 sm:h-50 md:h-60 lg:h-70 opacity-[0.5] object-cover"
+          className="w-full h-40 sm:h-50 md:h-60 lg:h-70 opacity-[0.5] object-cover blur-sm"
+          src={gigInfo.gigImg ?? ''}
         />
 
         <div
@@ -70,23 +71,24 @@ const GigName = async ({
             <Image
               alt="profile-pic"
               className="
-            w-12 h-12
-            sm:w-16 sm:h-16
-            md:w-20 md:h-20
-            lg:w-24 lg:h-24
-            xl:w-30 xl:h-30
-            rounded-full
-            outline-2
-            sm:outline-3
-            md:outline-4
-            lg:outline-5
-            xl:outline-6
-            outline-amber-50
-            outline-offset-1
-            sm:outline-offset-2
-            md:outline-offset-3
-            lg:outline-offset-4
-          "
+                w-12 h-12
+                sm:w-16 sm:h-16
+                md:w-20 md:h-20
+                lg:w-24 lg:h-24
+                xl:w-30 xl:h-30
+                rounded-full
+                outline-2
+                sm:outline-3
+                md:outline-4
+                lg:outline-5
+                xl:outline-6
+                outline-amber-50
+                outline-offset-1
+                sm:outline-offset-2
+                md:outline-offset-3
+                lg:outline-offset-4
+              "
+              src={gigInfo.gigImg ?? ''}
             />
           </Link>
 

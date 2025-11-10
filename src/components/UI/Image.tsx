@@ -6,7 +6,7 @@ export default function Image(
 ) {
   return (
     <img
-      src={src ?? "/not_found.png"}
+      src={src ? src : "/not_found.png"}
       alt={alt}
       className={`object-cover ${className}`}
     />

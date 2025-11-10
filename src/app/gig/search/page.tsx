@@ -37,6 +37,7 @@ export default async function SearchGig({
         userId={gig.userId}
         userImg={gig.user?.userImg ?? ""}
         userName={gig.user?.firstName ?? ""}
+        gigImg={gig.gigImg}
       />
     );
   });

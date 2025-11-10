@@ -24,6 +24,7 @@ export default function UserGigs({ gigList, user }: { gigList: Gig[], user: User
         editable={canEditGig(gig.userId)}
         gigId={gig.id}
         size="md"
+        gigImg={gig.gigImg}
       />
     );
   });

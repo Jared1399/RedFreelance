@@ -27,7 +27,8 @@ interface GigCardProps {
   size?: CardSize;
   href?: string;
   editable?: boolean;
-  gigId?: string
+  gigId?: string;
+  gigImg?: string;
 }
 
 const SIZE_CONFIG: Record<CardSize, SizeConfig> = {
@@ -74,7 +75,8 @@ const GigCard: React.FC<GigCardProps> = ({
   editable,
   gigId,
   size = 'md',
-  href
+  href,
+  gigImg
 }) => {
   const [responsiveSize, setResponsiveSize] = useState<CardSize>(size);
   const [formattedPrice, setFormattedPrice] = useState<string>('');
@@ -167,6 +169,7 @@ const GigCard: React.FC<GigCardProps> = ({
           <Image
             className="rounded-lg w-full h-full object-cover drop-shadow-color"
             alt="gig-card-image"
+            src={gigImg ?? ''}
           />
         </div>
 

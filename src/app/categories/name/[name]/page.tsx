@@ -32,6 +32,7 @@ export default async function CategoryName({ params }: GigParams) {
             userId={card.userId}
             userImg={card.user.userImg}
             userName={card.user.firstName}
+            gigImg={card.gigImg}
           />
         ))}
       </Grid>

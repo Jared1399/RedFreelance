@@ -32,6 +32,50 @@ const gigService = {
 
     return userData;
   },
+  async uploadGigImg(file: File, userId: string, gigId: string) {
+    const gigImgQuery = queryBuilder({ userId, destination: "gigImg.png", gigId });
+    const tokenRes = await fetch(`${BASE_URL}/api/upload/gig${gigImgQuery}`);
+    const tokenData = await tokenRes.json();
+
+    const { uploadUrl, key } = tokenData;
+    if (!uploadUrl || !key) {
+      throw new Error('Missing uploadUrl or key');
+    }
+
+    const uploadRes = await fetch(uploadUrl, {
+      method: 'PUT',
+      headers: { 'Content-Type': file.type },
+      body: file,
+    });
+
+    if (!uploadRes.ok) {
+      const text = await uploadRes.text().catch(() => '');
+      throw new Error(`Upload failed: ${uploadRes.status} ${text}`);
+    }
+
+    const publicUrl = `https://pub-dfd719a7c85b4b75aaeebef2fb7c8e21.r2.dev/redfreelance/${key}`;
+
+    const updated = await this.updateGigImg(userId, gigId, publicUrl);
+    return { ok: true, url: publicUrl, updated };
+
+  },
+  async updateGigImg(userId: string, gigId: string, imgUrl: string) {
+    const data = { userId, gigImg: imgUrl, gigId };
+    const url = `${BASE_URL}/api/user/gig/update`;
+
+    const options = {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const updatedGig = await fetch(url, options);
+
+    const gig = await updatedGig.json();
+
+    return gig;
+  }
 };
 
 
