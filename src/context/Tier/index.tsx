@@ -22,6 +22,9 @@ const useTier = () => {
     },
     updateTier(tierToUpdate: Tier) {
       dispatch({ type: 'UPDATE_TIER', payload: { tierToUpdate } });
+    },
+    setTiers(newTierList: Tier[]) {
+      dispatch({ type: 'UPDATE_TIER_LIST', payload: { newTierList } });
     }
   };
 

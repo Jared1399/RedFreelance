@@ -4,7 +4,7 @@ import useCategory from '@/context/Category/useCategory';
 import { useSession } from "next-auth/react";
 import useUser from '@/context/User/useUser';
 import clsx from 'clsx';
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useEffect, useRef, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import AuthMiddleware from "@/components/ClientAuthMiddleware";
 import PoolSelect from '@/components/UI/PoolSelect';
@@ -15,6 +15,8 @@ import AddTier from '../../create/components/AddTier';
 import { formContainerCls, tierListContainerCls, tierScrollListCls } from '../../create/styles';
 import useGig from '@/context/Gig/useGig';
 import { ToastContainer, toast } from 'react-toastify';
+import UploadGigImg from '../../create/components/UploadGigImg';
+import gigService from '../../gig.service';
 
 
 const successNotify = (handleClick: () => void) => (
@@ -42,11 +44,13 @@ export interface GigParams {
 }
 
 interface GigInfo {
+  id: string;
   title: string;
   description: string;
   price: number;
   categories: Category[];
   tiers?: Tier[];
+  gigImg?: string;
 }
 interface Tier {
   id?: string;
@@ -102,63 +106,63 @@ export default function EditGig() {
 
   const [selectedCatIds, setSelectedCatIds] = useState<number[]>([]);
   const [search, setSearch] = useState("");
+  const [gigImgPreview, setGigImgPreview] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const hasFetchedRef = useRef(false);
 
   const [gigInfo, setGigInfo] = useState<GigInfo>({
+    id: '',
     title: '',
     description: '',
     price: 0,
     categories: [],
-    tiers: [] as Tier[]
+    tiers: [] as Tier[],
+    gigImg: ''
   });
 
   const gigId = urlParams.gigId as string;
 
-
   useEffect(() => {
-    const fetchGig = async () => {
-      if (session?.userId && gigId) {
-        const gigInfo = await gigActions.fetchGigById(gigId, session.userId);
+    if (!session?.userId || !gigId) return;
+    if (hasFetchedRef.current) return;
 
-        if (gigInfo && gigInfo.categories) {
-          setGigInfo({
-            title: gigInfo.title as string,
-            description: gigInfo.description as string,
-            price: gigInfo.price as number,
-            categories: gigInfo.categories as Category[],
-          });
+    hasFetchedRef.current = true;
 
-          if (gigInfo.GigTier) {
-            const sortedTiers = [...gigInfo.GigTier].sort((a, b) =>
-              a.price - b.price
-            );
+    gigActions.fetchGigById(gigId, session.userId).then((gigInfo) => {
+      if (!gigInfo) return;
+      setGigInfo({
+        id: gigInfo.id,
+        title: gigInfo.title ?? '',
+        description: gigInfo.description ?? '',
+        price: gigInfo.price ?? 0,
+        categories: gigInfo.categories ?? [],
+        gigImg: gigInfo.gigImg ?? null
+      });
 
-            sortedTiers.forEach((tier: Tier) => {
-              tierActions.addTier({
-                id: tier.id,
-                name: tier.name,
-                price: tier.price,
-                description: tier.description || "",
-                deliveryTime: tier.deliveryTime || 0,
-              });
-            });
-          }
-        }
+      setGigImgPreview(gigInfo.gigImg);
 
-        if (gigInfo.categories && gigInfo.categories.length > 0) {
-          const initialCategoryIds = gigInfo.categories
-            .map((cat: Category) => cat.id)
-            .filter((id: number) => id !== undefined);
-
-          setSelectedCatIds(initialCategoryIds);
-
-          gigInfo.categories.forEach((cat: Category) => {
-            categoryActions.addCategory(cat);
-          });
-        }
+      if (gigInfo.GigTier?.length) {
+        const sorted = gigInfo.GigTier
+          .slice()
+          .sort((a: Tier, b: Tier) => a.price - b.price);
+        tierActions.setTiers(sorted.map((tier: Tier) => ({
+          id: tier.id,
+          localId: tier.id ?? Math.random(),
+          name: tier.name,
+          price: tier.price,
+          description: tier.description || "",
+          deliveryTime: tier.deliveryTime || 0,
+        })));
       }
-    };
 
-    fetchGig();
+      if (gigInfo.categories?.length) {
+        const ids = gigInfo.categories
+          .map((cat: Category) => cat.id)
+          .filter(Boolean);
+        setSelectedCatIds(ids);
+        gigInfo.categories.forEach(categoryActions.addCategory);
+      }
+    });
   }, [session?.userId, gigId]);
 
 
@@ -194,7 +198,7 @@ export default function EditGig() {
       }
 
       const tierPromises = tierState.tierList.map(async (tier: Tier) => {
-        const endpoint = tier.id ? "/api/gig/tier/update" : "/api/gig/tier/create";
+        const endpoint = tier.id ? "/api/gig/tier/update" : "/api/gig/tier";
         const payload = tier.id
           ? { tierId: tier.id, gigId, userId: session?.userId, ...tier }
           : { gigId, userId: session?.userId, ...tier };
@@ -215,6 +219,10 @@ export default function EditGig() {
         console.warn("Some tiers failed, but continuing...", error);
       }
 
+      if (selectedFile && session?.userId) {
+        await gigService.uploadGigImg(selectedFile, session.userId, gigInfo.id);
+      }
+
       successNotify(() => router.push('/profile'));
     } catch (error) {
       console.error("Error updating gig:", error);
@@ -230,20 +238,19 @@ export default function EditGig() {
   const handlePoolChange = (ids: number[]) => {
     setSelectedCatIds(ids);
   };
-
-  const tierComponents = tierState.tierList.map((t: Tier, i: number) => {
+  const tierComponents = tierState.tierList.map((t: Tier) => {
     return (
       <TierForm
         tier={t}
         onCloseHandler={() => tierActions.removeTier(t.localId!)}
         updateTierHandler={tierActions.updateTier}
-        key={i}
+        key={t.id || t.localId}
       />
     );
   });
 
   const addTier = () => {
-    const generatedId = Number.parseInt((Math.random() * 1000).toString());
+    const generatedId = Date.now() + Math.random();
 
     tierActions.addTier(
       {
@@ -307,20 +314,44 @@ export default function EditGig() {
           mx-2
         '>
         <div className={formContainerCls + " w-full lg:w-1/2 flex flex-col"}>
-          <h1
-            className='
+          <div className='flex flex-row relative align-sub mb-8'>
+            <Image
+              src={gigImgPreview}
+              alt='Upload new gig photo'
+              className='w-20 h-20 rounded-full'
+            />
+            <UploadGigImg
+              icon="🖊"
+              buttonText=""
+              buttonClassName="
+                absolute
+                top-10
+                left-13
+                w-10
+                h-10
+                bg-amber-700
+                hover:bg-amber-800
+                rounded-full
+              "
+              modalClassName="max-w-lg"
+              setPreview={setGigImgPreview}
+              fileSetter={setSelectedFile}
+            />
+            <h1
+              className='
               text-2xl 
               sm:text-3xl 
               font-bold 
               text-gray-900 
               dark:text-white 
-              pb-6 
-              sm:pb-8 
               text-center 
-              lg:text-left
+              self-center
+              ml-5
             '>
-            Editar {gigInfo.title}
-          </h1>
+
+              Editar: {gigInfo.title}
+            </h1>
+          </div>
 
           <form onSubmit={onSubmit} className='flex flex-col gap-6 sm:gap-8 flex-1' action="POST">
 

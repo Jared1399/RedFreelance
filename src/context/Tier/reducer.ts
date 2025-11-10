@@ -54,6 +54,12 @@ const reducer = (state: InitialState = initialState, action: Action): InitialSta
             : t
         ) as Tier[],
       };
+    },
+    UPDATE_TIER_LIST: () => {
+      return {
+        ...state,
+        tierList: action.payload.newTierList as Tier[]
+      };
     }
   };
 

@@ -63,7 +63,7 @@ export function NavBar() {
           </div>
         </div>
 
-        <NavigationMenu>
+        <NavigationMenu id="container-dropdown">
           <NavigationMenuList className="flex items-center gap-4">
             {session && (
               <>
