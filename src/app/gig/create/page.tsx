@@ -94,7 +94,6 @@ export default function CreateGig() {
     );
   };
 
-
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     try {

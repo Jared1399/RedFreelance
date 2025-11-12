@@ -1,7 +1,5 @@
-import { NextAuthOptions, Session, Profile, DefaultSession } from "next-auth";
+import { NextAuthOptions, User, Profile, DefaultSession } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import { JWT } from "next-auth/jwt";
-
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
 
@@ -62,7 +60,6 @@ export const authOptions: NextAuthOptions = {
           user = await newUserRes.json();
         }
 
-        // Guardamos userId en el profile para usarlo luego en jwt/session
         (profile as CustomProfile).userId = user.id;
 
         return true;
@@ -71,15 +68,15 @@ export const authOptions: NextAuthOptions = {
         return false;
       }
     },
-    async jwt({ token, profile }): Promise<JWT & { userId?: string }> {
-      if (profile && (profile as CustomProfile).userId) {
-        token.userId = (profile as CustomProfile).userId;
+    async jwt({ token, user, profile }) {
+      if (user) {
+        token.userId = (profile as CustomProfile)?.userId || (user as User)?.id;
       }
       return token;
     },
 
-    async session({ session, token }): Promise<Session & { userId?: string }> {
-      if (token.userId) {
+    async session({ session, token }) {
+      if (token?.userId) {
         session.userId = token.userId;
       }
       return session;

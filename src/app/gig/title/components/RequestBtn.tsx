@@ -114,7 +114,7 @@ export default function RequestBtn({ gigTiers, gig }: { gigTiers: GigTier[], gig
   }, [gig.id]);
 
   if (!data) return;
-  if (data.userId == freelancerId) return
+  if (data.userId == freelancerId) return;
 
   return (
     <>
