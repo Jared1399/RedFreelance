@@ -2,9 +2,8 @@
 
 import useCategory from '@/context/Category/useCategory';
 import { useSession } from "next-auth/react";
-import useUser from '@/context/User/useUser';
 import clsx from 'clsx';
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import AuthMiddleware from "@/components/ClientAuthMiddleware";
 import PoolSelect from '@/components/UI/PoolSelect';
@@ -18,7 +17,7 @@ import gigService from '../gig.service';
 import { ToastContainer, toast } from 'react-toastify';
 
 const successNotify = (handleClick: () => void) => (
-  toast.success(`Publicacion actualizada!\nHaz click aqui para volver a tu perfil`, {
+  toast.success(`Publicacion creada!\nHaz click aqui para volver a tu perfil`, {
     position: "bottom-right",
     autoClose: 3000,
     hideProgressBar: false,
@@ -33,10 +32,6 @@ const errorNotify = (msg: string) => toast.error(msg, {
   hideProgressBar: false,
   pauseOnHover: true,
 });
-
-interface User {
-  id: string;
-}
 
 interface Tier {
   localId: number;
@@ -78,7 +73,6 @@ export default function CreateGig() {
 
   const { status, data: session } = useSession();
   const { state: categoryState, actions: categoryActions } = useCategory({ skip: 0, limit: 10 });
-  const { state: userState, actions: userActions } = useUser();
   const { state: tierState, actions: tierActions } = useTier();
 
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
@@ -106,14 +100,20 @@ export default function CreateGig() {
     try {
       const formData = new FormData(event.currentTarget);
 
+      if (!session?.userId) {
+        throw new Error("Missing userId");
+      }
+
       const payload = {
         title: formData.get("title"),
         description: formData.get("description"),
         price: parseInt(formData.get("price") as string),
         categories: formData.get("categories") as string,
         tiers: tierState.tierList,
-        userId: (userState?.userData as User)?.id,
+        userId: session?.userId,
       };
+
+
 
       const createGig = await fetch("/api/gig", {
         method: "POST",
@@ -132,6 +132,11 @@ export default function CreateGig() {
         if (uploadGigImg.ok) {
           router.push('/profile');
         }
+
+        if (!uploadGigImg.ok) {
+          throw new Error("Could not create gig image");
+        }
+
       }
 
       if (newGig.id) {
@@ -211,11 +216,6 @@ export default function CreateGig() {
 
     setSearch("");
   };
-
-
-  useEffect(() => {
-    userActions.fetchUserData();
-  }, [session?.userId]);
 
   return (
     <AuthMiddleware status={status}>

@@ -66,13 +66,12 @@ export async function POST(request: Request) {
     title,
     description,
     price,
-    status,
     categories,
     tiers,
     userId
   } = await request.json();
 
-  if (!title || !description || !price || !status || !categories || !tiers || userId) {
+  if (!title || !description || !price || !categories || !tiers || !userId) {
     return NextResponse.json(
       { ok: false, error: "Missing crucial information for gig creation" },
       { status: 400 }
@@ -97,7 +96,6 @@ export async function POST(request: Request) {
       title: title.toLowerCase(),
       description,
       price,
-      status,
       userId,
       categories: {
         connect: categoryIds.map((id: number) => ({ id })),
