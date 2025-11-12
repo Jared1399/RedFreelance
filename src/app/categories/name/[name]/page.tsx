@@ -20,10 +20,12 @@ export default async function CategoryName({ params }: GigParams) {
 
   return (
     <div className='px-8'>
-      Categoria: <strong>{name}</strong><br />
-      <small>{categoryInfo.description}</small><br /><br />
+      <div className='text-3xl mt-10'>
+        Categoria: <strong>{name}</strong><br />
+        <small>{categoryInfo.description}</small><br /><br />
+      </div>
 
-      <Grid>
+      <Grid className='pb-4 px-2'>
         {gigList.map((card: Gig, i: number) => (
           <Card
             key={i}

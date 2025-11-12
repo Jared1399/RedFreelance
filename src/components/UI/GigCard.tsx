@@ -121,7 +121,7 @@ const GigCard: React.FC<GigCardProps> = ({
 
   const cardContainerCls = clsx(
     "flex flex-col w-full h-full",
-    "rounded-lg dark:bg-card dark:border",
+    "rounded-lg bg-card border",
     "shadow-[0px_4px_6px_0px_rgba(81,_81,_81,_0.5)]",
     "hover:shadow-[0px_6px_8px_0px_rgba(81,_81,_81,_0.7)]",
     "transition-all duration-200",
@@ -152,14 +152,14 @@ const GigCard: React.FC<GigCardProps> = ({
                 onClick={(e) => handleEditClick(e)}
                 className="
                   absolute 
-                  bg-amber-700 
-                  text-amber-50 
+                  bg-accent/80
+                  text-white
                   right-2 
                   top-2 
                   p-2 
                   rounded-lg 
-                  border 
-                  border-amber-50
+                  border-2
+                  border-foreground/90
                 "
               >
                 🖊
@@ -167,7 +167,7 @@ const GigCard: React.FC<GigCardProps> = ({
             )
           }
           <Image
-            className="rounded-lg w-full h-full object-cover drop-shadow-color"
+            className="rounded-lg w-full h-full object-cover drop-shadow-color border-2"
             alt="gig-card-image"
             src={gigImg ?? ''}
           />
@@ -192,10 +192,10 @@ const GigCard: React.FC<GigCardProps> = ({
         )}
 
         <div className="flex flex-col flex-1 min-h-0 w-full justify-between">
-          <h3 className={`${config.title} font-semibold w-full`}>
+          <h3 className={`${config.title} text-muted-foreground font-semibold w-full`}>
             {displayTitle}
           </h3>
-          <p className={`${config.price} text-amber-600 font-medium w-full mt-1`}>
+          <p className={`${config.price} text-primary font-medium w-full mt-1`}>
             Desde CLP {formattedPrice || price}
           </p>
         </div>

@@ -94,7 +94,6 @@ export default function DeliveryModal({ freelancerId }: DeliveryModalProps) {
 
     transactionService.updateTransactionLifecycle("on_review", currTransaction.id);
 
-
     setSending(false);
   };
 
@@ -102,18 +101,19 @@ export default function DeliveryModal({ freelancerId }: DeliveryModalProps) {
     resetForm();
     setOpenModal(false);
   };
+
   if (!openModal) {
     return (
       <div
         className="
-          bg-neutral-300 
-          outline 
+          bg-muted 
+          border-1
           px-4 
           py-2 
           mx-2 
           rounded-lg 
           cursor-pointer 
-          hover:bg-neutral-400 
+          hover:bg-muted-foreground/50
           transition-colors
           "
         role="button"
@@ -134,8 +134,7 @@ export default function DeliveryModal({ freelancerId }: DeliveryModalProps) {
 
       <div className="
         relative 
-        bg-gray-100 
-        dark:bg-card 
+        bg-background 
         rounded-lg 
         w-full 
         max-w-2xl 
@@ -152,20 +151,18 @@ export default function DeliveryModal({ freelancerId }: DeliveryModalProps) {
           <button
             onClick={handleCloseModal}
             className="
-              text-gray-500 
-              hover:text-gray-700 
-              dark:text-gray-400 
-              dark:hover:text-gray-200 
+              text-foreground
               text-2xl 
               font-bold
+              cursor-pointer
             ">
-            ×
+            x
           </button>
         </div>
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-foreground mb-2">
               Notas de entrega {!selectedFile && '(obligatorias si no hay archivo)'}
             </label>
             <textarea
@@ -174,18 +171,12 @@ export default function DeliveryModal({ freelancerId }: DeliveryModalProps) {
               className="
                 w-full 
                 border 
-                border-gray-300 
-                dark:border-gray-600 
                 rounded-lg 
                 px-3 
                 py-2 
                 focus:outline-none 
                 focus:ring-2 
-                focus:ring-amber-500 
-                bg-white
-                dark:bg-neutral-700 
-                dark:text-white
-                text-black
+                bg-muted-foreground
               "
               rows={4}
               placeholder="Describe tu entrega, incluye instrucciones o detalles importantes..."
@@ -193,7 +184,7 @@ export default function DeliveryModal({ freelancerId }: DeliveryModalProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-foreground/80 mb-2">
               Archivo adjunto {!notes.trim() && '(obligatorio si no hay notas)'}
             </label>
             <input
@@ -202,18 +193,15 @@ export default function DeliveryModal({ freelancerId }: DeliveryModalProps) {
               className="
                 w-full 
                 border 
-                border-gray-300 
-                dark:border-gray-600 
+                border-muted-foreground
                 rounded-lg 
                 px-3 
                 py-2 
                 focus:outline-none 
                 focus:ring-2 
-                focus:ring-amber-800 
-                bg-amber-50
-                dark:bg-neutral-700 
-                text-black
-                dark:text-white 
+                focus:ring-primary 
+                bg-muted
+                text-foreground
                 file:mr-4 
                 file:py-2 
                 file:px-4 
@@ -221,9 +209,9 @@ export default function DeliveryModal({ freelancerId }: DeliveryModalProps) {
                 file:border-0 
                 file:text-sm 
                 file:font-semibold 
-                file:bg-amber-50 
-                file:text-neutral-900 
-                hover:file:bg-amber-700
+                file:bg-accent 
+                file:text-foreground
+                hover:file:bg-ring
               "/>
 
             {filePreviewUrl && selectedFile && (
@@ -232,13 +220,10 @@ export default function DeliveryModal({ freelancerId }: DeliveryModalProps) {
                   mt-3 
                   p-3 
                   border 
-                  border-gray-200 
-                  dark:border-white 
                   rounded-lg 
-                  bg-white 
-                  dark:bg-neutral-800
+                  bg-background 
                 ">
-                <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <p className="text-sm font-medium text-accent-foreground mb-2">
                   Vista previa:
                 </p>
                 {selectedFile.type.startsWith('image/') ? (
@@ -248,7 +233,7 @@ export default function DeliveryModal({ freelancerId }: DeliveryModalProps) {
                       alt="Preview"
                       className="max-h-48 rounded-lg border"
                     />
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                    <p className="text-sm text-accent-foreground mt-2">
                       {selectedFile.name}
                     </p>
                   </div>
@@ -259,7 +244,7 @@ export default function DeliveryModal({ freelancerId }: DeliveryModalProps) {
                       <p className="font-medium text-gray-900 dark:text-white">
                         {selectedFile.name}
                       </p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                      <p className="text-sm text-accent-foreground">
                         {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
                       </p>
                     </div>
@@ -277,16 +262,14 @@ export default function DeliveryModal({ freelancerId }: DeliveryModalProps) {
                 px-6 
                 py-2 
                 border 
-                border-gray-300 
-                dark:border-gray-600 
+                border-muted-foreground 
                 rounded-lg 
-                text-gray-700 
-                dark:text-gray-300 
-                hover:bg-gray-50 
-                dark:hover:bg-gray-700 
+                text-muted-foreground 
+                bg-background
+                hover:bg-muted-foreground 
+                hover:text-foreground
                 transition-colors
-                bg-white
-                dark:bg-card
+                disabled:cursor-not-allowed
               "
               disabled={sending}
             >
@@ -298,10 +281,10 @@ export default function DeliveryModal({ freelancerId }: DeliveryModalProps) {
               className="
                 px-6 
                 py-2 
-                bg-amber-700 
-                text-white 
+                bg-accent
+                text-foreground 
                 rounded-lg 
-                hover:bg-amber-900 
+                hover:bg-ring
                 disabled:opacity-50 
                 disabled:cursor-not-allowed 
                 transition-colors
@@ -310,7 +293,16 @@ export default function DeliveryModal({ freelancerId }: DeliveryModalProps) {
             >
               {sending ? (
                 <span className="flex items-center">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2">
+                  <div
+                    className="
+                      animate-spin 
+                      rounded-full 
+                      h-4 
+                      w-4 
+                      border-b-2 
+                      border-foreground 
+                      mr-2
+                    ">
                   </div>
                   Enviando...
                 </span>

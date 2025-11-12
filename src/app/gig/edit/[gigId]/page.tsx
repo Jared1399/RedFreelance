@@ -25,7 +25,6 @@ const successNotify = (handleClick: () => void) => (
     autoClose: 3000,
     hideProgressBar: false,
     pauseOnHover: true,
-    theme: "dark",
     className: "cursor-pointer",
     onClick: () => handleClick()
   }));
@@ -35,7 +34,6 @@ const errorNotify = (msg: string) => toast.error(msg, {
   autoClose: 3000,
   hideProgressBar: false,
   pauseOnHover: true,
-  theme: "dark",
 });
 
 
@@ -76,23 +74,18 @@ const inputCls = clsx(
   "px-4",
   "py-3",
   "border",
-  "border-neutral-300",
-  "dark:border-neutral-600",
   "rounded-lg",
-  "bg-white",
-  "dark:bg-neutral-800",
-  "text-neutral-900",
-  "dark:text-white",
+  "bg-background",
+  "text-foreground",
   "focus:outline-none",
-  "focus:border-amber-500",
+  "focus:border-accent",
   "focus:ring-2",
-  "focus:ring-amber-200",
-  "dark:focus:ring-amber-800",
+  "focus:ring-accent/40",
   "transition-all",
   "duration-200",
-  "placeholder-neutral-500",
-  "dark:placeholder-neutral-400",
+  "placeholder-muted-foreground"
 );
+
 
 export default function EditGig() {
   const urlParams = useParams();
@@ -280,10 +273,29 @@ export default function EditGig() {
 
   const searchResults = (
     search && categoryState.searchCategories.length && (
-      <div className='absolute top-19 left-0 w-full rounded-lg overflow-hidden'>
+      <div
+        className="
+          absolute 
+          top-19 
+          left-0 
+          w-full 
+          rounded-lg 
+          overflow-hidden 
+          border 
+          border-border 
+          bg-card
+        ">
         {categoryState.searchCategories.map((cat) => (
           <div
-            className="w-full bg-neutral-700 h-fit px-2 py-1 hover:bg-neutral-800"
+            className="
+              w-full 
+              bg-card 
+              px-2 
+              py-1 
+              hover:bg-muted 
+              text-card-foreground 
+              transition-colors
+            "
             key={cat.id}
             onClick={() => handleSearchCategory(cat)}
           >
@@ -329,9 +341,10 @@ export default function EditGig() {
                 left-13
                 w-10
                 h-10
-                bg-amber-700
-                hover:bg-amber-800
+                bg-accent
+                hover:bg-ring
                 rounded-full
+                cursor-pointer
               "
               modalClassName="max-w-lg"
               setPreview={setGigImgPreview}
@@ -339,14 +352,13 @@ export default function EditGig() {
             />
             <h1
               className='
-              text-2xl 
-              sm:text-3xl 
-              font-bold 
-              text-gray-900 
-              dark:text-white 
-              text-center 
-              self-center
-              ml-5
+                text-2xl 
+                sm:text-3xl 
+                font-bold 
+                text-foreground 
+                text-center 
+                self-center 
+                ml-5
             '>
 
               Editar: {gigInfo.title}
@@ -389,8 +401,7 @@ export default function EditGig() {
                     top-1/2 
                     transform 
                     -translate-y-1/2 
-                    text-gray-500 
-                    dark:text-gray-400
+                    text-muted-foreground
                   ">
                   $
                 </span>
@@ -438,9 +449,9 @@ export default function EditGig() {
                 className="
                   cursor-pointer 
                   rounded-full 
-                  bg-amber-600 
-                  hover:bg-amber-700 
-                  text-white 
+                  bg-primary 
+                  hover:bg-primary/90 
+                  text-primary-foreground 
                   font-semibold 
                   w-40 
                   py-3 
@@ -460,8 +471,8 @@ export default function EditGig() {
         </div>
 
         <div className={tierListContainerCls + " w-full lg:w-1/2"}>
-          <div className='text-lg sm:text-xl mb-2'>Niveles</div>
-          <span className='text-xs sm:text-sm opacity-[0.5] block mb-4 sm:mb-6'>
+          <div className="text-lg sm:text-xl mb-2 text-foreground">Niveles</div>
+          <span className="text-xs sm:text-sm opacity-50 block mb-4 sm:mb-6 text-muted-foreground">
             Define los niveles en los que tus clientes pueden solicitar tus servicios
           </span>
 
@@ -484,21 +495,21 @@ export default function EditGig() {
         <div className="lg:hidden w-full mt-6">
           <button
             className="
-                  cursor-pointer 
-                  rounded-full 
-                  bg-amber-600 
-                  hover:bg-amber-700 
-                  text-white 
-                  font-semibold 
-                  w-40 
-                  py-3 
-                  px-8 
-                  text-base 
-                  transition-colors 
-                  duration-200 
-                  shadow-lg 
-                  hover:shadow-xl
-                "
+              cursor-pointer 
+              rounded-full 
+              bg-primary 
+              hover:bg-primary/90 
+              text-primary-foreground 
+              font-semibold 
+              w-full 
+              py-4 
+              px-8 
+              text-base 
+              transition-colors 
+              duration-200 
+              shadow-lg 
+              hover:shadow-xl
+            "
             type="submit"
           >
             Actualizar

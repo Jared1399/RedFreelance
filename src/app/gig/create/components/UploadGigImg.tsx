@@ -94,30 +94,35 @@ const UploadGigImg: React.FC<FileUploadProps> = ({
       {isModalOpen && (
         <div
           className="
-            fixed 
-            inset-0 
-            bg-black 
-            bg-opacity-50 
-            flex 
-            items-center 
-            justify-center 
-            z-50 
-            p-4
-          ">
+          fixed 
+          inset-0 
+          bg-black/50
+          flex 
+          items-center 
+          justify-center 
+          z-50 
+          p-4
+        ">
           <div
             className={`
-              bg-white 
-              rounded-xl 
-              shadow-2xl 
-              w-full 
-              max-w-md 
-              ${modalClassName}
-            `}>
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h2 className="text-xl font-semibold text-gray-800">Subir archivo</h2>
+            bg-card 
+            text-card-foreground
+            rounded-xl 
+            shadow-2xl 
+            w-full 
+            max-w-md 
+            ${modalClassName}
+          `}>
+            <div className="flex items-center justify-between p-6 border-b border-border">
+              <h2 className="text-xl font-semibold text-foreground">Subir archivo</h2>
               <button
                 onClick={handleCloseModal}
-                className="text-gray-400 hover:text-gray-600 transition-colors disabled:opacity-50"
+                className="
+                  text-muted-foreground 
+                  hover:text-foreground 
+                  transition-colors 
+                  disabled:opacity-50
+                "
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
@@ -136,16 +141,17 @@ const UploadGigImg: React.FC<FileUploadProps> = ({
                 onDrop={handleDrop}
                 onClick={triggerFileInput}
                 className="
-                  border-2 
-                  border-dashed 
-                  border-gray-300 
-                  rounded-lg 
-                  p-8 
-                  text-center 
-                  cursor-pointer 
-                  hover:border-amber-600 
-                  transition-colors 
-                  bg-gray-50"
+                border-2 
+                border-dashed 
+                border-border 
+                rounded-lg 
+                p-8 
+                text-center 
+                cursor-pointer 
+                hover:border-primary 
+                transition-colors 
+                bg-muted
+              "
               >
                 <input
                   ref={fileInputRef}
@@ -158,7 +164,7 @@ const UploadGigImg: React.FC<FileUploadProps> = ({
                 {!selectedFile ? (
                   <div className="space-y-3">
                     <svg
-                      className="w-12 h-12 mx-auto text-gray-400"
+                      className="w-12 h-12 mx-auto text-muted-foreground"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -168,15 +174,15 @@ const UploadGigImg: React.FC<FileUploadProps> = ({
                         strokeLinejoin="round"
                         strokeWidth={2}
                         d="
-                          M7 16a4 4 0 01-.88-7.903A5
-                          5 0 1115.9 6L16 6a5 5 0 011
-                          9.9M15 13l-3-3m0 0l-3 3m3-3v12
-                        "/>
+                        M7 16a4 4 0 01-.88-7.903A5
+                        5 0 1115.9 6L16 6a5 5 0 011
+                        9.9M15 13l-3-3m0 0l-3 3m3-3v12
+                      "/>
                     </svg>
-                    <p className="text-gray-600 font-medium">
+                    <p className="text-foreground font-medium">
                       Haz click o arrastra un archivo aquí
                     </p>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-muted-foreground">
                       Cualquier tipo de imagen
                     </p>
                   </div>
@@ -191,41 +197,41 @@ const UploadGigImg: React.FC<FileUploadProps> = ({
                         />
                       </div>
                     )}
-                    <p className="text-gray-800 font-medium truncate">{selectedFile.name}</p>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-foreground font-medium truncate">{selectedFile.name}</p>
+                    <p className="text-sm text-muted-foreground">
                       {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB
                     </p>
                   </div>
                 )}
               </div>
-
             </div>
 
             <div
               className="
-                flex 
-                justify-between 
-                gap-3 
-                p-6 
-                border-t 
-                border-gray-200 
-                bg-gray-50 
-                rounded-b-xl
-              ">
+              flex 
+              justify-between 
+              gap-3 
+              p-6 
+              border-t 
+              border-border 
+              bg-muted 
+              rounded-b-xl
+            ">
               <button
                 onClick={handleDeletePhoto}
                 disabled={!selectedFile}
                 className="
-                  px-4 
-                  py-2 
-                  text-gray-600 
-                  hover:text-gray-800 
-                  font-medium 
-                  disabled:opacity-50 
-                  transition-colors 
-                  border 
-                  border-neutral-400 
-                  rounded-lg
+                px-4 
+                py-2 
+                text-muted-foreground 
+                hover:text-foreground 
+                font-medium 
+                disabled:opacity-50 
+                disabled:cursor-not-allowed 
+                transition-colors 
+                border 
+                border-border 
+                rounded-lg
               ">
                 Borrar
               </button>
@@ -233,17 +239,17 @@ const UploadGigImg: React.FC<FileUploadProps> = ({
                 onClick={handleCloseModal}
                 disabled={!selectedFile}
                 className="
-                  px-4 
-                  py-2 
-                  bg-amber-700 
-                  text-white 
-                  rounded-lg 
-                  hover:bg-amber-800 
-                  disabled:opacity-50 
-                  disabled:cursor-not-allowed 
-                  transition-colors 
-                  font-medium
-                "
+                px-4 
+                py-2 
+                bg-primary 
+                text-primary-foreground 
+                rounded-lg 
+                hover:opacity-90
+                disabled:opacity-50 
+                disabled:cursor-not-allowed 
+                transition-colors 
+                font-medium
+              "
               >
                 Aceptar
               </button>
@@ -253,6 +259,7 @@ const UploadGigImg: React.FC<FileUploadProps> = ({
       )}
     </>
   );
+
 };
 
 export default UploadGigImg;

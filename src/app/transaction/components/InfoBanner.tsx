@@ -32,7 +32,7 @@ export default function InfoBanner({ icon, content }: { icon: string, content: s
               inset-x-0 
               flex 
               justify-center 
-              bg-neutral-700/50 
+              bg-accent/50 
               py-2 
               px-3 
               md:px-0 

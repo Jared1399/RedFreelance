@@ -23,6 +23,7 @@ export function NavBar() {
   const { data: session } = useSession();
   const { state: userState } = useUser();
 
+
   return (
     <div className="w-full bg-background z-50">
       <div className="hidden md:flex items-center w-full px-4 pt-4">
@@ -42,7 +43,9 @@ export function NavBar() {
           <NavigationMenu className="flex-1">
             <NavigationMenuList className="flex items-center gap-4">
               <NavigationMenuItem>
-                <NavigationMenuTrigger>Categorias</NavigationMenuTrigger>
+                <NavigationMenuTrigger className="bg-background">
+                  Categorias
+                </NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul className="grid w-[400px] gap-2 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
                     <CategoryList />
@@ -58,7 +61,7 @@ export function NavBar() {
             </NavigationMenuList>
           </NavigationMenu>
 
-          <div className="flex-1 max-w-[70%] mx-auto">
+          <div className="flex-1 max-w-[70%] mx-2">
             <SearchBar />
           </div>
         </div>
@@ -71,6 +74,13 @@ export function NavBar() {
                   <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
                     <Link href="/profile">
                       Perfil
+                    </Link>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+                    <Link href="/gig/create">
+                      Nuevo trabajo
                     </Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>

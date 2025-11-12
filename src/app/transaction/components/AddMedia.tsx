@@ -54,26 +54,29 @@ export default function AddMedia({ onFileChange, reset }: AddMediaProps) {
       {selectedFile && preview && (
         <div
           className="
-          flex 
-          items-center 
-          space-x-2 
-          absolute 
-          bottom-18 
-          left-0 
-          w-full 
-          py-5 
-          px-6 
-          bg-neutral-700"
+            flex 
+            items-center 
+            space-x-2 
+            absolute 
+            bottom-18 
+            left-0 
+            w-full 
+            py-5 
+            px-6 
+            bg-muted 
+            border-t 
+            border-border
+          "
         >
           <div>
-            <p>Vista previa:</p>
+            <p className="text-sm text-foreground">Vista previa:</p>
             <img
               src={preview}
               alt="Preview"
-              className="w-[75px] h-[75px] object-cover rounded-lg"
+              className="w-[75px] h-[75px] object-cover rounded-lg border border-border"
             />
           </div>
-          <span className="text-sm text-neutral-300 max-w-[180px] truncate">
+          <span className="text-sm text-muted-foreground max-w-[180px] truncate">
             {selectedFile.name}
           </span>
           <button
@@ -84,7 +87,7 @@ export default function AddMedia({ onFileChange, reset }: AddMediaProps) {
               if (fileInputRef.current) fileInputRef.current.value = "";
               onFileChange(null);
             }}
-            className="text-sm text-amber-600 hover:text-amber-500"
+            className="text-sm text-accent hover:text-ring transition-colors"
           >
             Eliminar
           </button>
@@ -92,8 +95,20 @@ export default function AddMedia({ onFileChange, reset }: AddMediaProps) {
       )}
       <button
         onClick={openFileDialog}
-        className="bg-neutral-300 outline px-4 py-2 mx-2 rounded-lg cursor-pointer"
-      >
+        className="
+          bg-muted 
+          text-foreground
+          border 
+          border-border
+          px-4 
+          py-2 
+          mx-2 
+          rounded-lg 
+          cursor-pointer
+          hover:bg-muted-foreground/50
+          hover:text-accent-foreground
+          transition-colors
+        ">
         📎
       </button>
       <input
@@ -104,5 +119,6 @@ export default function AddMedia({ onFileChange, reset }: AddMediaProps) {
         className="hidden"
       />
     </>
+
   );
 }

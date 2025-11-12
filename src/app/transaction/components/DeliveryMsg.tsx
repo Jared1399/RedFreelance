@@ -26,7 +26,7 @@ export default function DeliveryMsg(
                 <img
                   src={url}
                   alt="Archivo adjunto"
-                  className="max-w-full h-auto rounded-lg mb-2"
+                  className="max-w-full h-auto rounded-lg mb-2 border-2"
                 />
               )}
 

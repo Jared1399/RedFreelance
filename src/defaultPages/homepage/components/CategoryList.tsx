@@ -36,11 +36,12 @@ export default async function CategoryList() {
       '
     >
       <h2 className='
+        text-muted-foreground
         text-lg 
         sm:text-xl 
         lg:text-2xl 
         font-bold 
-        pl-4 
+        pl-6
         sm:pl-6 
         mb-4 
         sm:mb-6

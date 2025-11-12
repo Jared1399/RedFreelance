@@ -57,6 +57,25 @@ export default function EditProfileModal({ user }: { user: UserData }) {
     }
   }
 
+  const inputCls = `
+    border 
+    border-neutral-600 
+    bg-background
+    text-foreground
+    rounded 
+    px-3 
+    py-2 
+    md:py-1 
+    mb-3 
+    md:mb-4 
+    w-full 
+    md:w-auto 
+    flex-1
+    focus:outline-none
+    focus:ring-2
+    focus:ring-amber-600
+  `;
+
   const handleInputChange = (formKey: string, value: string) => {
     setFormData({ ...formData, [formKey]: value });
   };
@@ -64,67 +83,71 @@ export default function EditProfileModal({ user }: { user: UserData }) {
   return openModal ? (
     <div>
       {openModal && (
-        <div className='
+        <div
+          className='
         fixed 
         w-full 
         h-full 
-        bg-neutral-950 
+        bg-black/70 
         top-0 
         left-0 
-        z-50 
-        opacity-80
-      '>
-        </div>
+        z-50
+      '
+        />
       )}
 
       <dialog
         open={openModal}
         className='
-        fixed 
-        top-[25%] 
-        md:top-[25%]
-        left-1/2 
-        transform 
-        -translate-x-1/2
-        md:left-auto
-        md:transform-none
-        mx-auto
-        w-[90vw] 
-        md:w-fit  
-        max-w-lg
-        md:max-w-none
-        h-fit 
-        max-h-[90vh]
-        md:max-h-none
-        overflow-y-auto
-        z-50 
-        dark:bg-card 
-        dark:border 
-        rounded-lg
-        p-4 
-        md:p-0
-      '
+      fixed 
+      top-[25%] 
+      md:top-[25%]
+      left-1/2 
+      transform 
+      -translate-x-1/2
+      md:left-auto
+      md:transform-none
+      mx-auto
+      w-[90vw] 
+      md:w-fit  
+      max-w-lg
+      md:max-w-none
+      h-fit 
+      max-h-[90vh]
+      md:max-h-none
+      overflow-y-auto
+      z-50 
+      dark:bg-neutral-900   
+      dark:border 
+      border-neutral-700 
+      rounded-lg
+      p-4 
+      md:p-0
+      text-white            
+    '
       >
         <span
           className='
-            absolute 
-            right-3 
-            top-3 
-            md:right-5 
-            md:top-5 
-            select-none 
-            cursor-pointer 
-            text-lg 
-            md:text-base 
-            z-10 
-            bg-card 
-            rounded-full 
-            w-6 
-            h-6 
-            flex 
-            items-center 
-            justify-center
-            '
+        absolute 
+        right-3 
+        top-3 
+        md:right-5 
+        md:top-5 
+        select-none 
+        cursor-pointer 
+        text-lg 
+        md:text-base 
+        z-10 
+        bg-neutral-800      
+        hover:bg-neutral-700
+        text-white
+        rounded-full 
+        w-6 
+        h-6 
+        flex 
+        items-center 
+        justify-center
+      '
           onClick={() => setOpenModal(false)}
         >
           ×
@@ -135,25 +158,12 @@ export default function EditProfileModal({ user }: { user: UserData }) {
 
           <div className="flex flex-col mt-6 md:mt-10">
             <div className="flex flex-col md:flex-row gap-2 md:gap-0">
-              <label htmlFor="firstName" className="md:mr-8 mb-1 md:mb-0">Nombre</label>
-              <label htmlFor="lastName">Apellido</label>
+              <label htmlFor="firstName" className="md:mr-8 mb-1 md:mb-0 text-white">Nombre</label>
+              <label htmlFor="lastName" className="text-white">Apellido</label>
             </div>
             <div className="flex flex-col md:flex-row gap-3 md:gap-5 mt-2">
               <input
-                className="
-                  border 
-                  border-solid 
-                  border-white 
-                  rounded 
-                  px-3 
-                  py-2 
-                  md:py-1 
-                  mb-3 
-                  md:mb-4 
-                  w-full 
-                  md:w-auto 
-                  flex-1
-                "
+                className={inputCls}
                 type="text"
                 autoComplete="off"
                 name="firstName"
@@ -161,20 +171,7 @@ export default function EditProfileModal({ user }: { user: UserData }) {
                 onChange={(e) => handleInputChange('firstName', e.target.value)}
               />
               <input
-                className="
-                  border 
-                  border-solid 
-                  border-white 
-                  rounded 
-                  px-3 
-                  py-2 
-                  md:py-1 
-                  mb-3 
-                  md:mb-4 
-                  w-full 
-                  md:w-auto 
-                  flex-1
-                "
+                className={inputCls}
                 type="text"
                 autoComplete="off"
                 name="lastName"
@@ -185,20 +182,9 @@ export default function EditProfileModal({ user }: { user: UserData }) {
           </div>
 
           <div className="flex flex-col">
-            <label htmlFor="phone" className="mb-1">Número de teléfono</label>
+            <label htmlFor="phone" className="mb-1 text-white">Número de teléfono</label>
             <input
-              className="
-                border 
-                border-solid 
-                border-white 
-                rounded 
-                px-3 
-                py-2 
-                md:py-1 
-                mb-3 
-                md:mb-4 
-                w-full
-              "
+              className={inputCls}
               type="text"
               name="phone"
               value={formData.phone}
@@ -208,30 +194,31 @@ export default function EditProfileModal({ user }: { user: UserData }) {
 
           <button
             className="
-            bg-amber-700 
-            rounded-lg 
-            px-4 
-            py-3 
-            md:py-2 
-            w-full 
-            md:w-50 
-            mt-6 
-            md:mt-10 
-            flex 
-            items-center 
-            justify-center 
-            space-x-2
-            md:mx-0
-            mx-auto
-            hover:bg-amber-600
-            transition-colors
-            disabled:opacity-50
-            disabled:cursor-not-allowed
-            text-white
-          "
+              bg-primary
+              rounded-lg 
+              px-4 
+              py-3 
+              md:py-2 
+              w-full 
+              md:w-50 
+              mt-6 
+              md:mt-10 
+              flex 
+              items-center 
+              justify-center 
+              space-x-2
+              md:mx-0
+              mx-auto
+              hover:bg-primary/90
+              transition-colors
+              disabled:opacity-50
+              disabled:cursor-not-allowed
+              text-primary-foreground
+            "
             onClick={() => onSubmit(formData)}
             disabled={isSaving}
           >
+
             {isSaving ? (
               <>
                 <svg
@@ -267,24 +254,24 @@ export default function EditProfileModal({ user }: { user: UserData }) {
   ) : (
     <div
       className="
-    absolute 
-    z-10 
-    cursor-pointer 
-    bg-amber-50 
-    rounded-full 
-    outline-2 
-    outline-[var(--card)] 
-    hover:bg-amber-100 
-    transition-colors 
-    text-sm 
-    p-2 
-    top-6 
-    left-8 
-    md:top-10 
-    md:left-10 
-    md:outline-3 
-    md:p-1
-    "
+      absolute 
+      z-10 
+      cursor-pointer 
+      bg-amber-50 
+      rounded-full 
+      outline-2 
+      outline-primary 
+      hover:bg-accent 
+      transition-colors 
+      text-sm 
+      p-2 
+      top-6 
+      left-8 
+      md:top-10 
+      md:left-10 
+      md:outline-3 
+      md:p-1
+      "
       onClick={() => setOpenModal(true)}
     >
       🖊

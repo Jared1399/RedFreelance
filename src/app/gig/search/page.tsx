@@ -45,12 +45,12 @@ export default async function SearchGig({
   return (
     <div>
       <div className='mt-10 mx-10'>
-        <h2 className='text-lg font-bold pl-6'>{`Resultados de la busqueda "${decodedTitle}"`}</h2>
-        <div className='flex items-center align-middle mx-10 my-5'>
-          <Grid>
-            {gigList}
-          </Grid>
-        </div>
+        <h2 className='text-3xl font-bold pl-4 mb-4'>
+          {`Resultados de la busqueda "${decodedTitle}"`}
+        </h2>
+        <Grid className='pb-4 ml-6'>
+          {gigList}
+        </Grid>
       </div>
     </div>
   );

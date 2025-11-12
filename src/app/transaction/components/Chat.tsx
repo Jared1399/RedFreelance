@@ -122,20 +122,21 @@ export default function Chat() {
       {currTransaction ? (
         <div
           className="
-            flex 
-            flex-col 
-            h-dvh 
-            md:h-screen
-            bg-gray-100 
-            mx-0 
-            dark:bg-card 
-            dark:border 
-            rounded-none md:rounded-lg 
-            overflow-x-hidden
-            w-full
-          "
+        flex 
+        flex-col 
+        h-dvh 
+        md:h-screen
+        bg-background
+        text-foreground
+        mx-0 
+        border
+        border-border
+        rounded-none md:rounded-lg 
+        overflow-x-hidden
+        w-full
+      "
         >
-          <div className="bg-accent text-white font-bold p-3 md:p-4 relative">
+          <div className="bg-accent text-accent-foreground font-bold p-3 md:p-4 relative">
             <div className="text-sm md:text-base truncate">
               {`${currTransaction?.gig?.title} - ${currTransaction?.tier?.name}`}
             </div>
@@ -144,14 +145,25 @@ export default function Chat() {
 
           <div
             ref={messagesContainerRef}
-            className="flex-1 overflow-y-auto p-3 md:p-4 space-y-2"
-            style={{ maxHeight: "100%" }}
+            className="flex-1 overflow-y-auto p-3 md:p-4 space-y-2 bg-background"
+            style={{ maxHeight: '100%' }}
           >
             {messageList}
             <div ref={messagesEndRef} />
           </div>
 
-          <div className="flex items-center p-3 md:p-4 bg-neutral-300 border-t rounded-b-lg gap-2">
+          <div
+            className="
+              flex 
+              items-center 
+              p-3 
+              md:p-4 
+              bg-accent/20 
+              border-t 
+              border-border 
+              rounded-b-lg 
+              gap-2
+            ">
             {isFreelancer && acceptTransaction}
             {!isFreelancer && acceptDelivery}
 
@@ -167,56 +179,68 @@ export default function Chat() {
               className={`
                 flex-1 
                 border 
+                border-border
+                bg-background
+                text-foreground
                 rounded-lg 
                 px-3 md:px-4 
                 py-2 
                 text-sm md:text-base
                 focus:outline-none 
-                text-black
-                disabled:border-neutral-400
+                focus:ring-2 
+                focus:ring-accent/40
+                disabled:border-muted-foreground/40
+                disabled:bg-muted/60
+                disabled:text-muted-foreground
                 min-w-0
                 h-full
                 min-h-[44px]
               `}
               placeholder={
-                `${disabledChat ?
-                  "Este chat ya no esta disponible" :
-                  "Escribe un mensaje..."
+                `${disabledChat
+                  ? 'Este chat ya no está disponible'
+                  : 'Escribe un mensaje...'
                 }`
               }
               value={input}
               disabled={disabledChat || uploadingFile}
               onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), send())}
+              onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), send())}
             />
 
             <button
               onClick={() => send()}
               className={`
-                bg-amber-700 
-                text-white 
-                px-3 md:px-4 
-                py-2 
-                rounded-lg
-                h-full 
-                hover:bg-amber-900
-                disabled:bg-neutral-400 
-                disabled:cursor-not-allowed
-                disabled:text-gray-100
-                text-sm md:text-base
-                whitespace-nowrap
-                flex-shrink-0
-              `}
+            bg-accent
+            text-accent-foreground
+            px-3 md:px-4 
+            py-2 
+            rounded-lg
+            h-full 
+            hover:bg-amber-700
+            disabled:bg-muted 
+            disabled:cursor-not-allowed
+            disabled:text-muted-foreground
+            text-sm md:text-base
+            whitespace-nowrap
+            flex-shrink-0
+            transition-colors
+          `}
               disabled={uploadingFile || disabledChat}
             >
-              {uploadingFile ? "..." : "Enviar"}
+              {uploadingFile ? '...' : 'Enviar'}
             </button>
           </div>
         </div>
       ) : (
-        <div className="p-4 text-center">Selecciona o crea una transacción para continuar</div>
+        <div
+          className="p-4 text-center text-foreground bg-background border border-border rounded-lg"
+        >
+          Selecciona o crea una transacción para continuar
+        </div>
       )}
     </>
+
   );
 }
 

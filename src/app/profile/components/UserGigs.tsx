@@ -30,11 +30,11 @@ export default function UserGigs({ gigList, user }: { gigList: Gig[], user: User
   });
 
   return (
-    <div className='mx-4 sm:mx-6 lg:mx-8 my-6 sm:my-8 lg:my-10'>
+    <div className='mx-4 sm:mx-6 lg:mx-8 my-6 sm:my-8 lg:my-10 '>
       <h2 className='text-xl sm:text-2xl font-bold mb-6 sm:mb-8 text-gray-900 dark:text-white'>
         Tus publicaciones
       </h2>
-      <Grid className="gap-4 sm:gap-6 lg:gap-8">
+      <Grid className="gap-4 sm:gap-6 lg:gap-8 pb-4">
         {list}
       </Grid>
     </div>

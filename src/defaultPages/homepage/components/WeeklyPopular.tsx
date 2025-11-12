@@ -39,8 +39,9 @@ export default async function WeeklyPopular() {
       h-auto 
       min-h-[280px]
       sm:min-h-[320px]
-    '>
+      '>
       <h2 className='
+        text-muted-foreground
         text-lg 
         sm:text-xl 
         lg:text-2xl 

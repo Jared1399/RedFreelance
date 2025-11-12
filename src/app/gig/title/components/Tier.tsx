@@ -16,9 +16,9 @@ const Tier = (
     }) => {
 
   const tierCls = clsx({
-    "flex flex-row justify-between px-5 py-2 h-fit dark:bg-card rounded-lg border-2": true,
-    "dark:border": tier.id != selectedTier.id,
-    "border-amber-700": tier.id == selectedTier.id
+    "flex flex-row justify-between px-5 py-2 h-fit bg-background rounded-lg border-2": true,
+    "border": tier.id != selectedTier.id,
+    "border-accent": tier.id == selectedTier.id
   });
 
   const selectTier = (tier: LocalTier) => {

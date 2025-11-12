@@ -1,13 +1,14 @@
 import clsx from 'clsx';
-
 export const formContainerCls = clsx(
   `
     flex
     flex-col
     w-full
     rounded-lg
-    dark:bg-card
-    dark:border
+    bg-background
+    text-foreground
+    border
+    border-border
     px-6
     sm:px-8
     lg:px-12 
@@ -18,6 +19,7 @@ export const formContainerCls = clsx(
     shadow-[0px_4px_6px_0px_rgba(81,_81,_81,_0.5)]
   `
 );
+
 export const tierListContainerCls = clsx(
   `
     h-full
@@ -33,11 +35,13 @@ export const tierListContainerCls = clsx(
     rounded-lg 
     flex 
     flex-col 
-    dark:bg-card 
-    dark:border 
+    bg-background 
+    text-foreground
+    border
+    border-border
     shadow-[0px_4px_6px_0px_rgba(81,_81,_81,_0.5)]
-  `);
-
+  `
+);
 
 export const tierScrollListCls = clsx(
   `
@@ -49,13 +53,15 @@ export const tierScrollListCls = clsx(
     lg:mt-5 
     py-3
     lg:py-1 
-    dark:bg-black 
-    opacity-[0.8] 
-    dark:border 
+    bg-muted/60
+    text-foreground
+    border
+    border-border
     rounded-lg 
     overflow-y-scroll 
     flex 
     flex-col 
     items-center
     gap-3
-  `);
+  `
+);

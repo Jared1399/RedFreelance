@@ -38,8 +38,7 @@ export default function GetPremium() {
           Potencia tus habilidades
         </h2>
         <button className='
-          bg-amber-800 
-          hover:bg-amber-700
+        bg-primary
           font-medium 
           rounded-full 
           py-2 

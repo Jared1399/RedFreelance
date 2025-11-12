@@ -13,16 +13,14 @@ export default function CategoryButton({ categoryName }: { categoryName: string 
       md:h-[160px]
       lg:h-[180px]
       xl:h-[200px]
-      bg-card
-      dark:bg-card
       rounded-lg
       cursor-pointer
-      hover:bg-amber-700
-      dark:hover:bg-amber-700
-      hover:shadow-[0px_4px_6px_0px_rgba(81,_81,_81,_0.5)]
+      bg-ring
+      hover:bg-accent
+      hover:shadow-[0px_4px_6px_0px_rgba(81,_81,_81,_0.8)]
       active:scale-95
       transition-all
-      duration-200
+      duration-300
       ease-in-out
     ">
       <Link
@@ -38,6 +36,7 @@ export default function CategoryButton({ categoryName }: { categoryName: string 
           line-clamp-2
           break-words
           hyphens-auto
+          text-white
         '
         href={`/categories/name/${categoryName}`}
       >

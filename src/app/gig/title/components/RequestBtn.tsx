@@ -135,44 +135,46 @@ export default function RequestBtn({ gigTiers, gig }: { gigTiers: GigTier[], gig
       <dialog
         open={isDialogOpen}
         className='
-      fixed 
-      top-4 left-4 right-4 bottom-4
-      sm:top-10 sm:left-10 sm:right-10 sm:bottom-10
-      md:top-15 md:left-20 md:right-20 md:bottom-15
-      lg:top-20 lg:left-32 lg:right-32 lg:bottom-20
-      xl:top-24 xl:left-40 xl:right-40 xl:bottom-24
-      w-[calc(100%-2rem)] h-[calc(100%-2rem)]
-      sm:w-[calc(100%-5rem)] sm:h-[calc(100%-5rem)]
-      md:w-[calc(100%-10rem)] md:h-[calc(100%-7.5rem)]
-      lg:w-[calc(100%-16rem)] lg:h-[calc(100%-10rem)]
-      xl:w-[calc(100%-20rem)] xl:h-[calc(100%-12rem)]
-      z-50 
-      dark:bg-card 
-      dark:border 
-      rounded-lg
-      p-4
-      sm:p-6
-      overflow-y-auto
-    '
+          fixed 
+          top-4 left-4 right-4 bottom-4
+          sm:top-10 sm:left-10 sm:right-10 sm:bottom-10
+          md:top-15 md:left-20 md:right-20 md:bottom-15
+          lg:top-20 lg:left-32 lg:right-32 lg:bottom-20
+          xl:top-24 xl:left-40 xl:right-40 xl:bottom-24
+          w-[calc(100%-2rem)] h-[calc(100%-2rem)]
+          sm:w-[calc(100%-5rem)] sm:h-[calc(100%-5rem)]
+          md:w-[calc(100%-10rem)] md:h-[calc(100%-7.5rem)]
+          lg:w-[calc(100%-16rem)] lg:h-[calc(100%-10rem)]
+          xl:w-[calc(100%-20rem)] xl:h-[calc(100%-12rem)]
+          z-50 
+          bg-background
+          border
+          rounded-lg
+          p-4
+          sm:p-6
+          overflow-y-auto
+        '
       >
         <button
           className='
-        absolute 
-        top-3 right-3
-        sm:top-4 sm:right-4
-        md:top-5 md:right-5
-        w-6 h-6
-        sm:w-7 sm:h-7
-        md:w-8 md:h-8
-        flex items-center justify-center
-        bg-gray-200 dark:bg-gray-700
-        rounded-full
-        text-sm
-        sm:text-base
-        hover:bg-gray-300 dark:hover:bg-gray-600
-        transition-colors
-        z-10
-      '
+            absolute 
+            top-3 right-3
+            sm:top-4 sm:right-4
+            md:top-5 md:right-5
+            w-6 h-6
+            sm:w-7 sm:h-7
+            md:w-8 md:h-8
+            flex items-center 
+            justify-center
+            rounded-full
+            text-sm
+            sm:text-base
+            transition-colors
+            bg-muted
+            hover:bg-muted-foreground
+            cursor-pointer
+            z-10
+          '
           onClick={() => setDialogOpen(false)}
           type="button"
         >
@@ -180,25 +182,25 @@ export default function RequestBtn({ gigTiers, gig }: { gigTiers: GigTier[], gig
         </button>
 
         <div className='
-      flex 
-      flex-col
-      md:flex-row 
-      w-full
-      h-[80%]
-      pt-0
-      md:pt-5
-      justify-between 
-      gap-2.5 
-      sm:gap-6
-      md:gap-8
-    '>
+          flex 
+          flex-col
+          md:flex-row 
+          w-full
+          h-[80%]
+          pt-0
+          md:pt-5
+          justify-between 
+          gap-2.5 
+          sm:gap-6
+          md:gap-8
+        '>
 
           <div className='
-        w-full
-        md:w-[70%]
-        lg:w-[75%]
-        flex flex-col
-      '>
+            w-full
+            md:w-[70%]
+            lg:w-[75%]
+            flex flex-col
+          '>
             <div className='mb-4 sm:mb-6'>
               <p className='
             text-sm sm:text-base
@@ -209,7 +211,7 @@ export default function RequestBtn({ gigTiers, gig }: { gigTiers: GigTier[], gig
               </p>
               <p className='
             text-sm sm:text-base
-            text-gray-300
+            text-foreground
             leading-relaxed
           '>
                 Si {freelancer?.firstName} aprueba tu propuesta se pondrá en contacto contigo para
@@ -232,9 +234,8 @@ export default function RequestBtn({ gigTiers, gig }: { gigTiers: GigTier[], gig
             sm:p-4
             text-sm
             sm:text-base
-            bg-transparent
-            border-gray-600
-            focus:border-amber-500
+            bg-muted
+            border-2
             focus:outline-none
             transition-colors
           '
@@ -254,34 +255,31 @@ export default function RequestBtn({ gigTiers, gig }: { gigTiers: GigTier[], gig
         flex flex-col
       '>
             <span className='
-          text-sm sm:text-base
-          font-medium
-          block mb-2  /* Menos margen en móvil */
-          sm:mb-4
-        '>
+              text-sm sm:text-base
+              font-medium
+              block mb-2  
+              sm:mb-4
+            '>
               Selecciona el nivel
             </span>
             <div
               className='
-            flex 
-            flex-col 
-            justify-start 
-            gap-2
-            max-h-[200px]  /* Más compacto en móvil */
-            sm:max-h-[400px]
-            overflow-y-auto
-            bg-neutral-900
-            sm:bg-neutral-950
-            py-2       /* Menos padding en móvil */
-            sm:py-3
-            px-2       /* Menos padding en móvil */
-            sm:px-3
-            rounded-lg  /* Bordes más pequeños en móvil */
-            sm:rounded-xl
-            dark:outline
-            outline-1
-            outline-gray-700
-          '>
+                flex 
+                flex-col 
+                justify-start 
+                gap-2
+                max-h-[200px]  
+                sm:max-h-[400px]
+                overflow-y-auto
+                py-2       
+                px-2       
+                sm:py-3
+                sm:px-3
+                rounded-lg  
+                sm:rounded-xl
+                bg-muted
+                border-2
+              '>
               {tiers}
             </div>
           </div>
@@ -303,7 +301,7 @@ export default function RequestBtn({ gigTiers, gig }: { gigTiers: GigTier[], gig
         flex-col
         sm:flex-row
         items-center
-        gap-2   /* Menos gap en móvil */
+        gap-2   
         sm:gap-3
         w-full
         sm:w-auto
@@ -335,13 +333,13 @@ export default function RequestBtn({ gigTiers, gig }: { gigTiers: GigTier[], gig
             <button
               type="submit"
               className='
-            bg-amber-600
-            hover:bg-amber-700
+            bg-accent
+            hover:bg-ring
             rounded-full
             w-full
             sm:w-auto
             px-6
-            py-2   /* Un poco menos de padding vertical en móvil */
+            py-2   
             sm:py-3
             text-sm
             sm:text-base
@@ -361,19 +359,21 @@ export default function RequestBtn({ gigTiers, gig }: { gigTiers: GigTier[], gig
 
       <button
         className='
-      bg-amber-600
-      hover:bg-amber-700
-      rounded-full
-      w-full
-      sm:w-auto
-      px-6
-      sm:px-8
-      py-3
-      text-sm
-      sm:text-base
-      font-medium
-      transition-colors
-    '
+          cursor-pointer
+          text-white
+          bg-accent
+          hover:bg-ring
+          rounded-full
+          w-full
+          sm:w-auto
+          px-6
+          sm:px-8
+          py-3
+          text-sm
+          sm:text-base
+          font-medium
+          transition-colors
+        '
         onClick={() => setDialogOpen(true)}
       >
         Solicitar

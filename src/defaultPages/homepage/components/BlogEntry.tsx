@@ -25,18 +25,21 @@ export default function BlogEntry() {
   });
 
   return (
-    <div className='
-      text-zinc-800 
-      my-6 
-      sm:my-8 
-      lg:my-12
-      px-4 
-      sm:px-6
-      lg:px-8'
+    <div
+      className="
+        text-foreground 
+        my-6 
+        sm:my-8 
+        lg:my-12
+        px-4 
+        sm:px-6
+        lg:px-8
+      "
     >
       <div
-        className='
-          bg-neutral-900
+        className="
+          bg-card
+          text-card-foreground
           rounded-lg
           flex 
           flex-col
@@ -49,42 +52,52 @@ export default function BlogEntry() {
           lg:gap-8
           min-h-[400px]
           sm:min-h-[500px]
-          lg:min-h-[560px]'
+          lg:min-h-[560px]
+          shadow-md
+          hover:shadow-[0_4px_6px_0_rgba(0,0,0,0.1)]
+          dark:hover:shadow-[0_4px_6px_0_rgba(255,255,255,0.1)]
+          transition-shadow
+        "
       >
-        <div className='
-          my-auto
-          h-full
-          lg:h-full 
-          w-full
-          lg:w-[50%] 
-          flex-shrink-0
-          rounded-lg
-          overflow-hidden'
+        <div
+          className="
+            my-auto
+            h-full
+            lg:h-full 
+            w-full
+            lg:w-[50%] 
+            flex-shrink-0
+            rounded-lg
+            overflow-hidden
+          "
         >
           <Image
-            alt='blog-image'
-            className='w-full h-full object-cover'
+            alt="blog-image"
+            className="w-full h-full object-cover"
           />
         </div>
 
         <div
-          className='
+          className="
             h-full
             lg:h-full
             w-full
             lg:w-[50%]
             flex
             flex-col
-            justify-between'
+            justify-between
+          "
         >
-          <span className='text-sm sm:text-base text-amber-600 underline lg:mb-0'>
-            <Link href={"/blog"}>Ver todos los artículos</Link>
+          <span className="text-sm sm:text-base text-primary underline lg:mb-0">
+            <Link href='/blog'>Ver todos los artículos</Link>
           </span>
-          <div className='overflow-auto flex-1 space-y-4 lg:space-y-6'>
+
+          <div className="overflow-auto hide-scrollbar-x flex-1 space-y-4 lg:space-y-6">
             {blogs}
           </div>
         </div>
       </div>
     </div>
+
   );
 }

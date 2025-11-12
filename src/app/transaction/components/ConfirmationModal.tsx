@@ -10,22 +10,24 @@ export default function ConfirmationModal({ options, label }: { options: Options
   const { actions } = useContext(TransactionContext);
 
   return (
-    <div className="
-      absolute 
-      inset-x-0 
-      bottom-20 
-      md:bottom-25 
-      flex 
-      justify-center 
-      bg-neutral-800/50 
-      py-3 
-      md:py-2 
-      px-4 
-      md:px-0 
-      z-10"
+    <div
+      className="
+    absolute 
+    inset-x-0 
+    bottom-20 
+    md:bottom-25 
+    flex 
+    justify-center 
+    bg-muted/60 
+    py-3 
+    md:py-2 
+    px-4 
+    md:px-0 
+    z-10
+  "
     >
       <div className="w-full max-w-md">
-        <p className="text-sm md:text-base text-center mb-3 md:mb-2 text-white font-medium">
+        <p className="text-sm md:text-base text-center mb-3 md:mb-2 text-foreground font-medium">
           {label}
         </p>
         <div className="flex flex-row gap-3 md:gap-4 w-full justify-center">
@@ -49,7 +51,7 @@ export default function ConfirmationModal({ options, label }: { options: Options
             "
             onClick={() => actions.updateTransactionLifeCycle(options.accept)}
           >
-            Si
+            Sí
           </button>
           <button
             className="
@@ -76,5 +78,6 @@ export default function ConfirmationModal({ options, label }: { options: Options
         </div>
       </div>
     </div>
+
   );
 }

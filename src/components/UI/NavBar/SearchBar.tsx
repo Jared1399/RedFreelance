@@ -15,6 +15,8 @@ const inputCls = clsx(
   "border-white",
   "rounded",
   "py-1",
+  "outline-muted",
+  "outline-2"
 );
 
 export default function SearchBar() {

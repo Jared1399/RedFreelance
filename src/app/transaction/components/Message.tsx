@@ -53,8 +53,11 @@ export default function Message({ msg }: { msg: LocalMsg }) {
           h-fit
           whitespace-normal
           break-words
-          ${msg.sender === "me" ? "bg-amber-700 text-white" : "bg-gray-300 text-black"}
-          ${msg.metadata?.type === "delivery" ? "border-2 border-white" : ""}
+          ${msg.sender === "me" ?
+            "bg-accent/90 text-background dark:text-foreground" :
+            "bg-muted dark:bg-muted-foreground text-foreground"
+          }
+          ${msg.metadata?.type === "delivery" ? "border-2 border-muted-foreground" : ""}
           ${msg.metadata?.type == "multimedia" ? "font-bold underline cursor-pointer" : ""}
           `}
       >

@@ -14,7 +14,7 @@ export default function Sidebar(
     <div className="flex">
       {isMobileOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+          className="fixed inset-0 bg-background bg-opacity-50 z-40 md:hidden"
           onClick={() => setIsMobileOpen(false)}
         />
       )}
@@ -34,7 +34,7 @@ export default function Sidebar(
             top-5 
             left-4 
             z-30 
-            bg-amber-700 
+            bg-accent 
             text-white 
             p-2 
             rounded-md 
@@ -90,7 +90,14 @@ const SidebarBody = ({
   return (
     <div
       className={`
-        bg-neutral-700 text-white h-dvh p-4 transition-all duration-300 flex flex-col
+        bg-ring/20 
+        dark:bg-muted-foreground 
+        text-background 
+        dark:text-foreground 
+        h-dvh 
+        p-4 
+        transition-all 
+        duration-300 flex flex-col
         fixed md:relative z-50 top-0 left-0 mr-2
         ${open ? "w-60" : "w-16"}
         ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
@@ -100,14 +107,14 @@ const SidebarBody = ({
       <div className="flex items-center justify-between mb-6">
         <button
           onClick={() => setOpen(!open)}
-          className="text-gray-300 hover:text-white"
+          className="text-gray-300 hover:text-foreground"
         >
           {open ? "⏪" : "⏩"}
         </button>
 
         <button
           onClick={() => setIsMobileOpen(false)}
-          className="md:hidden text-gray-300 hover:text-white"
+          className="md:hidden text-gray-300 hover:text-foreground"
         >
           <X size={20} />
         </button>
@@ -145,12 +152,15 @@ function SidebarItem({
         gap-3 
         p-2 
         rounded-md 
-        hover:bg-amber-700 
+        hover:bg-ring 
         cursor-pointer 
         overflow-hidden 
         transition-all 
         duration-300
-        ${state.currentTransaction?.id == id ? 'bg-amber-700' : ""}
+        ${state.currentTransaction?.id == id ?
+          'bg-accent' :
+          "text-muted-foreground dark:text-foreground"
+        }
       `}
       onClick={handleClick}
     >

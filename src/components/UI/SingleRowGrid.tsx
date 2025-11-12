@@ -19,10 +19,11 @@ const SingleRowGrid: React.FC<SingleRowGridProps> = ({ children }) => {
     'flex',
     'justify-center',
     'items-stretch',
+    'align-middle',
     'w-full',
     'h-full',
-    'overflow-x-auto',
-    'lg:overflow-x-visible',
+    'overflow-x-scroll',
+    'lg:overflow-x-scroll',
     'snap-x',
     'snap-mandatory',
     'lg:snap-none',
@@ -45,11 +46,13 @@ const SingleRowGrid: React.FC<SingleRowGridProps> = ({ children }) => {
         key={i}
         className="
           flex-shrink-0 snap-start 
-          w-[160px] h-[200px]
-          sm:w-[180px] sm:h-[220px]
-          md:w-[260px] md:h-[240px]
-          lg:w-[300px] lg:h-[260px]
-          xl:w-[400px] xl:h-[350px]
+          h-auto
+          py-2
+          w-[160px]
+          sm:w-[180px] 
+          md:w-[260px] 
+          lg:w-[300px] 
+          xl:w-[370px] 
           flex flex-col
         "
       >

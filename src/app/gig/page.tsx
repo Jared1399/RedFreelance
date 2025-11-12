@@ -47,9 +47,9 @@ const Gig = async () => {
 
 
   return (
-    <div className='mx-2 sm:mx-8 md:mx-auto'>
+    <div className='mx-2 sm:mx-8 md:mx-5'>
       <h1 className='text-3xl pb-8'>Encuentra el servicio que mas te guste</h1>
-      <Grid>
+      <Grid className='pb-4 px-2'>
         {cardList}
       </Grid>
     </div>

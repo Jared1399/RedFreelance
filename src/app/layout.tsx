@@ -28,8 +28,15 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning >
       <body
-        className={`${inter.variable} antialiased w-full`}
-      >
+        className={`
+          ${inter.variable} 
+          antialiased 
+          w-full 
+          bg-background 
+          text-foreground 
+          transition-colors 
+          duration-300
+        `}>
         <AuthProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <div className="w-full">

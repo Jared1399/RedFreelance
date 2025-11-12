@@ -23,8 +23,22 @@ export default async function PopularCategories() {
   });
 
   return (
-    <div className='text-white mb-10 mt-20 h-[300px]'>
-      <h2 className='text-lg font-bold pl-6 '>Categorias populares entre nuestros usuarios</h2>
+    <div className='mb-10 mt-20 h-[300px]'>
+      <h2 className='
+        text-muted-foreground
+        text-lg 
+        sm:text-xl 
+        lg:text-2xl 
+        font-bold 
+        pl-6
+        sm:pl-6 
+        mb-4 
+        sm:mb-6
+        text-center 
+        sm:text-left
+      '>
+        Categorias populares entre nuestros usuarios
+      </h2>
       <SingleRowGrid >
         {categoryList}
       </SingleRowGrid>

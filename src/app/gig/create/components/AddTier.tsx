@@ -9,8 +9,8 @@ export default function AddTier({ addTierHandler }: { addTierHandler: () => void
         px-4 
         my-2 
         h-fit 
-        dark:bg-card 
-        dark:border 
+        bg-card
+        border
         rounded-lg 
         flex 
         flex-col 

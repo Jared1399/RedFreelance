@@ -42,7 +42,6 @@ export default function UpdateProfilePic(
   }, [preview]);
 
   return (
-
     <div className="flex flex-row justify-between w-170">
       <div className="flex flex-col space-y-4">
         <div className="flex items-center space-x-4">
@@ -62,14 +61,13 @@ export default function UpdateProfilePic(
               items-center 
               px-4 
               py-2 
-              bg-amber-600 
-              hover:bg-amber-500 
-              text-white 
+              bg-primary 
+              hover:bg-primary/90 
+              text-primary-foreground 
               rounded-full 
               cursor-pointer
               shadow-sm
-              "
-
+            "
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -80,9 +78,9 @@ export default function UpdateProfilePic(
             >
               <path
                 d="M4 3a2 2 0 00-2 2v10a2 2 0 
-                  002 2h12a2 2 0 002-2V7.414A2 
-                  2 0 0016.414 6L13 2.586A2 2 0 
-                  0011.586 2H4z"
+              002 2h12a2 2 0 002-2V7.414A2 
+              2 0 0016.414 6L13 2.586A2 2 0 
+              0011.586 2H4z"
               />
             </svg>
             <span className="ml-2 text-sm font-medium">Seleccionar imagen</span>
@@ -90,7 +88,7 @@ export default function UpdateProfilePic(
 
           {selectedFile ? (
             <div className="flex items-center space-x-2">
-              <span className="text-sm text-neutral-300 max-w-[180px] truncate">
+              <span className="text-sm text-muted-foreground max-w-[180px] truncate">
                 {selectedFile.name}
               </span>
               <button
@@ -101,7 +99,7 @@ export default function UpdateProfilePic(
                   if (fileInputRef.current) fileInputRef.current.value = "";
                   if (onFileSelected) onFileSelected(null);
                 }}
-                className="text-sm text-amber-600 hover:text-amber-500"
+                className="text-sm text-primary hover:text-primary/90"
               >
                 Eliminar
               </button>
@@ -121,9 +119,9 @@ export default function UpdateProfilePic(
             className="
               px-4 
               py-2 
-              bg-emerald-600 
-              hover:bg-emerald-500 
-              text-white 
+              bg-primary 
+              hover:bg-primary/90 
+              text-primary-foreground 
               rounded-md 
               disabled:opacity-50 
               disabled:cursor-not-allowed
@@ -140,25 +138,35 @@ export default function UpdateProfilePic(
               if (fileInputRef.current) fileInputRef.current.value = "";
               if (onFileSelected) onFileSelected(null);
             }}
-            className="px-3 py-2 bg-transparent border border-neutral-700 rounded-md text-sm"
+            className="
+              px-3 
+              py-2 
+              bg-transparent 
+              border 
+              border-border 
+              text-muted-foreground 
+              hover:border-border/80 
+              rounded-md
+              text-sm
+            "
           >
             Cancelar
           </button>
         </div>
       </div>
       {preview && (
-        <div>
+        <div className="text-muted-foreground">
           <p>Vista previa:</p>
           <img
             src={preview}
             alt="Preview"
-            className="w-[100px] h-[100px] object-cover rounded-full"
+            className="w-[100px] h-[100px] object-cover rounded-full border border-border"
           />
         </div>
       )}
       <ToastContainer />
-
     </div>
+
 
   );
 }

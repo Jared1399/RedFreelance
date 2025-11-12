@@ -77,12 +77,12 @@ const GigName = async ({
                 lg:w-24 lg:h-24
                 xl:w-30 xl:h-30
                 rounded-full
-                outline-2
                 sm:outline-3
                 md:outline-4
                 lg:outline-5
                 xl:outline-6
-                outline-amber-50
+                outline-accent
+                outline-2
                 outline-offset-1
                 sm:outline-offset-2
                 md:outline-offset-3
@@ -107,7 +107,14 @@ const GigName = async ({
                   {creator.firstName} {creator.isVerified ? " ✅" : null}
                 </span>
               </Link>
-              <span className="text-xs sm:text-sm md:text-base text-gray-300 whitespace-nowrap">
+              <span
+                className="
+                  text-xs 
+                  sm:text-sm 
+                  md:text-base 
+                  text-muted-foreground 
+                  whitespace-nowrap
+                ">
                 {creator.level}
               </span>
             </div>
@@ -126,7 +133,7 @@ const GigName = async ({
               {capitalizeFirst(decodedTitle)}
             </h1>
 
-            <small className="mt-1 sm:mt-2 text-xs sm:text-sm text-gray-400">
+            <small className="mt-1 sm:mt-2 text-xs sm:text-sm text-muted-foreground">
               {formatDateES(gigInfo?.created_at)}
             </small>
           </div>

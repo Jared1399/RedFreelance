@@ -9,7 +9,7 @@ const GigTiers = ({ gigTiers, gig }: { gigTiers: GigTier[], gig: Gig }) => {
 
   const tierTabs = gigTiers.map((tier: GigTier, i: number) => {
     return (
-      <TabsTrigger key={i} value={tier.name} className="text-xs sm:text-sm">
+      <TabsTrigger key={i} value={tier.name} className="text-xs sm:text-sm cursor-pointer">
         {tier.name}
       </TabsTrigger>
     );
@@ -20,13 +20,14 @@ const GigTiers = ({ gigTiers, gig }: { gigTiers: GigTier[], gig: Gig }) => {
       <TabsContent
         key={i}
         value={tier.name}
-        className="w-full h-full bg-neutral-700 rounded-lg py-4 sm:py-6 px-3 sm:px-4 flex flex-col"
+        className="w-full h-full bg-card rounded-lg py-4 sm:py-6 px-3 sm:px-4 flex flex-col"
       >
         <div
           className='
             flex 
             flex-row 
             justify-between 
+            text-card-foreground
             items-center 
             h-8 
             sm:h-10 
@@ -52,7 +53,20 @@ const GigTiers = ({ gigTiers, gig }: { gigTiers: GigTier[], gig: Gig }) => {
 
   return (
     <div
-      className="w-full h-fit py-4 sm:py-6 px-4 sm:px-6 lg:px-8 my-auto bg-neutral-800 rounded-lg"
+      className="
+        w-full 
+        h-fit 
+        py-4 
+        sm:py-6 
+        px-4 
+        sm:px-6 
+        lg:px-8 
+        my-auto 
+        bg-background 
+        rounded-lg 
+        border 
+        border-border
+      "
     >
       <Tabs defaultValue={gigTiers[0].name} className="h-full w-full">
         <TabsList className="w-full flex-wrap">
