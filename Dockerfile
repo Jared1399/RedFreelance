@@ -21,8 +21,6 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/prisma ./prisma 
 COPY --from=builder /app/src/generated/prisma ./src/generated/prisma
 
-RUN npx prisma generate
-
 EXPOSE 3000
 
 CMD ["npm", "start"]
