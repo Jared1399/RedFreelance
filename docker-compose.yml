@@ -13,9 +13,7 @@ services:
       - "5432:5432" 
 
   web:
-    build:
-      context: .
-      dockerfile: Dockerfile   
+    image: nobelium13/redfreelance-web:latest
     container_name: redfreelance-web
     command: ["sh", "-c", "npx prisma migrate deploy && npx prisma db seed && npm start"]
     env_file:
@@ -29,20 +27,16 @@ services:
       - db
       
   socket:
-    build:
-      context: .           
-      dockerfile: Dockerfile.socket  
+    image: nobelium13/redfreelance-socket:latest
     container_name: redfreelance-socket
-    restart: always         
+    restart: always 	
     ports:
       - "4000:4000"
     depends_on:
-      - web           
-    
+      - web 		
+  
   cron:
-    build:
-      context: .
-      dockerfile: Dockerfile.cron
+    image: nobelium13/redfreelance-cron:latest
     depends_on:
       - db
     command: ["pm2-runtime", "start", "ecosystem.config.cjs", "--only", "expire-transactions-cron", "--env", "production"]
