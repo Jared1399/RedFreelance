@@ -3,7 +3,7 @@ import GigCard from '@/components/UI/GigCard';
 import { queryBuilder } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
 
 interface CardType {
   title: string

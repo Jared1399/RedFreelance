@@ -3,7 +3,7 @@ import { UserData } from "./types/User";
 import { queryBuilder } from '@/lib/utils';
 
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
 
 const userProfileService = {
   async fetchUser(userEmail: string) {

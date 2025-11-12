@@ -6,7 +6,7 @@ import Card from '@/components/UI/GigCard';
 
 
 export const dynamic = "force-dynamic";
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
 
 export default async function SearchGig({
   searchParams,

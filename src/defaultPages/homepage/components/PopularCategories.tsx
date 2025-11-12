@@ -5,7 +5,7 @@ import { Category } from './types/Category';
 import { queryBuilder } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
 
 export default async function PopularCategories() {
   const categoryQuery = queryBuilder({ skip: 0, limit: 10 });
