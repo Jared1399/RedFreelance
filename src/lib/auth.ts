@@ -1,7 +1,8 @@
-import { NextAuthOptions, User, Profile, DefaultSession } from "next-auth";
+import { NextAuthOptions, Profile, DefaultSession } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import { PrismaClient } from '../generated/prisma/index.js';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
+const prisma = new PrismaClient();
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
@@ -38,46 +39,49 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async signIn({ profile }) {
       try {
-        const response = await fetch(`${BASE_URL}/api/user/email/${profile?.email}`);
-        let user = await response.json();
+        if (!profile?.email) {
+          console.error("Error en signIn: El perfil de Google no devolvió un email.");
+          return false;
+        }
 
-        if (!user?.id) {
+        let user = await prisma.user.findUnique({
+          where: { email: profile.email },
+        });
+
+
+        if (!user) {
           const [firstName, lastName] = profile?.name?.split(" ") ?? [];
 
-          const newUserRes = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/user/`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              firstName,
-              lastName,
-              email: profile?.email,
+          user = await prisma.user.create({
+            data: {
+              firstName: firstName || '',
+              lastName: lastName || '',
+              email: profile.email,
               userImg: profile?.image,
-            }),
+            }
           });
-
-          user = await newUserRes.json();
         }
 
         (profile as CustomProfile).userId = user.id;
 
         return true;
+
       } catch (err) {
-        console.error("Error creating or fetching user:", err);
+        console.error("Error en el callback de signIn:", err);
         return false;
       }
     },
+
     async jwt({ token, user, profile }) {
       if (user) {
-        token.userId = (profile as CustomProfile)?.userId || (user as User)?.id;
+        token.userId = (profile as CustomProfile)?.userId;
       }
       return token;
     },
 
     async session({ session, token }) {
       if (token?.userId) {
-        session.userId = token.userId;
+        session.userId = token.userId as string;
       }
       return session;
     },
