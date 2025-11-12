@@ -59,12 +59,13 @@ export default function SearchBar() {
       min-w-1 
       rounded-lg 
       z-100 
-      bg-neutral-700 
+      bg-background
+      text-foreground 
       overflow-hidden'
     >
       {search && showResults && state.searchGigs.map((gig) => (
         <div
-          className="w-full h-fit px-2 py-1 hover:bg-neutral-800 cursor-pointer"
+          className="w-full h-fit px-2 py-1 hover:bg-foreground/20 cursor-pointer"
           key={gig.id}
           onClick={() => handleSearchGig(gig)}
         >
