@@ -39,12 +39,9 @@ services:
       - web          
   
   cron:
-    build: .
-    container_name: redfreelance_cron
-    command: ["pm2-runtime", "ecosystem.config.cjs"]
-    restart: always
-    environment:
-      - NODE_ENV=production         
-
+    build:
+      context: .
+      dockerfile: Dockerfile.cron
+    command: ["pm2-runtime", "start", "ecosystem.config.cjs", "--only", "expire-transactions-cron", "--env", "production"]
 volumes:
   db-data:

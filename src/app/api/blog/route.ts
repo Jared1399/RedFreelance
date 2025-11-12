@@ -55,9 +55,13 @@ export async function POST(request: Request) {
         authorId,
         categories: categoriesToConnect,
       },
+      include: {
+        categories: true,
+      },
     });
 
     return NextResponse.json({ ok: true, blog: newBlog });
+
   } catch (error) {
     console.error("Error creando blog:", error);
     return NextResponse.json(

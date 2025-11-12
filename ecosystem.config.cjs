@@ -2,9 +2,8 @@ module.exports = {
   apps: [
     {
       name: "expire-transactions-cron",
-      script: "ts-node ./src/scripts/expireTransactions.ts",
-      interpreter: "ts-node",
-      interpreter_args: "-r tsconfig-paths/register",
+      script: "./dist/scripts/expireTransactions.js",
+      interpreter: "node",
       instances: 1,
       autorestart: false,
       cron_restart: "1 * * * *",
