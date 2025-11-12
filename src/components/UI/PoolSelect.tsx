@@ -17,8 +17,8 @@ const Pill = (
   const pillCls = clsx({
     "w-fit px-3 py-2 sm:px-4 sm:py-2 outline-2 outline-accent ": true,
     "rounded-full cursor-pointer text-sm sm:text-base text-white": true,
-    "bg-accent": !isSelected,
-    "bg-accent/50": !!isSelected,
+    "bg-accent": isSelected,
+    "bg-accent/50": !isSelected,
   });
 
   return (

@@ -110,8 +110,12 @@ export default function CreateGig() {
       const uploadGigImg = await gigService.uploadGigImg(selectedFile, session?.userId, newGig.id);
 
       if (uploadGigImg.ok) {
-        router.push('/gig');
+        router.push('/profile');
       }
+    }
+
+    if (newGig.id) {
+      router.push('/profile');
     }
 
   }
@@ -120,10 +124,6 @@ export default function CreateGig() {
     "mb-1",
     "text-l"
   );
-
-  const handleChange = (ids: number[]) => {
-    setSelectedIds(ids);
-  };
 
   const tierComponents = tierState.tierList.map((t: Tier) => {
     return (
@@ -325,7 +325,7 @@ export default function CreateGig() {
               <div className="mt-4">
                 <PoolSelect
                   options={categoryState.categoryList}
-                  onChange={handleChange}
+                  onChange={setSelectedIds}
                   selectedIds={selectedIds}
                 />
               </div>
