@@ -32,7 +32,6 @@ export async function POST(request: Request) {
       );
     }
 
-    let categoriesToConnect;
     if (categories && categories.length > 0) {
       const existingCategories = await prisma.blogCategory.findMany({
         where: { id: { in: categories } },
@@ -45,7 +44,6 @@ export async function POST(request: Request) {
         );
       }
 
-      categoriesToConnect = { connect: categories.map((id: number) => ({ id })) };
     }
 
     const newBlog = await prisma.blog.create({
@@ -53,11 +51,8 @@ export async function POST(request: Request) {
         title: title.toLowerCase(),
         content,
         authorId,
-        categories: categoriesToConnect,
-      },
-      include: {
-        categories: true,
-      },
+        categories: { connect: categories.map((id: number) => ({ id })) }
+      }
     });
 
     return NextResponse.json({ ok: true, blog: newBlog });
