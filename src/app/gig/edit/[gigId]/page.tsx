@@ -219,7 +219,6 @@ export default function EditGig() {
       successNotify(() => router.push('/profile'));
     } catch (error) {
       console.error("Error updating gig:", error);
-      alert("Error al actualizar: " + (error as Error).message);
     }
   }
 

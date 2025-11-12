@@ -15,6 +15,24 @@ import AddTier from './components/AddTier';
 import { formContainerCls, tierListContainerCls, tierScrollListCls } from './styles';
 import UploadGigImg from './components/UploadGigImg';
 import gigService from '../gig.service';
+import { ToastContainer, toast } from 'react-toastify';
+
+const successNotify = (handleClick: () => void) => (
+  toast.success(`Publicacion actualizada!\nHaz click aqui para volver a tu perfil`, {
+    position: "bottom-right",
+    autoClose: 3000,
+    hideProgressBar: false,
+    pauseOnHover: true,
+    className: "cursor-pointer",
+    onClick: () => handleClick()
+  }));
+
+const errorNotify = (msg: string) => toast.error(msg, {
+  position: "bottom-right",
+  autoClose: 3000,
+  hideProgressBar: false,
+  pauseOnHover: true,
+});
 
 interface User {
   id: string;
@@ -85,37 +103,45 @@ export default function CreateGig() {
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
+    try {
+      const formData = new FormData(event.currentTarget);
 
-    const payload = {
-      title: formData.get("title"),
-      description: formData.get("description"),
-      price: parseInt(formData.get("price") as string),
-      categories: formData.get("categories") as string,
-      tiers: tierState.tierList,
-      userId: (userState?.userData as User)?.id,
-    };
+      const payload = {
+        title: formData.get("title"),
+        description: formData.get("description"),
+        price: parseInt(formData.get("price") as string),
+        categories: formData.get("categories") as string,
+        tiers: tierState.tierList,
+        userId: (userState?.userData as User)?.id,
+      };
 
-    const createGig = await fetch("/api/gig", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
+      const createGig = await fetch("/api/gig", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
 
-    const newGig = await createGig.json();
+      const newGig = await createGig.json();
 
-    if (session?.userId && selectedFile && newGig.id) {
-      const uploadGigImg = await gigService.uploadGigImg(selectedFile, session?.userId, newGig.id);
+      if (session?.userId && selectedFile && newGig.id) {
+        const uploadGigImg = await gigService
+          .uploadGigImg(selectedFile, session?.userId, newGig.id);
 
-      if (uploadGigImg.ok) {
+        if (uploadGigImg.ok) {
+          router.push('/profile');
+        }
+      }
+
+      if (newGig.id) {
         router.push('/profile');
       }
-    }
 
-    if (newGig.id) {
-      router.push('/profile');
+      successNotify(() => router.push('/profile'));
+    } catch (error) {
+      console.error("Error creating Gig", error);
+      errorNotify("Ha ocurrido un error, por favor intente mas tarde");
     }
 
   }
@@ -403,7 +429,7 @@ export default function CreateGig() {
           </button>
         </div>
       </div>
-
+      <ToastContainer />
     </AuthMiddleware>
 
   );

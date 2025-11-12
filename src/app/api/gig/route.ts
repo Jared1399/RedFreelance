@@ -72,7 +72,25 @@ export async function POST(request: Request) {
     userId
   } = await request.json();
 
+  if (!title || !description || !price || !status || !categories || !tiers || userId) {
+    return NextResponse.json(
+      { ok: false, error: "Missing crucial information for gig creation" },
+      { status: 400 }
+    );
+  }
+
   const categoryIds = categories.split(",").map((c: string) => Number.parseInt(c));
+
+  const user = await prisma.user.findUnique({
+    where: { id: userId }
+  });
+
+  if (!user) {
+    return NextResponse.json(
+      { ok: false, error: "User does not exist" },
+      { status: 400 }
+    );
+  }
 
   const newGig = await prisma.gig.create({
     data: {
