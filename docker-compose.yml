@@ -17,7 +17,6 @@ services:
       context: .
       dockerfile: Dockerfile   
     container_name: redfreelance-web
-    command: ["sh", "-c", "npx prisma migrate deploy && npm start"]
     env_file:
       - .env
     restart: always
