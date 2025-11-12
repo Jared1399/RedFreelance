@@ -17,6 +17,7 @@ services:
       context: .
       dockerfile: Dockerfile   
     container_name: redfreelance-web
+    command: ["sh", "-c", "npx prisma migrate deploy && npm start"]
     env_file:
       - .env
     restart: always
@@ -29,19 +30,21 @@ services:
       
   socket:
     build:
-      context: .               
+      context: .           
       dockerfile: Dockerfile.socket  
     container_name: redfreelance-socket
-    restart: always           
+    restart: always         
     ports:
       - "4000:4000"
     depends_on:
-      - web          
-  
+      - web           
+    
   cron:
     build:
       context: .
       dockerfile: Dockerfile.cron
+    depends_on:
+      - db
     command: ["pm2-runtime", "start", "ecosystem.config.cjs", "--only", "expire-transactions-cron", "--env", "production"]
 volumes:
   db-data:

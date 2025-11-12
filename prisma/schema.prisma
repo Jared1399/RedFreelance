@@ -30,8 +30,8 @@ model User {
   subscriptionEnd        DateTime?
   isVerified             Boolean          @default(false)
   warningCount           Int              @default(0)
-  createdAt              DateTime?        @default(now())
-  updatedAt              DateTime?        @updatedAt
+  createdAt              DateTime         @default(now())
+  updatedAt              DateTime         @updatedAt
   balance                Float            @default(0)
   subscriptionPlan       SubscriptionPlan @default(basic)
   level                  Level            @default(novice)
@@ -55,10 +55,10 @@ model User {
 }
 
 model Likes {
-  id        String    @id @default(uuid())
+  id        String   @id @default(uuid())
   userId    String
   gigId     String
-  createdAt DateTime? @default(now())
+  createdAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id])
   gig  Gig  @relation(fields: [gigId], references: [id])
@@ -84,8 +84,8 @@ model Gig {
   status       GigStatus     @default(active)
   categories   Category[]
   ads          Ad[]
-  created_at   DateTime?     @default(now())
-  updated_at   DateTime?     @updatedAt
+  created_at   DateTime      @default(now())
+  updated_at   DateTime      @updatedAt
   userId       String?
   transactions Transaction[]
   likeCount    Int           @default(0)
@@ -96,25 +96,25 @@ model Gig {
 }
 
 model GigTier {
-  id           String    @id @default(uuid())
+  id           String   @id @default(uuid())
   name         String
   price        Int
   description  String?
   deliveryTime Int?
-  createdAt    DateTime? @default(now())
-  updatedAt    DateTime? @updatedAt
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
   gigId        String
-  gig          Gig       @relation(fields: [gigId], references: [id])
+  gig          Gig      @relation(fields: [gigId], references: [id])
 
   transactions Transaction[]
 }
 
 model Category {
-  id          Int       @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   name        String
   description String?
-  createdAt   DateTime? @default(now())
-  updatedAt   DateTime? @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   userId      String?
 
   User User? @relation(fields: [userId], references: [id])
@@ -129,47 +129,47 @@ model Ad {
   endDate    DateTime?
   amountPaid Decimal?  @db.Decimal(15, 2)
   status     AdStatus  @default(active)
-  createdAt  DateTime? @default(now())
-  updatedAt  DateTime? @updatedAt
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 
   gig  Gig  @relation(fields: [gigId], references: [id])
   user User @relation(fields: [userId], references: [id])
 }
 
 model Feedback {
-  id           String    @id @default(uuid())
+  id           String   @id @default(uuid())
   clientId     String
   freelancerId String
   rating       Int
   comment      String?
-  createdAt    DateTime? @default(now())
-  updatedAt    DateTime? @updatedAt
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   client     User @relation("ClientFeedback", fields: [clientId], references: [id])
   freelancer User @relation("FreelancerFeedback", fields: [freelancerId], references: [id])
 }
 
 model Notification {
-  id        String    @id @default(uuid())
+  id        String   @id @default(uuid())
   userId    String
   type      String
   message   String
-  isRead    Boolean   @default(false)
+  isRead    Boolean  @default(false)
   relatedId String?
-  createdAt DateTime? @default(now())
+  createdAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id])
 }
 
 model Portfolio {
-  id          String    @id @default(uuid())
-  userId      String    @unique
+  id          String   @id @default(uuid())
+  userId      String   @unique
   title       String
   description String?
   fileUrl     String?
   externalUrl String?
-  createdAt   DateTime? @default(now())
-  updatedAt   DateTime? @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id])
 }
@@ -178,8 +178,8 @@ model Lifecycle {
   id          Int           @id @default(autoincrement())
   name        String
   description String?
-  createdAt   DateTime?     @default(now())
-  updatedAt   DateTime?     @updatedAt
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
   Transaction Transaction[]
 }
 
@@ -191,7 +191,7 @@ model Transaction {
   lifecycleId    Int            @default(1)
   tierId         String
   amount         Decimal
-  requestDetails String
+  requestDetails String         @default("")
   commission     Decimal
   commissionRate Float          @default(0.10)
   paymentId      String?
@@ -199,9 +199,9 @@ model Transaction {
   dueDate        DateTime?
   expirationDate DateTime
   completed      Boolean        @default(false)
-  createdAt      DateTime?      @default(now())
-  updatedAt      DateTime?      @updatedAt
-  baseConditions Json
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  baseConditions Json           @default("{}")
   delivery_count Int            @default(0)
   tier           GigTier        @relation(fields: [tierId], references: [id])
   freelancer     User           @relation("FreelancerTransactions", fields: [freelancerId], references: [id])
