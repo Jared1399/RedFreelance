@@ -98,33 +98,28 @@ export default function EditProfileModal({ user }: { user: UserData }) {
 
       <dialog
         open={openModal}
-        className='
-      fixed 
-      top-[25%] 
-      md:top-[25%]
-      left-1/2 
-      transform 
-      -translate-x-1/2
-      md:left-auto
-      md:transform-none
-      mx-auto
-      w-[90vw] 
-      md:w-fit  
-      max-w-lg
-      md:max-w-none
-      h-fit 
-      max-h-[90vh]
-      md:max-h-none
-      overflow-y-auto
-      z-50 
-      dark:bg-neutral-900   
-      dark:border 
-      border-neutral-700 
-      rounded-lg
-      p-4 
-      md:p-0
-      text-white            
-    '
+        className="
+          fixed
+          top-1/2
+          left-1/2
+          transform
+          -translate-x-1/2
+          -translate-y-1/2
+          w-[90vw]
+          md:w-[600px]
+          max-w-[90vw]
+          h-fit
+          max-h-[90vh]
+          overflow-y-auto
+          z-50
+          dark:bg-neutral-900
+          dark:border
+          border-neutral-700
+          rounded-lg
+          p-4
+          md:p-6
+          text-white
+        "
       >
         <span
           className='

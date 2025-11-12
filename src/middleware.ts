@@ -12,6 +12,7 @@ const allowedKeys = (process.env.ALLOWED_KEYS ?? "")
 
 export function middleware(req: NextRequest) {
   const origin = req.headers.get("origin") ?? "";
+  const hostname = req.headers.get("host");
   const path = req.nextUrl.pathname;
 
   if (path.startsWith("/api/auth")) {
@@ -44,10 +45,17 @@ export function middleware(req: NextRequest) {
     return response;
   }
 
-  const apiKey = req.headers.get("x-api-key") ?? "";
-  const isInternal = origin === "" || origin === null || origin === req.nextUrl.origin;
+  const isInternal =
+    !origin || origin === req.nextUrl.origin || origin.includes(hostname ?? "");
 
-  if (!isInternal && !allowedKeys.includes(apiKey)) {
+  const apiKey = req.headers.get("x-api-key") ?? "";
+
+  if (
+    !isInternal &&
+    !allowedKeys.includes(apiKey) &&
+    !path.startsWith("/api/user") &&
+    !path.startsWith("/api/auth")
+  ) {
     const response = new NextResponse(
       JSON.stringify({ ok: false, error: "Unauthorized: invalid API key" }),
       { status: 401, headers: { "Content-Type": "application/json" } }
@@ -60,7 +68,6 @@ export function middleware(req: NextRequest) {
   response.headers.set("Access-Control-Allow-Origin", corsOrigin);
   response.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization, x-api-key");
-
   return response;
 }
 
