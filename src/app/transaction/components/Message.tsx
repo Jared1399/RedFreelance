@@ -55,7 +55,7 @@ export default function Message({ msg }: { msg: LocalMsg }) {
           break-words
           ${msg.sender === "me" ?
             "bg-accent/90 text-background dark:text-foreground" :
-            "bg-muted dark:bg-muted-foreground text-foreground"
+            "bg-muted dark:bg-muted-foreground text-foreground dark:text-background"
           }
           ${msg.metadata?.type === "delivery" ? "border-2 border-muted-foreground" : ""}
           ${msg.metadata?.type == "multimedia" ? "font-bold underline cursor-pointer" : ""}

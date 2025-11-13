@@ -41,7 +41,7 @@ export default function RootLayout({
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <div className="w-full">
               <NavBar />
-              <div className="mt-6 min-h-[40vh]">
+              <div className="mt-6 min-h-[80vh]">
                 {children}
               </div>
               <Footer />

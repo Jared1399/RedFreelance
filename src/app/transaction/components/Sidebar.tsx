@@ -91,9 +91,11 @@ const SidebarBody = ({
     <div
       className={`
         bg-ring/20 
-        dark:bg-muted-foreground 
+        dark:bg-muted
         text-background 
         dark:text-foreground 
+        outline
+        rounded-r-lg
         h-dvh 
         p-4 
         transition-all 

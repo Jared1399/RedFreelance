@@ -113,7 +113,30 @@ export default function RequestBtn({ gigTiers, gig }: { gigTiers: GigTier[], gig
     setCurrentGigId(gig.id);
   }, [gig.id]);
 
-  if (!data) return;
+  if (!data) return (
+    <button
+      className='
+          text-white
+          bg-ring
+          hover:bg-ring
+          rounded-full
+          w-full
+          mx-6
+          sm:w-auto
+          px-6
+          sm:px-8
+          py-3
+          text-xs
+          sm:text-base
+          font-medium
+          transition-colors
+          cursor-not-allowed
+        '
+      disabled
+    >
+      Debes iniciar sesion para realizar una solicitud
+    </button>
+  );
   if (data.userId == freelancerId) return;
 
   return (
