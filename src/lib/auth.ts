@@ -1,4 +1,4 @@
-import { NextAuthOptions, Profile, DefaultSession } from "next-auth";
+import { NextAuthOptions, DefaultSession } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { PrismaClient } from '../generated/prisma/index.js';
 
@@ -22,9 +22,6 @@ declare module "next-auth" {
   }
 }
 
-interface CustomProfile extends Profile {
-  userId?: string;
-}
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -38,44 +35,44 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async signIn({ profile }) {
-      try {
-        if (!profile?.email) {
-          console.error("Error en signIn: El perfil de Google no devolvió un email.");
-          return false;
-        }
-
-        let user = await prisma.user.findUnique({
-          where: { email: profile.email },
-        });
-
-
-        if (!user) {
-          const [firstName, lastName] = profile?.name?.split(" ") ?? [];
-
-          user = await prisma.user.create({
-            data: {
-              firstName: firstName || '',
-              lastName: lastName || '',
-              email: profile.email,
-              userImg: profile?.image,
-            }
-          });
-        }
-
-        (profile as CustomProfile).userId = user.id;
-
-        return true;
-
-      } catch (err) {
-        console.error("Error en el callback de signIn:", err);
+      if (!profile?.email) {
+        console.error("Error en signIn: El perfil de Google no devolvió un email.");
         return false;
       }
+      return true;
     },
 
-    async jwt({ token, user, profile }) {
-      if (user) {
-        token.userId = (profile as CustomProfile)?.userId;
+    async jwt({ token, profile }) {
+
+      if (token.userId) {
+        return token;
       }
+
+      if (profile?.email) {
+        try {
+          let dbUser = await prisma.user.findUnique({
+            where: { email: profile.email },
+          });
+
+          if (!dbUser) {
+            const [firstName, lastName] = profile?.name?.split(" ") ?? [];
+            dbUser = await prisma.user.create({
+              data: {
+                firstName: firstName || '',
+                lastName: lastName || '',
+                email: profile.email,
+                userImg: profile?.image,
+              }
+            });
+          }
+
+          token.userId = dbUser.id;
+
+        } catch (err) {
+          console.error("Error en JWT callback buscando/creando usuario:", err);
+        }
+      }
+
       return token;
     },
 
