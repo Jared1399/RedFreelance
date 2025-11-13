@@ -121,8 +121,9 @@ export default function RequestBtn({ gigTiers, gig }: { gigTiers: GigTier[], gig
           hover:bg-ring
           rounded-full
           w-full
-          mx-6
+          mx-0
           sm:w-auto
+          lg:mx-6
           px-6
           sm:px-8
           py-3
