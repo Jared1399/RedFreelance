@@ -1,4 +1,4 @@
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://www.redfreelance.cl";
 
 const getSystemApiKey = () => {
   return process.env.ALLOWED_KEYS?.split(",")[0]?.trim() || "";
