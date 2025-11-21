@@ -168,13 +168,16 @@ export default function EditGig() {
     }
 
     try {
+
+      const updatedCats = selectedCatIds.length ? selectedCatIds.join(",") : gigInfo.categories;
+
       const gigPayload = {
         gigId: gigId,
         userId: session?.userId,
         title: gigInfo.title,
         description: gigInfo.description,
         price: gigInfo.price,
-        categories: selectedCatIds.join(","),
+        categories: updatedCats,
       };
 
       const gigRes = await fetch("/api/user/gig/update", {
