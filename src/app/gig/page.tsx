@@ -1,10 +1,9 @@
 import Grid from '@/components/UI/Grid';
 import Card from '@/components/UI/GigCard';
 import { queryBuilder } from "@/lib/utils";
-
+import { authFetch } from "@/lib/authFetch";
 export const dynamic = 'force-dynamic';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
 
 interface GigCardProps {
   title: string;
@@ -26,7 +25,7 @@ const Gig = async () => {
     }
   );
 
-  const res = await fetch(`${BASE_URL}/api/gig${gigQuery}`);
+  const res = await authFetch(`/api/gig${gigQuery}`);
   const data = await res.json();
 
   const gigList = data.gigs;

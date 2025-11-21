@@ -1,9 +1,8 @@
 import { useReducer } from 'react';
 import { reducer, initialState } from './reducer';
 import { queryBuilder } from "@/lib/utils";
+import { authFetch } from "@/lib/authFetch";
 
-
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
 
 const useGig = (
   {
@@ -28,13 +27,13 @@ const useGig = (
         }
       );
 
-      const res = await fetch(`${BASE_URL}/api/gig${gigQuery}`);
+      const res = await authFetch(`/api/gig${gigQuery}`);
       const data = await res.json();
 
       dispatch({ type: 'SET_GIG_LIST', payload: { gigs: data.gigs } });
     },
     async fetchCategoryInfo() {
-      const fetchCategory = await fetch(`${BASE_URL}/api/category/name/${category}`);
+      const fetchCategory = await authFetch(`/api/category/name/${category}`);
       const categoryInfo = await fetchCategory.json();
 
       dispatch({ type: 'SET_CATEGORY_INFO', payload: { categoryInfo } });
@@ -43,7 +42,7 @@ const useGig = (
     },
     async fetchGigsByCategory() {
       const categoryInfo = await actions.fetchCategoryInfo();
-      const fetchGigs = await fetch(`${BASE_URL}/api/gig/category/${categoryInfo.id}`);
+      const fetchGigs = await authFetch(`/api/gig/category/${categoryInfo.id}`);
 
       const data = await fetchGigs.json();
 
@@ -52,7 +51,7 @@ const useGig = (
     async fetchGigById(gigId: string, userId: string) {
       const gigQuery = queryBuilder({ gigId, userId });
 
-      const fetchGigInfo = await fetch(`${BASE_URL}/api/gig${gigQuery}`);
+      const fetchGigInfo = await authFetch(`/api/gig${gigQuery}`);
 
       const data = await fetchGigInfo.json();
 

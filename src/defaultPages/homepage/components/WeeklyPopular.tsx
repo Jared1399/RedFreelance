@@ -1,9 +1,9 @@
 import SingleRowGrid from '@/components/UI/SingleRowGrid';
 import GigCard from '@/components/UI/GigCard';
 import { queryBuilder } from "@/lib/utils";
+import { authFetch } from "@/lib/authFetch";
 
 export const dynamic = "force-dynamic";
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
 
 interface CardType {
   title: string
@@ -23,7 +23,10 @@ export default async function WeeklyPopular() {
     limit: 10
   });
 
-  const res = await fetch(`${BASE_URL}/api/gig${gigQuery}`, { cache: "no-store" });
+  const res = await authFetch(`/api/gig${gigQuery}`, {
+    cache: "no-store",
+  });
+
   const data = await res.json();
   const gigList = data.gigs;
 

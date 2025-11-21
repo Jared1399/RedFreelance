@@ -1,29 +1,27 @@
 import { queryBuilder } from "@/lib/utils";
-
-
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
+import { authFetch } from "@/lib/authFetch";
 
 const transactionService = {
   fetchTransactionInfo: async (transactionId: string) => {
     const transactionQuery = queryBuilder({ transactionId });
-    const url = `${BASE_URL}/api/user/transaction/id${transactionQuery}`;
+    const url = `/api/user/transaction/id${transactionQuery}`;
 
-    const fetchTransaction = await fetch(url);
+    const fetchTransaction = await authFetch(url);
     const transaction = await fetchTransaction.json();
 
     return transaction;
   },
   async fetchUserTransactions(userId: string, limit?: number) {
     const userQuery = queryBuilder({ userId, limit: limit ?? 10 });
-    const url = `${BASE_URL}/api/user/transaction${userQuery}`;
+    const url = `/api/user/transaction${userQuery}`;
 
-    const fetchUserTransactions = await fetch(url);
+    const fetchUserTransactions = await authFetch(url);
     const userTransactions = await fetchUserTransactions.json();
 
     return userTransactions;
   },
   async fetchUserById(userId: string) {
-    const fetchUserData = await fetch(`${BASE_URL}/api/user/id/${userId}`);
+    const fetchUserData = await authFetch(`/api/user/id/${userId}`);
     const userData = await fetchUserData.json();
 
     delete userData["rankCommunity"];
@@ -34,16 +32,16 @@ const transactionService = {
   async getConversationByTransactionId(transactionId: string, limit?: string) {
     if (transactionId) {
       const conversationQuery = queryBuilder({ transactionId, limit: limit ?? null });
-      const url = `${BASE_URL}/api/chat${conversationQuery}`;
+      const url = `/api/chat${conversationQuery}`;
 
-      const fetchConversation = await fetch(url);
+      const fetchConversation = await authFetch(url);
       const conversation = await fetchConversation.json();
 
       return conversation;
     }
   },
   async createConversation(clientId: string, freelancerId: string, transactionId: string) {
-    const url = `${BASE_URL}/api/chat`;
+    const url = `/api/chat`;
     const data = { clientId, freelancerId, transactionId };
     const options = {
       method: "POST",
@@ -53,13 +51,13 @@ const transactionService = {
       },
     };
 
-    const newConversation = await fetch(url, options);
+    const newConversation = await authFetch(url, options);
 
     const conversation = await newConversation.json();
     return conversation;
   },
   async sendMessage(senderId: string, conversationId: string, text: string, metadata?: object) {
-    const url = `${BASE_URL}/api/chat/message`;
+    const url = `/api/chat/message`;
     const data = { senderId, conversationId, text, metadata };
 
     const options = {
@@ -70,7 +68,7 @@ const transactionService = {
       },
     };
 
-    const newMessage = await fetch(url, options);
+    const newMessage = await authFetch(url, options);
     return newMessage;
   },
   async updateTransactionLifecycle(nextId: string, transactionId: string, deliveryTime?: number) {
@@ -80,7 +78,7 @@ const transactionService = {
 
     const data = { nextLifecycle: lifecycle.id, transactionId, deliveryTime, completed };
 
-    const updateTransactionUrl = `${BASE_URL}/api/user/transaction/update`;
+    const updateTransactionUrl = `/api/user/transaction/update`;
     const options = {
       method: "POST",
       body: JSON.stringify(data),
@@ -89,7 +87,7 @@ const transactionService = {
       },
     };
 
-    const updateTransaction = await fetch(updateTransactionUrl, options);
+    const updateTransaction = await authFetch(updateTransactionUrl, options);
 
     const transaction = await updateTransaction.json();
 
@@ -98,7 +96,7 @@ const transactionService = {
   async newDelivery(transactionId: string) {
     const data = { newDelivery: true, transactionId };
 
-    const newDeliveryUrl = `${BASE_URL}/api/user/transaction/update`;
+    const newDeliveryUrl = `/api/user/transaction/update`;
     const options = {
 
       method: "POST",
@@ -108,7 +106,7 @@ const transactionService = {
       },
     };
 
-    const updateDelivery = await fetch(newDeliveryUrl, options);
+    const updateDelivery = await authFetch(newDeliveryUrl, options);
 
     const transaction = await updateDelivery.json();
 
@@ -116,9 +114,9 @@ const transactionService = {
   },
   async fetchLifecycleInfo(name: string) {
     const lifecycleQuery = queryBuilder({ name });
-    const getLifecycleUrl = `${BASE_URL}/api/lifecycle${lifecycleQuery}`;
+    const getLifecycleUrl = `/api/lifecycle${lifecycleQuery}`;
 
-    const fetchLifecycleDetails = await fetch(getLifecycleUrl);
+    const fetchLifecycleDetails = await authFetch(getLifecycleUrl);
 
     const { lifecycle } = await fetchLifecycleDetails.json();
 
@@ -136,7 +134,7 @@ const transactionService = {
     const destination = `${chatId}/${userId}/${file.lastModified + file.name}`;
     const uploadQuery = queryBuilder({ userId, destination, type: file.type });
 
-    const tokenRes = await fetch(`${BASE_URL}/api/upload/transaction${uploadQuery}`);
+    const tokenRes = await authFetch(`/api/upload/transaction${uploadQuery}`);
     const tokenData = await tokenRes.json();
 
     const { uploadUrl, key } = tokenData;
@@ -144,7 +142,7 @@ const transactionService = {
       throw new Error('Missing uploadUrl or key');
     }
 
-    const uploadRes = await fetch(uploadUrl, {
+    const uploadRes = await authFetch(uploadUrl, {
       method: 'PUT',
       headers: { 'Content-Type': file.type },
       body: file,

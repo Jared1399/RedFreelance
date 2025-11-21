@@ -1,7 +1,6 @@
 import { queryBuilder } from "@/lib/utils";
+import { authFetch } from "@/lib/authFetch";
 
-
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
 
 const gigService = {
   fetchGigDetails: async (gigId: string, userId: string) => {
@@ -9,22 +8,22 @@ const gigService = {
       gigId: gigId,
     });
 
-    const fetchGigTiers = await fetch(`${BASE_URL}/api/gig/tier${gigTierQuery}`);
+    const fetchGigTiers = await authFetch(`/api/gig/tier${gigTierQuery}`);
     const gigTiers = await fetchGigTiers.json();
 
-    const fetchGigCreator = await fetch(`${BASE_URL}/api/user/id/${userId}`);
+    const fetchGigCreator = await authFetch(`/api/user/id/${userId}`);
     const creator = await fetchGigCreator.json();
 
 
     return { gigTiers, creator };
   },
   fetchUserInfo: async (userId: string) => {
-    const fetchUser = await fetch(`${BASE_URL}/api/user/id/${userId}`);
+    const fetchUser = await authFetch(`/api/user/id/${userId}`);
     const user = await fetchUser.json();
     return user;
   },
   async fetchUserByEmail(userEmail: string) {
-    const fetchUserData = await fetch(`${BASE_URL}/api/user/email/${userEmail}`);
+    const fetchUserData = await authFetch(`/api/user/email/${userEmail}`);
     const userData = await fetchUserData.json();
 
     delete userData["rankCommunity"];
@@ -34,7 +33,7 @@ const gigService = {
   },
   async uploadGigImg(file: File, userId: string, gigId: string) {
     const gigImgQuery = queryBuilder({ userId, destination: "gigImg.png", gigId });
-    const tokenRes = await fetch(`${BASE_URL}/api/upload/gig${gigImgQuery}`);
+    const tokenRes = await authFetch(`/api/upload/gig${gigImgQuery}`);
     const tokenData = await tokenRes.json();
 
     const { uploadUrl, key } = tokenData;
@@ -61,7 +60,7 @@ const gigService = {
   },
   async updateGigImg(userId: string, gigId: string, imgUrl: string) {
     const data = { userId, gigImg: imgUrl, gigId };
-    const url = `${BASE_URL}/api/user/gig/update`;
+    const url = `/api/user/gig/update`;
 
     const options = {
       method: "POST",
@@ -70,7 +69,8 @@ const gigService = {
         "Content-Type": "application/json",
       },
     };
-    const updatedGig = await fetch(url, options);
+
+    const updatedGig = await authFetch(url, options);
 
     const gig = await updatedGig.json();
 

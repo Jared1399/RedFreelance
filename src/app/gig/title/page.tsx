@@ -5,10 +5,9 @@ import { capitalizeFirst, queryBuilder } from "@/lib/utils";
 import Link from "next/link";
 import gigService from "../gig.service";
 import { Gig } from "../types/gig";
-
+import { authFetch } from "@/lib/authFetch";
 
 export const dynamic = "force-dynamic";
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
 
 
 const GigName = async ({
@@ -30,9 +29,11 @@ const GigName = async ({
   });
 
 
-  const fetchGig = await fetch(`${BASE_URL}/api/gig/title${gigQuery}`, {
-    cache: "no-store"
-  });
+  const fetchGig = await
+
+    authFetch(`/api/gig/title${gigQuery}`, {
+      cache: "no-store"
+    });
 
   const gigInfo: Gig = await fetchGig.json();
 

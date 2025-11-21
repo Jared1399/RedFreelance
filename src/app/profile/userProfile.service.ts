@@ -1,13 +1,11 @@
 import { Gig } from "./types/Gig";
 import { UserData } from "./types/User";
 import { queryBuilder } from '@/lib/utils';
-
-
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
+import { authFetch } from "@/lib/authFetch";
 
 const userProfileService = {
   async fetchUser(userEmail: string) {
-    const fetchUserData = await fetch(`${BASE_URL}/api/user/email/${userEmail}`);
+    const fetchUserData = await authFetch(`/api/user/email/${userEmail}`);
     const userData: UserData = await fetchUserData.json();
 
     delete userData["rankCommunity"];
@@ -17,30 +15,30 @@ const userProfileService = {
   },
   async fetchUserGigs(userId: string) {
     const userQuery = queryBuilder({ userId });
-    const fetchUserGigs = await fetch(`${BASE_URL}/api/user/gig/${userQuery}`);
+    const fetchUserGigs = await authFetch(`/api/user/gig/${userQuery}`);
     const userGigs: Gig[] = await fetchUserGigs.json();
 
     return userGigs;
   },
   async fetchUserTransactions(userId: string) {
     const userQuery = queryBuilder({ userId });
-    const url = `${BASE_URL}/api/user/transaction${userQuery}`;
+    const url = `/api/user/transaction${userQuery}`;
 
-    const fetchUserTransactions = await fetch(url);
+    const fetchUserTransactions = await authFetch(url);
     const userTransactions = await fetchUserTransactions.json();
 
     return userTransactions;
   },
   async fetchGigById(gigId: string) {
     const gigQuery = queryBuilder({ gigId });
-    const fetchGigDetails = await fetch(`${BASE_URL}/api/gig/id${gigQuery}`);
+    const fetchGigDetails = await authFetch(`/api/gig/id${gigQuery}`);
     const gigDetails = await fetchGigDetails.json();
 
     return gigDetails;
   },
   async updateProfilePic(userId: string, imgUrl: string) {
     const data = { userId, userImg: imgUrl };
-    const url = `${BASE_URL}/api/user/update`;
+    const url = `/api/user/update`;
 
     const options = {
       method: "POST",
@@ -49,7 +47,7 @@ const userProfileService = {
         "Content-Type": "application/json",
       },
     };
-    const updatedUser = await fetch(url, options);
+    const updatedUser = await authFetch(url, options);
 
     const user = await updatedUser.json();
 
@@ -57,7 +55,7 @@ const userProfileService = {
   },
   async uploadProfilePicture(file: File, userId: string) {
     const pfpQuery = queryBuilder({ userId, destination: "profile.png" });
-    const tokenRes = await fetch(`${BASE_URL}/api/upload/user${pfpQuery}`);
+    const tokenRes = await authFetch(`/api/upload/user${pfpQuery}`);
     const tokenData = await tokenRes.json();
 
     const { uploadUrl, key } = tokenData;
@@ -84,7 +82,7 @@ const userProfileService = {
   },
   async updateUserInfo(newInfo: object, userId: string) {
     const data = { ...newInfo, userId };
-    const url = `${BASE_URL}/api/user/update`;
+    const url = `/api/user/update`;
 
     const options = {
       method: "POST",
@@ -93,7 +91,7 @@ const userProfileService = {
         "Content-Type": "application/json",
       },
     };
-    const updatedUser = await fetch(url, options);
+    const updatedUser = await authFetch(url, options);
 
     const user = await updatedUser.json();
 

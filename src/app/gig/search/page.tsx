@@ -3,10 +3,9 @@ import { Gig } from "../types/gig";
 import { queryBuilder } from "@/lib/utils";
 import Grid from '@/components/UI/Grid';
 import Card from '@/components/UI/GigCard';
-
+import { authFetch } from "@/lib/authFetch";
 
 export const dynamic = "force-dynamic";
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
 
 export default async function SearchGig({
   searchParams,
@@ -22,7 +21,7 @@ export default async function SearchGig({
     user: true
   });
 
-  const searchGigs = await fetch(`${BASE_URL}/api/gig/search${gigQuery}`, {
+  const searchGigs = await authFetch(`/api/gig/search${gigQuery}`, {
     cache: "no-store"
   });
 
