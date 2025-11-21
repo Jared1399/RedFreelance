@@ -20,7 +20,7 @@ const GigTiers = ({ gigTiers, gig }: { gigTiers: GigTier[], gig: Gig }) => {
       <TabsContent
         key={i}
         value={tier.name}
-        className="w-full h-full bg-card rounded-lg py-4 sm:py-6 px-3 sm:px-4 flex flex-col"
+        className="w-full h-full bg-card rounded-lg py-4 sm:py-6 px-3 sm:px-4 flex flex-col mb-2"
       >
         <div
           className='
@@ -45,7 +45,6 @@ const GigTiers = ({ gigTiers, gig }: { gigTiers: GigTier[], gig: Gig }) => {
           {tier.description}
         </div>
 
-        <RequestBtn gigTiers={gigTiers} gig={gig} />
 
       </TabsContent>
     );
@@ -73,6 +72,8 @@ const GigTiers = ({ gigTiers, gig }: { gigTiers: GigTier[], gig: Gig }) => {
           {tierTabs}
         </TabsList>
         {tierDetails}
+        <RequestBtn gigTiers={gigTiers} gig={gig} />
+
       </Tabs>
     </div>
   );
