@@ -22,14 +22,12 @@ const TransactionContent = () => {
     return <div>Loading...</div>;
   }
 
-  const transaction = transactionId ? state.currentTransaction : state.userTransactions[0];
-
   return (
     <AuthMiddleware status={status}>
       <TransactionContext.Provider value={{ state, actions }}>
         <div className='h-full'>
           <Sidebar sidebarItems={state.userTransactions as []}>
-            {transaction && <Chat />}
+            <Chat />
           </Sidebar>
         </div>
       </TransactionContext.Provider>

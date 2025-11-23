@@ -138,7 +138,8 @@ export default function RequestBtn({ gigTiers, gig }: { gigTiers: GigTier[], gig
       Debes iniciar sesion para realizar una solicitud
     </button>
   );
-  // if (data.userId == freelancerId) return;
+
+  if (data.userId == freelancerId) return;
 
   return (
     <>

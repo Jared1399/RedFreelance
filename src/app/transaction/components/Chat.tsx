@@ -10,6 +10,7 @@ import { useChat } from "../hooks/useChat";
 import DeliveryModal from "./DeliveryModal";
 import { LocalMsg } from "../types/Chat";
 import formatDateES from '@/lib/timeago';
+import NoChatSelected from "./NoChatSelected";
 
 
 export default function Chat() {
@@ -75,7 +76,7 @@ export default function Chat() {
     return () => timers.forEach(clearTimeout);
   }, [messages]);
 
-  if (!currTransaction) return;
+  if (!currTransaction?.id) return (<NoChatSelected />);
 
   const isFreelancer = session?.userId == currTransaction?.freelancerId;
 
@@ -211,21 +212,22 @@ export default function Chat() {
             <button
               onClick={() => send()}
               className={`
-            bg-accent
-            text-accent-foreground
-            px-3 md:px-4 
-            py-2 
-            rounded-lg
-            h-full 
-            hover:bg-amber-700
-            disabled:bg-muted 
-            disabled:cursor-not-allowed
-            disabled:text-muted-foreground
-            text-sm md:text-base
-            whitespace-nowrap
-            flex-shrink-0
-            transition-colors
-          `}
+                bg-accent
+                cursor-pointer
+                text-accent-foreground
+                px-3 md:px-4 
+                py-2 
+                rounded-lg
+                h-full 
+                hover:bg-ring
+                disabled:bg-muted 
+                disabled:cursor-not-allowed
+                disabled:text-muted-foreground
+                text-sm md:text-base
+                whitespace-nowrap
+                flex-shrink-0
+                transition-colors
+              `}
               disabled={uploadingFile || disabledChat}
             >
               {uploadingFile ? '...' : 'Enviar'}

@@ -72,13 +72,6 @@ export function NavBar() {
               <>
                 <NavigationMenuItem>
                   <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-                    <Link href="/profile">
-                      Perfil
-                    </Link>
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                  <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
                     <Link href="/gig/create">
                       Nuevo trabajo
                     </Link>
@@ -91,6 +84,14 @@ export function NavBar() {
                     className={`${navigationMenuTriggerStyle()} text-primary font-medium`}
                   >
                     <span>CLP {userState.userData.balance}</span>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+
+                <NavigationMenuItem>
+                  <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+                    <Link href="/profile">
+                      Perfil
+                    </Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
               </>

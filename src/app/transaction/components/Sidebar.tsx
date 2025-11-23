@@ -1,6 +1,6 @@
 'use client';
 import React, { useContext, useState } from "react";
-import { Home, Menu, X } from "lucide-react";
+import { Briefcase, Menu, X, ChevronsLeft, ChevronsRight } from "lucide-react";
 import { TransactionInterface } from "../types/Transaction";
 import { TransactionContext } from "../hooks/UseTransaction/context";
 
@@ -76,7 +76,7 @@ const SidebarBody = ({
 
     return (
       <SidebarItem
-        icon={<Home size={20} />}
+        icon={<Briefcase size={20} />}
         text={trimTitle}
         open={open}
         id={item.id}
@@ -109,9 +109,13 @@ const SidebarBody = ({
       <div className="flex items-center justify-between mb-6">
         <button
           onClick={() => setOpen(!open)}
-          className="text-gray-300 hover:text-foreground"
+          className="text-gray-300 hover:text-foreground cursor-pointer"
         >
-          {open ? "⏪" : "⏩"}
+          {
+            open ?
+              <ChevronsLeft size={20} strokeWidth={1.5} /> :
+              <ChevronsRight size={20} strokeWidth={1.5} />
+          }
         </button>
 
         <button
@@ -146,37 +150,45 @@ function SidebarItem({
     }
   };
 
+  const isActive = state.currentTransaction?.id === id;
+
   return (
     <div
+      onClick={handleClick}
       className={`
         flex 
         items-center 
-        gap-3 
         p-2 
         rounded-md 
-        hover:bg-ring 
         cursor-pointer 
-        overflow-hidden 
         transition-all 
         duration-300
-        ${state.currentTransaction?.id == id ?
-          'bg-accent' :
-          "text-muted-foreground dark:text-foreground"
+        ${isActive
+          ? 'bg-accent text-accent-foreground'
+          : 'text-muted-foreground dark:text-foreground hover:bg-ring'
         }
+
+        ${open ? "justify-start gap-3" : "justify-center"}
       `}
-      onClick={handleClick}
+      title={!open ? text : ""}
     >
-      {icon}
-      <span
-        className={`
-          whitespace-nowrap 
-          transition-opacity 
-          duration-200 
-          ${open ? "opacity-100" : "opacity-0"}
-        `}
-      >
-        {text}
+      <span className="flex-shrink-0">
+        {icon}
       </span>
+
+      {open && (
+        <span
+          className="
+          whitespace-nowrap 
+          overflow-hidden 
+          animate-in 
+          fade-in 
+          zoom-in 
+          duration-200
+        ">
+          {text}
+        </span>
+      )}
     </div>
   );
 }

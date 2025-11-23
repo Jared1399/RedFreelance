@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   output        = "../src/generated/prisma"
   binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
@@ -31,7 +28,7 @@ model User {
   warningCount           Int              @default(0)
   createdAt              DateTime         @default(now())
   updatedAt              DateTime         @updatedAt
-  balance                Float            @default(0)
+  balance                Decimal          @default(0)
   subscriptionPlan       SubscriptionPlan @default(basic)
   level                  Level            @default(novice)
   categories             Category[]

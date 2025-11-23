@@ -5,6 +5,7 @@ import userProfileService from "./userProfile.service";
 import UserGigs from "./components/UserGigs";
 import UserDetails from "./components/UserDetails";
 import UserTransactions from "./components/UserTransactions";
+import Link from "next/link";
 
 export default async function ProfilePage() {
   const session = await getServerSession();
@@ -24,8 +25,16 @@ export default async function ProfilePage() {
           </div>
 
           <div className="w-full lg:w-[40%]">
-            <h2 className='text-lg font-bold pl-4 lg:pl-6 mb-4'>Tus transacciones</h2>
+            <h2 className='flex flex-row text-lg font-bold pl-4 lg:pl-6 mb-4 justify-between'>
+              <Link href="/transaction">
+                Tus transacciones
+              </Link>
+              <Link href="/transaction" className="text-accent font-normal mr-6">
+                Ver todo
+              </Link>
+            </h2>
             <UserTransactions transactionList={userTransactions} />
+
           </div>
         </div>
 
