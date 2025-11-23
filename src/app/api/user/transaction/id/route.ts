@@ -16,6 +16,7 @@ export async function GET(req: Request) {
       gig: true,
       tier: true,
       lifecycle: true,
+      requests: true
     }
   });
 

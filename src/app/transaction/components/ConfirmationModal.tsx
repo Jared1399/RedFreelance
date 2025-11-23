@@ -1,33 +1,30 @@
-import { useContext } from 'react';
-import { TransactionContext } from '../hooks/UseTransaction/context';
-
-interface Options {
-  accept: string,
-  deny: string
+interface Handlers {
+  accept: () => void;
+  deny: () => void;
 }
 
-export default function ConfirmationModal({ options, label }: { options: Options, label: string }) {
-  const { actions } = useContext(TransactionContext);
-
+export default function ConfirmationModal(
+  { label, handlers }:
+    { label: string, handlers: Handlers }
+) {
   return (
     <div
       className="
-    absolute 
-    inset-x-0 
-    bottom-20 
-    md:bottom-25 
-    flex 
-    justify-center 
-    bg-muted/60 
-    py-3 
-    md:py-2 
-    px-4 
-    md:px-0 
-    z-10
-  "
-    >
+      absolute 
+      inset-x-0 
+      bottom-20 
+      md:bottom-25 
+      flex 
+      justify-center 
+      bg-muted/60 
+      py-3 
+      md:py-2 
+      px-4 
+      md:px-0 
+      z-10
+    ">
       <div className="w-full max-w-md">
-        <p className="text-sm md:text-base text-center mb-3 md:mb-2 text-foreground font-medium">
+        <p className="text-sm md:text-base text-center mb-3 md:mb-2 text-foreground font-normal">
           {label}
         </p>
         <div className="flex flex-row gap-3 md:gap-4 w-full justify-center">
@@ -49,7 +46,7 @@ export default function ConfirmationModal({ options, label }: { options: Options
               min-w-[80px] 
               md:min-w-0
             "
-            onClick={() => actions.updateTransactionLifeCycle(options.accept)}
+            onClick={() => handlers.accept()}
           >
             Sí
           </button>
@@ -71,7 +68,7 @@ export default function ConfirmationModal({ options, label }: { options: Options
               min-w-[80px] 
               md:min-w-0
             "
-            onClick={() => actions.updateTransactionLifeCycle(options.deny)}
+            onClick={() => handlers.deny()}
           >
             No
           </button>

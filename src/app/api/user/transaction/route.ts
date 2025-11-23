@@ -26,7 +26,8 @@ export async function GET(req: Request) {
     include: {
       lifecycle: true,
       tier: true,
-      gig: true
+      gig: true,
+      requests: true
     }
   });
 

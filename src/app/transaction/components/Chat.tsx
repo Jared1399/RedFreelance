@@ -18,6 +18,7 @@ export default function Chat() {
   const { state, actions } = useContext(TransactionContext);
 
   const [input, setInput] = useState("");
+  const [timeoutWarning, setTimeoutWarning] = useState(true);
 
   const currTransaction = state.currentTransaction;
 
@@ -76,14 +77,27 @@ export default function Chat() {
     return () => timers.forEach(clearTimeout);
   }, [messages]);
 
+  useEffect(() => {
+    const expiration = state.currentTransaction?.expirationDate;
+    const target = expiration instanceof Date ? expiration : new Date(expiration ?? '');
+
+    if (target) {
+      const warning: boolean = (target.getTime() - Date.now())
+        < 2 * 24 * 60 * 60 * 1000;
+
+      setTimeoutWarning(warning);
+    }
+
+  }, [state.currentTransaction?.expirationDate]);
+
   if (!currTransaction?.id) return (<NoChatSelected />);
 
   const isFreelancer = session?.userId == currTransaction?.freelancerId;
 
   const disabledChat = !!currTransaction?.disabledChat;
 
-  const date = state.currentTransaction?.expirationDate;
-  const formattedDate = date ? formatDateES(date.toString()) : '';
+  const expDate = state.currentTransaction?.expirationDate;
+  const formattedDate = expDate ? formatDateES(expDate.toString()) : '';
 
   const isAvailableBanner = currTransaction?.lifecycle?.name === 'completed' ?
     "Este trabajo ha sido completado exitosamente" :
@@ -95,20 +109,40 @@ export default function Chat() {
   const acceptTransaction = currTransaction?.lifecycle?.name == 'requested' &&
     <ConfirmationModal
       label="Comenzar con este trabajo?"
-      options={{ accept: "payment_pending", deny: "rejected_on_request" }}
+      handlers={{
+        accept: () => actions.updateTransactionLifeCycle("payment_pending"),
+        deny: () => actions.updateTransactionLifeCycle("rejected_on_request")
+      }}
     />;
 
   const acceptDelivery = currTransaction?.lifecycle?.name == 'on_review' &&
     <ConfirmationModal
       label="La entrega ha sido realizada, aceptar y finalizar trabajo?"
-      options={{ accept: "completed", deny: "disputed" }}
+      handlers={{
+        accept: () => actions.updateTransactionLifeCycle("completed"),
+        deny: () => actions.updateTransactionLifeCycle("disputed")
+      }}
     />;
 
   const deliveryAllowed = ['payment_approved', 'disputed', 'on_review', 'delivered'];
+  const canDeliver = deliveryAllowed.includes(currTransaction?.lifecycle?.name);
 
-  const showDeliveryModal = deliveryAllowed.includes(currTransaction?.lifecycle?.name) &&
+  const showDeliveryModal = canDeliver &&
     !disabledChat &&
     (isFreelancer && <DeliveryModal />);
+
+
+  const showRequestModal = timeoutWarning && canDeliver &&
+    <ConfirmationModal
+      label="
+        Esta transaccion esta a punto de expirar. 
+        Deseas realizar una solicitud para extender el plazo?
+      "
+      handlers={{
+        accept: () => console.warn("si"),
+        deny: () => setTimeoutWarning(false)
+      }}
+    />;
 
   const messageList = messages.map((msg, idx) => (
     <Message key={msg.id ?? idx} msg={msg as LocalMsg} />
@@ -117,6 +151,8 @@ export default function Chat() {
   const handleFileChange = (file: File | null) => {
     setSelectedFile(file);
   };
+
+
 
   return (
     <>
@@ -167,7 +203,7 @@ export default function Chat() {
             ">
             {isFreelancer && acceptTransaction}
             {!isFreelancer && acceptDelivery}
-
+            {showRequestModal}
             <div className="flex flex-col md:flex-row gap-1 md:gap-2 flex-shrink-0">
               {showDeliveryModal}
               {!disabledChat && (

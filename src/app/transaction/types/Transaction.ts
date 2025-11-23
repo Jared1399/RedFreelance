@@ -48,6 +48,17 @@ export interface TransactionInterface {
     gigId: string;
   },
   disabledChat: boolean;
+  requests: {
+    id: string;
+    transactionId: string;
+    requesterId: string;
+    type: string;
+    status: string;
+    details: JSON;
+    requestMsg: string;
+    createdAt: Date;
+    updatedAt: Date;
+  }
 }
 
 
