@@ -10,7 +10,8 @@ interface TransactionContextType {
     setCurrentTransaction: (transactionId: string) => Promise<void>;
     fetchUserTransactionsList: (userId: string) => Promise<void>;
     updateTransactionLifeCycle: (nextState: string) => Promise<void>,
-    handleDeliveryLocal: () => Promise<void>
+    handleDeliveryLocal: () => Promise<void>,
+    handleExpDateLocal: (newDate: Date) => void;
   };
 }
 
@@ -24,7 +25,8 @@ export const TransactionContext = createContext<TransactionContextType>({
     setCurrentTransaction: async () => { },
     fetchUserTransactionsList: async () => { },
     updateTransactionLifeCycle: async () => { },
-    handleDeliveryLocal: async () => { }
+    handleDeliveryLocal: async () => { },
+    handleExpDateLocal: async () => { }
   }
 });
 

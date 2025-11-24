@@ -163,11 +163,11 @@ function SidebarItem({
         cursor-pointer 
         transition-all 
         duration-300
+        select-none
         ${isActive
           ? 'bg-accent text-accent-foreground'
           : 'text-muted-foreground dark:text-foreground hover:bg-ring'
         }
-
         ${open ? "justify-start gap-3" : "justify-center"}
       `}
       title={!open ? text : ""}

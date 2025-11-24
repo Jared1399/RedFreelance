@@ -1,6 +1,8 @@
 import { queryBuilder } from "@/lib/utils";
 import { authFetch } from "@/lib/authFetch";
 
+
+
 const transactionService = {
   fetchTransactionInfo: async (transactionId: string) => {
     const transactionQuery = queryBuilder({ transactionId });
@@ -174,6 +176,75 @@ const transactionService = {
       }
     };
   },
+  async extendTransactionDate(
+    transactionId: string,
+    daysToExtend: number
+  ) {
+    const updateTransactionUrl = `/api/user/transaction/update`;
+
+    const data = {
+      transactionId,
+      deliveryTime: daysToExtend,
+      newDelivery: false,
+      completed: false
+    };
+
+    const options = {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    const updateTransaction = await authFetch(updateTransactionUrl, options);
+
+    return updateTransaction;
+  },
+  async createTransactionRequest(
+    daysToExtend: number, transactionId: string, userId: string, reqStatus?: string
+  ) {
+    const createRequestUrl = `/api/transaction/request`;
+
+    const data = {
+      daysToExtend,
+      transactionId,
+      userId,
+      requestType: "TIME_EXTENSION",
+      requestStatus: reqStatus ?? 'PENDING'
+    };
+
+    const options = {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+      }
+    };
+
+    const newTransactionRequest = await authFetch(createRequestUrl, options);
+
+    return newTransactionRequest;
+  },
+  async updateTransactionRequest(requestId: string, newState: string) {
+    const updateRequestUrl = `/api/transaction/request/update`;
+
+    const data = {
+      requestId,
+      newState
+    };
+    const options = {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+      }
+    };
+
+    const updatedTransactionRequest = await authFetch(updateRequestUrl, options);
+
+    return updatedTransactionRequest;
+  }
 
 };
 

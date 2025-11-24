@@ -58,6 +58,16 @@ const reducer = (state: InitialState = initialState, action: Action): InitialSta
           lifecycleId: action.payload.lifecycle.id
         } as TransactionInterface
       };
+    },
+    UPDATE_EXPIRATION_LOCAL: () => {
+      return {
+        ...state,
+        currentTransaction: {
+          ...state.currentTransaction,
+          expirationDate: action.payload.newDate,
+          dueDate: action.payload.newDate
+        } as TransactionInterface
+      };
     }
   };
 

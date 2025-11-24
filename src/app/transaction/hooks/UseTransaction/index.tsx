@@ -49,6 +49,12 @@ const useTransaction = ({ transactionId, userId }: { transactionId?: string, use
           lifecycle: deliveredLifecycle,
         }
       });
+    },
+    async handleExpDateLocal(newDate: Date) {
+      dispatch({
+        type: 'UPDATE_EXPIRATION_LOCAL',
+        payload: { newDate }
+      });
     }
   };
 

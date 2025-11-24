@@ -11,16 +11,18 @@ import DeliveryModal from "./DeliveryModal";
 import { LocalMsg } from "../types/Chat";
 import formatDateES from '@/lib/timeago';
 import NoChatSelected from "./NoChatSelected";
+import transactionService from "../transaction.service";
+import { TransactionInterface } from "../types/Transaction";
 
 
 export default function Chat() {
   const { data: session } = useSession();
   const { state, actions } = useContext(TransactionContext);
 
-  const [input, setInput] = useState("");
-  const [timeoutWarning, setTimeoutWarning] = useState(true);
-
   const currTransaction = state.currentTransaction;
+
+  const [input, setInput] = useState("");
+  const [timeoutWarning, setTimeoutWarning] = useState(false);
 
   const {
     messages,
@@ -78,17 +80,26 @@ export default function Chat() {
   }, [messages]);
 
   useEffect(() => {
-    const expiration = state.currentTransaction?.expirationDate;
+    setTimeoutWarning(false);
+
+    const expiration = currTransaction?.expirationDate;
     const target = expiration instanceof Date ? expiration : new Date(expiration ?? '');
 
-    if (target) {
-      const warning: boolean = (target.getTime() - Date.now())
-        < 2 * 24 * 60 * 60 * 1000;
+    if (!currTransaction?.requests || !target || currTransaction.disabledChat) return;
 
-      setTimeoutWarning(warning);
-    }
+    const transactionRequests = currTransaction?.requests;
+    const lastRequest = transactionRequests[transactionRequests.length - 1];
 
-  }, [state.currentTransaction?.expirationDate]);
+    const pendingRequest = transactionRequests?.length
+      && lastRequest.type == 'TIME_EXTENSION'
+      && lastRequest.status == 'PENDING';
+
+    const warning: boolean = (target.getTime() - Date.now())
+      < 2 * 24 * 60 * 60 * 1000;
+
+    if (!pendingRequest && warning || lastRequest.status == 'PENDING') setTimeoutWarning(true);
+
+  }, [currTransaction?.id]);
 
   if (!currTransaction?.id) return (<NoChatSelected />);
 
@@ -131,18 +142,100 @@ export default function Chat() {
     !disabledChat &&
     (isFreelancer && <DeliveryModal />);
 
+  const baseDeliveryTime = currTransaction.tier.deliveryTime;
 
-  const showRequestModal = timeoutWarning && canDeliver &&
+  const requests = currTransaction?.requests ?? [];
+  const lastRequest = requests[requests.length - 1];
+  const hasRequests = requests.length > 0;
+
+  const shouldShowNewRequestModal =
+    !acceptTransaction &&
+    !acceptDelivery &&
+    timeoutWarning &&
+    canDeliver &&
+    !hasRequests;
+
+  const shouldShowForeignRequestModal =
+    !acceptTransaction &&
+    !acceptDelivery &&
+    canDeliver &&
+    hasRequests &&
+    timeoutWarning &&
+    lastRequest.requesterId !== session?.userId &&
+    lastRequest.status == 'PENDING';
+
+  const newRequestModal = shouldShowNewRequestModal && (
     <ConfirmationModal
-      label="
-        Esta transaccion esta a punto de expirar. 
-        Deseas realizar una solicitud para extender el plazo?
-      "
+      label={`
+      Esta transacción está a punto de expirar. 
+      ¿Deseas realizar una solicitud para extender el plazo por 
+      ${baseDeliveryTime <= 1 ? "2" : baseDeliveryTime} días más?
+    `}
       handlers={{
-        accept: () => console.warn("si"),
-        deny: () => setTimeoutWarning(false)
+        accept: async () => {
+          if (!session?.userId) return;
+          await transactionService.createTransactionRequest(
+            baseDeliveryTime <= 1 ? 2 : baseDeliveryTime,
+            currTransaction.id,
+            session.userId
+          );
+
+
+          setTimeoutWarning(false);
+        },
+        deny: async () => {
+          if (!session?.userId) return;
+          await transactionService.createTransactionRequest(
+            baseDeliveryTime <= 1 ? 2 : baseDeliveryTime,
+            currTransaction.id,
+            session.userId,
+            'REJECTED'
+          );
+          setTimeoutWarning(false);
+        }
       }}
-    />;
+    />
+  );
+
+  const foreignRequestModal = shouldShowForeignRequestModal && (
+    <ConfirmationModal
+      label={`
+      Se ha hecho una solicitud de extensión del plazo.
+      ¿Deseas aceptarla o rechazarla?
+    `}
+      handlers={{
+        accept: async () => {
+          interface TransactionRes {
+            ok: boolean;
+            updatedTransaction: TransactionInterface
+          }
+
+          await transactionService.updateTransactionRequest(
+            lastRequest.id,
+            'ACCEPTED'
+          );
+
+          const res = await transactionService.extendTransactionDate(
+            currTransaction.id,
+            lastRequest.details.daysToExtend
+          );
+          const { updatedTransaction } = await res.json() as TransactionRes;
+
+          actions.handleExpDateLocal(updatedTransaction.expirationDate);
+
+          setTimeoutWarning(false);
+        },
+        deny: async () => {
+          await transactionService.updateTransactionRequest(
+            lastRequest.id,
+            'REJECTED'
+          );
+          setTimeoutWarning(false);
+        }
+      }}
+    />
+  );
+
 
   const messageList = messages.map((msg, idx) => (
     <Message key={msg.id ?? idx} msg={msg as LocalMsg} />
@@ -151,7 +244,6 @@ export default function Chat() {
   const handleFileChange = (file: File | null) => {
     setSelectedFile(file);
   };
-
 
 
   return (
@@ -203,7 +295,10 @@ export default function Chat() {
             ">
             {isFreelancer && acceptTransaction}
             {!isFreelancer && acceptDelivery}
-            {showRequestModal}
+
+            {newRequestModal}
+            {foreignRequestModal}
+
             <div className="flex flex-col md:flex-row gap-1 md:gap-2 flex-shrink-0">
               {showDeliveryModal}
               {!disabledChat && (
