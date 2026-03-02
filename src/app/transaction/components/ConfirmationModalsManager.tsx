@@ -90,8 +90,7 @@ export default function ConfirmationModalsManager({
           if (!sessionUserId) return;
           await transactionService.createTransactionRequest(
             baseDeliveryTime <= 1 ? 2 : baseDeliveryTime,
-            currTransaction.id,
-            sessionUserId
+            currTransaction.id
           );
 
           setTimeoutWarning(false);
@@ -101,7 +100,6 @@ export default function ConfirmationModalsManager({
           await transactionService.createTransactionRequest(
             baseDeliveryTime <= 1 ? 2 : baseDeliveryTime,
             currTransaction.id,
-            sessionUserId,
             "REJECTED"
           );
           setTimeoutWarning(false);

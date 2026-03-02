@@ -58,9 +58,9 @@ const transactionService = {
     const conversation = await newConversation.json();
     return conversation;
   },
-  async sendMessage(senderId: string, conversationId: string, text: string, metadata?: object) {
+  async sendMessage(conversationId: string, text: string, metadata?: object) {
     const url = `/api/chat/message`;
-    const data = { senderId, conversationId, text, metadata };
+    const data = { conversationId, text, metadata };
 
     const options = {
       method: "POST",
@@ -126,15 +126,14 @@ const transactionService = {
   },
   async sendAttachment(
     file: File,
-    userId: string,
     chatId: string,
     type: string,
     text?: string,
     transactionId?: string
   ) {
 
-    const destination = `${chatId}/${userId}/${file.lastModified + file.name}`;
-    const uploadQuery = queryBuilder({ userId, destination, type: file.type });
+    const destination = `${chatId}/${file.lastModified + file.name}`;
+    const uploadQuery = queryBuilder({ destination, type: file.type });
 
     const tokenRes = await authFetch(`/api/upload/transaction${uploadQuery}`);
     const tokenData = await tokenRes.json();
@@ -158,7 +157,6 @@ const transactionService = {
     const publicUrl = `https://pub-dfd719a7c85b4b75aaeebef2fb7c8e21.r2.dev/redfreelance/${key}`;
 
     await this.sendMessage(
-      userId,
       chatId,
       text ?? file.name,
       { type: type, url: publicUrl }
@@ -202,14 +200,13 @@ const transactionService = {
     return updateTransaction;
   },
   async createTransactionRequest(
-    daysToExtend: number, transactionId: string, userId: string, reqStatus?: string
+    daysToExtend: number, transactionId: string, reqStatus?: string
   ) {
     const createRequestUrl = `/api/transaction/request`;
 
     const data = {
       daysToExtend,
       transactionId,
-      userId,
       requestType: "TIME_EXTENSION",
       requestStatus: reqStatus ?? 'PENDING'
     };

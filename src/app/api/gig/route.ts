@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
+import { requireSessionUserId } from "@/lib/session";
 
 const CreateGigBody = z.object({
   title: z.string(),
@@ -12,8 +13,7 @@ const CreateGigBody = z.object({
     price: z.number(),
     description: z.string(),
     deliveryTime: z.number()
-  })),
-  userId: z.uuid()
+  }))
 });
 
 export async function GET(request: Request) {
@@ -66,6 +66,14 @@ export async function GET(request: Request) {
 };
 
 export async function POST(request: Request) {
+  const { userId, authenticated } = await requireSessionUserId();
+  if (!authenticated) {
+    return NextResponse.json(
+      { ok: false, error: "No autenticado" },
+      { status: 401 }
+    );
+  }
+
   const body = await request.json();
   const validation = CreateGigBody.safeParse(body);
 
@@ -81,8 +89,7 @@ export async function POST(request: Request) {
     description,
     price,
     categories,
-    tiers,
-    userId
+    tiers
   } = validation.data;
 
   const categoryIds = categories.split(",").map((c: string) => Number.parseInt(c));

@@ -36,14 +36,14 @@ export default function EditProfileModal({ user }: { user: UserData }) {
     setIsSaving(true);
     try {
       if (selectedFile) {
-        const uploadRes = await userProfileService.uploadProfilePicture(selectedFile, user.id);
+        const uploadRes = await userProfileService.uploadProfilePicture(selectedFile);
         if (!uploadRes.ok) {
           errorNotify();
           return;
         }
       }
 
-      const res = await userProfileService.updateUserInfo(data, user.id);
+      const res = await userProfileService.updateUserInfo(data);
 
       if (res.ok) {
         successNotify();

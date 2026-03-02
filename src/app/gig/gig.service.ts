@@ -31,8 +31,8 @@ const gigService = {
 
     return userData;
   },
-  async uploadGigImg(file: File, userId: string, gigId: string) {
-    const gigImgQuery = queryBuilder({ userId, destination: "gigImg.png", gigId });
+  async uploadGigImg(file: File, gigId: string) {
+    const gigImgQuery = queryBuilder({ destination: "gigImg.png", gigId });
     const tokenRes = await authFetch(`/api/upload/gig${gigImgQuery}`);
     const tokenData = await tokenRes.json();
 
@@ -54,12 +54,12 @@ const gigService = {
 
     const publicUrl = `https://pub-dfd719a7c85b4b75aaeebef2fb7c8e21.r2.dev/redfreelance/${key}`;
 
-    const updated = await this.updateGigImg(userId, gigId, publicUrl);
+    const updated = await this.updateGigImg(gigId, publicUrl);
     return { ok: true, url: publicUrl, updated };
 
   },
-  async updateGigImg(userId: string, gigId: string, imgUrl: string) {
-    const data = { userId, gigImg: imgUrl, gigId };
+  async updateGigImg(gigId: string, imgUrl: string) {
+    const data = { gigImg: imgUrl, gigId };
     const url = `/api/user/gig/update`;
 
     const options = {

@@ -36,8 +36,8 @@ const userProfileService = {
 
     return gigDetails;
   },
-  async updateProfilePic(userId: string, imgUrl: string) {
-    const data = { userId, userImg: imgUrl };
+  async updateProfilePic(imgUrl: string) {
+    const data = { userImg: imgUrl };
     const url = `/api/user/update`;
 
     const options = {
@@ -53,8 +53,8 @@ const userProfileService = {
 
     return user;
   },
-  async uploadProfilePicture(file: File, userId: string) {
-    const pfpQuery = queryBuilder({ userId, destination: "profile.png" });
+  async uploadProfilePicture(file: File) {
+    const pfpQuery = queryBuilder({ destination: "profile.png" });
     const tokenRes = await authFetch(`/api/upload/user${pfpQuery}`);
     const tokenData = await tokenRes.json();
 
@@ -76,12 +76,12 @@ const userProfileService = {
 
     const publicUrl = `https://pub-dfd719a7c85b4b75aaeebef2fb7c8e21.r2.dev/redfreelance/${key}`;
 
-    const updated = await this.updateProfilePic(userId, publicUrl);
+    const updated = await this.updateProfilePic(publicUrl);
     return { ok: true, url: publicUrl, updated };
 
   },
-  async updateUserInfo(newInfo: object, userId: string) {
-    const data = { ...newInfo, userId };
+  async updateUserInfo(newInfo: object) {
+    const data = { ...newInfo };
     const url = `/api/user/update`;
 
     const options = {

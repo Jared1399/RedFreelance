@@ -109,7 +109,6 @@ export default function CreateGig() {
         price: parseInt(formData.get("price") as string),
         categories: formData.get("categories") as string,
         tiers: tierState.tierList,
-        userId: session?.userId,
       };
 
 
@@ -126,7 +125,7 @@ export default function CreateGig() {
 
       if (session?.userId && selectedFile && newGig.id) {
         const uploadGigImg = await gigService
-          .uploadGigImg(selectedFile, session?.userId, newGig.id);
+          .uploadGigImg(selectedFile, newGig.id);
 
         if (uploadGigImg.ok) {
           router.push('/profile');

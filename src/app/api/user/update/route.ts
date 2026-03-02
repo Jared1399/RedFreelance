@@ -1,15 +1,17 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { requireSessionUserId } from "@/lib/session";
 
 export async function POST(request: Request) {
-  const { userId, ...updateData } = await request.json();
-
-  if (!userId) {
+  const { userId, authenticated } = await requireSessionUserId();
+  if (!authenticated) {
     return NextResponse.json(
-      { ok: false, error: "User ID is required" },
-      { status: 400 }
+      { ok: false, error: "No autenticado" },
+      { status: 401 }
     );
   }
+
+  const updateData = await request.json();
 
   const allowedFields = [
     'firstName', 'lastName', 'email', 'passwordHash', 'identification',

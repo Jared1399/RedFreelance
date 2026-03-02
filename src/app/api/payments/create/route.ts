@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { tx } from "@/lib/transbank";
 import { z } from "zod";
+import { requireSessionUserId } from "@/lib/session";
 
 const PaymentCreateSchema = z.object({
   transactionId: z.uuid(),
@@ -9,6 +10,14 @@ const PaymentCreateSchema = z.object({
 
 export async function POST(req: Request) {
   try {
+    const { userId, authenticated } = await requireSessionUserId();
+    if (!authenticated) {
+      return NextResponse.json(
+        { ok: false, error: "No autenticado" },
+        { status: 401 }
+      );
+    }
+
     const body = await req.json();
     const validation = PaymentCreateSchema.safeParse(body);
 
@@ -24,6 +33,14 @@ export async function POST(req: Request) {
 
     if (!transaction) {
       return NextResponse.json({ error: "Transacción no encontrada" }, { status: 404 });
+    }
+
+    // Verify the authenticated user is the client of this transaction
+    if (transaction.clientId !== userId) {
+      return NextResponse.json(
+        { error: "Solo el cliente puede iniciar el pago" },
+        { status: 403 }
+      );
     }
 
     const buyOrder = `ORD-${Math.floor(Math.random() * 10000000)}`;

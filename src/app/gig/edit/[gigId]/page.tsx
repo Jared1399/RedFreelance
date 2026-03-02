@@ -173,7 +173,6 @@ export default function EditGig() {
 
       const gigPayload = {
         gigId: gigId,
-        userId: session?.userId,
         title: gigInfo.title,
         description: gigInfo.description,
         price: gigInfo.price,
@@ -196,8 +195,8 @@ export default function EditGig() {
       const tierPromises = tierState.tierList.map(async (tier: Tier) => {
         const endpoint = tier.id ? "/api/gig/tier/update" : "/api/gig/tier";
         const payload = tier.id
-          ? { tierId: tier.id, gigId, userId: session?.userId, ...tier }
-          : { gigId, userId: session?.userId, ...tier };
+          ? { tierId: tier.id, gigId, ...tier }
+          : { gigId, ...tier };
 
         const res = await fetch(endpoint, {
           method: "POST",
@@ -216,7 +215,7 @@ export default function EditGig() {
       }
 
       if (selectedFile && session?.userId) {
-        await gigService.uploadGigImg(selectedFile, session.userId, gigInfo.id);
+        await gigService.uploadGigImg(selectedFile, gigInfo.id);
       }
 
       successNotify(() => router.push('/profile'));

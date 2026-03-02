@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
+import { requireSessionUserId } from "@/lib/session";
 
 const UpdateGigTierSchema = z.object({
   tierId: z.uuid(),
   gigId: z.uuid(),
-  userId: z.uuid(),
   name: z.string().optional(),
   price: z.number().optional(),
   description: z.string().optional(),
@@ -13,6 +13,14 @@ const UpdateGigTierSchema = z.object({
 });
 
 export async function POST(request: Request) {
+  const { userId, authenticated } = await requireSessionUserId();
+  if (!authenticated) {
+    return NextResponse.json(
+      { ok: false, error: "No autenticado" },
+      { status: 401 }
+    );
+  }
+
   const body = await request.json();
   const validation = UpdateGigTierSchema.safeParse(body);
 
@@ -23,7 +31,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const { tierId, gigId, userId, ...updateData } = validation.data;
+  const { tierId, gigId, ...updateData } = validation.data;
 
   if (Object.keys(updateData).length === 0) {
     return NextResponse.json(

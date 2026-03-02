@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
+import { requireSessionUserId } from "@/lib/session";
 
 const UpdateTransactionBody = z.object({
   transactionId: z.uuid(),
@@ -9,6 +10,14 @@ const UpdateTransactionBody = z.object({
 });
 
 export async function POST(request: Request) {
+  const { userId, authenticated } = await requireSessionUserId();
+  if (!authenticated) {
+    return NextResponse.json(
+      { ok: false, error: "No autenticado" },
+      { status: 401 }
+    );
+  }
+
   const body = await request.json();
   const validation = UpdateTransactionBody.safeParse(body);
 
@@ -21,7 +30,26 @@ export async function POST(request: Request) {
 
   const { transactionId, nextState, completed } = validation.data;
 
-  // The rest of the logic
+  // Verify the user is a participant of this transaction
+  const existingTransaction = await prisma.transaction.findUnique({
+    where: { id: transactionId },
+    select: { freelancerId: true, clientId: true }
+  });
+
+  if (!existingTransaction) {
+    return NextResponse.json(
+      { ok: false, error: "Transacción no encontrada" },
+      { status: 404 }
+    );
+  }
+
+  if (existingTransaction.freelancerId !== userId && existingTransaction.clientId !== userId) {
+    return NextResponse.json(
+      { ok: false, error: "No tienes permisos para modificar esta transacción" },
+      { status: 403 }
+    );
+  }
+
   const lifecycle = await prisma.lifecycle.findFirst({
     where: { name: nextState }
   });

@@ -143,7 +143,7 @@ export function useChat(
         if (metadata?.type == 'text') {
           if (text && text.trim()) {
             const t = text.trim();
-            await transactionService.sendMessage(sessionUserId, conversation.id, t, metadata);
+            await transactionService.sendMessage(conversation.id, t, metadata);
             newMsgs.push({ text: t, sender: "me", metadata });
           }
           emitMessages();
@@ -154,7 +154,6 @@ export function useChat(
 
           const { ok, message } = await transactionService.sendAttachment(
             file,
-            sessionUserId,
             conversation.id,
             metadata?.type,
           );
@@ -169,7 +168,6 @@ export function useChat(
           if (text && text.trim()) {
             const t = text.trim();
             await transactionService.sendMessage(
-              sessionUserId,
               conversation.id,
               t,
               { type: "text" }
@@ -185,7 +183,6 @@ export function useChat(
           setUploadingFile(true);
           const { ok, message } = await transactionService.sendAttachment(
             file,
-            sessionUserId,
             conversation.id,
             metadata?.type,
             text ? text.trim() : file.name,

@@ -2,16 +2,17 @@ import { NextResponse } from "next/server";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { r2 } from "@/lib/r2";
+import { requireSessionUserId } from "@/lib/session";
 
 export async function GET(req: Request) {
+  const { userId, authenticated } = await requireSessionUserId();
+  if (!authenticated) {
+    return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+  }
+
   const { searchParams } = new URL(req.url);
-  const userId = searchParams.get("userId");
   const gigId = searchParams.get("gigId");
   const destination = searchParams.get("destination");
-
-  if (!userId) {
-    return NextResponse.json({ error: "Missing user id" }, { status: 400 });
-  }
 
   if (!gigId) {
     return NextResponse.json({ error: "Missing gig id" }, { status: 400 });
