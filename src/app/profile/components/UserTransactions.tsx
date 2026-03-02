@@ -17,7 +17,8 @@ const transLateTransaction = (stateENG: string): string => {
     delivered: "Entregada",
     on_review: "En revision",
     transaction_timeout: "Expirada",
-    payment_pending: "Pago pendiente"
+    payment_pending: "Pago pendiente",
+    payment_approved: "Pago exitoso"
   };
 
   return valuesES[stateENG] ?? stateENG;

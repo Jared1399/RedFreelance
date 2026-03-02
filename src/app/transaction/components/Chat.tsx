@@ -3,7 +3,7 @@ import { useEffect, useState, useContext, useCallback } from "react";
 import Message from "./Message";
 import { useSession } from "next-auth/react";
 import { TransactionContext } from "../hooks/UseTransaction/context";
-import ConfirmationModal from "./ConfirmationModal";
+import ConfirmationModalsManager from "./ConfirmationModalsManager";
 import InfoBanner from "./InfoBanner";
 import AddMedia from "./AddMedia";
 import { useChat } from "../hooks/useChat";
@@ -11,8 +11,7 @@ import DeliveryModal from "./DeliveryModal";
 import { LocalMsg } from "../types/Chat";
 import formatDateES from '@/lib/timeago';
 import NoChatSelected from "./NoChatSelected";
-import transactionService from "../transaction.service";
-import { TransactionInterface } from "../types/Transaction";
+import PaymentButton from "./PaymentButton";
 
 
 export default function Chat() {
@@ -90,6 +89,8 @@ export default function Chat() {
     const transactionRequests = currTransaction?.requests;
     const lastRequest = transactionRequests[transactionRequests.length - 1];
 
+    if (!lastRequest) return;
+
     const pendingRequest = transactionRequests?.length
       && lastRequest.type == 'TIME_EXTENSION'
       && lastRequest.status == 'PENDING';
@@ -117,125 +118,15 @@ export default function Chat() {
       :
       `Esta conversación está disponible hasta dentro de ${formattedDate}`;
 
-  const acceptTransaction = currTransaction?.lifecycle?.name == 'requested' &&
-    <ConfirmationModal
-      label="Comenzar con este trabajo?"
-      handlers={{
-        accept: () => actions.updateTransactionLifeCycle("payment_pending"),
-        deny: () => actions.updateTransactionLifeCycle("rejected_on_request")
-      }}
-    />;
-
-  const acceptDelivery = currTransaction?.lifecycle?.name == 'on_review' &&
-    <ConfirmationModal
-      label="La entrega ha sido realizada, aceptar y finalizar trabajo?"
-      handlers={{
-        accept: () => actions.updateTransactionLifeCycle("completed"),
-        deny: () => actions.updateTransactionLifeCycle("disputed")
-      }}
-    />;
-
-  const deliveryAllowed = ['payment_approved', 'disputed', 'on_review', 'delivered'];
+  const deliveryAllowed = [
+    'payment_approved', 'disputed', 'on_review', 'delivered'
+  ];
   const canDeliver = deliveryAllowed.includes(currTransaction?.lifecycle?.name);
 
-  const showDeliveryModal = canDeliver &&
-    !disabledChat &&
-    (isFreelancer && <DeliveryModal />);
+  const showDeliveryModal = canDeliver && !disabledChat && (isFreelancer && <DeliveryModal />);
 
-  const baseDeliveryTime = currTransaction.tier.deliveryTime;
-
-  const requests = currTransaction?.requests ?? [];
-  const lastRequest = requests[requests.length - 1];
-  const hasRequests = requests.length > 0;
-
-  const shouldShowNewRequestModal =
-    !acceptTransaction &&
-    !acceptDelivery &&
-    timeoutWarning &&
-    canDeliver &&
-    !hasRequests;
-
-  const shouldShowForeignRequestModal =
-    !acceptTransaction &&
-    !acceptDelivery &&
-    canDeliver &&
-    hasRequests &&
-    timeoutWarning &&
-    lastRequest.requesterId !== session?.userId &&
-    lastRequest.status == 'PENDING';
-
-  const newRequestModal = shouldShowNewRequestModal && (
-    <ConfirmationModal
-      label={`
-      Esta transacción está a punto de expirar. 
-      ¿Deseas realizar una solicitud para extender el plazo por 
-      ${baseDeliveryTime <= 1 ? "2" : baseDeliveryTime} días más?
-    `}
-      handlers={{
-        accept: async () => {
-          if (!session?.userId) return;
-          await transactionService.createTransactionRequest(
-            baseDeliveryTime <= 1 ? 2 : baseDeliveryTime,
-            currTransaction.id,
-            session.userId
-          );
-
-
-          setTimeoutWarning(false);
-        },
-        deny: async () => {
-          if (!session?.userId) return;
-          await transactionService.createTransactionRequest(
-            baseDeliveryTime <= 1 ? 2 : baseDeliveryTime,
-            currTransaction.id,
-            session.userId,
-            'REJECTED'
-          );
-          setTimeoutWarning(false);
-        }
-      }}
-    />
-  );
-
-  const foreignRequestModal = shouldShowForeignRequestModal && (
-    <ConfirmationModal
-      label={`
-      Se ha hecho una solicitud de extensión del plazo.
-      ¿Deseas aceptarla o rechazarla?
-    `}
-      handlers={{
-        accept: async () => {
-          interface TransactionRes {
-            ok: boolean;
-            updatedTransaction: TransactionInterface
-          }
-
-          await transactionService.updateTransactionRequest(
-            lastRequest.id,
-            'ACCEPTED'
-          );
-
-          const res = await transactionService.extendTransactionDate(
-            currTransaction.id,
-            lastRequest.details.daysToExtend
-          );
-          const { updatedTransaction } = await res.json() as TransactionRes;
-
-          actions.handleExpDateLocal(updatedTransaction.expirationDate);
-
-          setTimeoutWarning(false);
-        },
-        deny: async () => {
-          await transactionService.updateTransactionRequest(
-            lastRequest.id,
-            'REJECTED'
-          );
-          setTimeoutWarning(false);
-        }
-      }}
-    />
-  );
-
+  const paymentButton = !isFreelancer && currTransaction?.lifecycle?.name === 'payment_pending' &&
+    (<PaymentButton transactionId={currTransaction.id} />);
 
   const messageList = messages.map((msg, idx) => (
     <Message key={msg.id ?? idx} msg={msg as LocalMsg} />
@@ -251,24 +142,33 @@ export default function Chat() {
       {currTransaction ? (
         <div
           className="
-        flex 
-        flex-col 
-        h-dvh 
-        md:h-screen
-        bg-background
-        text-foreground
-        mx-0 
-        border
-        border-border
-        rounded-none md:rounded-lg 
-        overflow-x-hidden
-        w-full
-      "
-        >
-          <div className="bg-accent text-accent-foreground font-bold p-3 md:p-4 relative">
+            flex 
+            flex-col 
+            h-dvh 
+            md:h-screen
+            bg-background
+            text-foreground
+            mx-0 
+            border
+            border-border
+            rounded-none md:rounded-lg 
+            overflow-x-hidden
+            w-full
+          ">
+          <div className="
+            flex 
+            flex-row  
+            bg-accent 
+            text-accent-foreground 
+            font-bold 
+            p-3 
+            md:p-4 
+            relative
+          ">
             <div className="text-sm md:text-base truncate">
               {`${currTransaction?.gig?.title} - ${currTransaction?.tier?.name}`}
             </div>
+            {paymentButton}
             <InfoBanner content={isAvailableBanner} icon="🛈" />
           </div>
 
@@ -293,11 +193,15 @@ export default function Chat() {
               rounded-b-lg 
               gap-2
             ">
-            {isFreelancer && acceptTransaction}
-            {!isFreelancer && acceptDelivery}
 
-            {newRequestModal}
-            {foreignRequestModal}
+            <ConfirmationModalsManager
+              currTransaction={currTransaction}
+              actions={actions}
+              sessionUserId={session?.userId}
+              setTimeoutWarning={setTimeoutWarning}
+              timeoutWarning={timeoutWarning}
+              isFreelancer={isFreelancer}
+            />
 
             <div className="flex flex-col md:flex-row gap-1 md:gap-2 flex-shrink-0">
               {showDeliveryModal}

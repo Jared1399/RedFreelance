@@ -1,27 +1,31 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { z } from "zod";
+
+const UpdateGigTierSchema = z.object({
+  tierId: z.uuid(),
+  gigId: z.uuid(),
+  userId: z.uuid(),
+  name: z.string().optional(),
+  price: z.number().optional(),
+  description: z.string().optional(),
+  deliveryTime: z.number().optional(),
+});
 
 export async function POST(request: Request) {
-  const { tierId, gigId, userId, ...updateData } = await request.json();
+  const body = await request.json();
+  const validation = UpdateGigTierSchema.safeParse(body);
 
-  if (!tierId || !gigId || !userId) {
+  if (!validation.success) {
     return NextResponse.json(
-      { ok: false, error: "Tier ID, Gig ID and User ID are required" },
+      { ok: false, error: validation.error.format() },
       { status: 400 }
     );
   }
 
-  const allowedFields = [
-    'name', 'price', 'description', 'deliveryTime'
-  ];
+  const { tierId, gigId, userId, ...updateData } = validation.data;
 
-  const filteredData = Object.fromEntries(
-    Object.entries(updateData).filter(([key, value]) =>
-      allowedFields.includes(key) && value !== undefined
-    )
-  );
-
-  if (Object.keys(filteredData).length === 0) {
+  if (Object.keys(updateData).length === 0) {
     return NextResponse.json(
       { ok: false, error: "No valid fields provided to update" },
       { status: 400 }
@@ -50,7 +54,7 @@ export async function POST(request: Request) {
 
   const updatedTier = await prisma.gigTier.update({
     where: { id: tierId },
-    data: filteredData
+    data: updateData
   });
 
   return NextResponse.json({

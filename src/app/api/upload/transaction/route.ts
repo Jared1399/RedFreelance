@@ -2,23 +2,34 @@ import { NextResponse } from "next/server";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { r2 } from "@/lib/r2";
+import { z } from "zod";
+
+const UploadTransactionSchema = z.object({
+  userId: z.uuid(),
+  destination: z.string().min(1),
+  type: z.enum(["image/png", "image/jpeg", "video/mp4", "image/webp"]),
+});
 
 export async function GET(req: Request) {
-  const allowedTypes = ["image/png", "image/jpeg", "video/mp4", "image/webp"];
-
   const { searchParams } = new URL(req.url);
 
-  const userId = searchParams.get("userId");
-  const destination = searchParams.get("destination");
-  const mimeType = searchParams.get("type") || "application/octet-stream";
+  const rawParams = {
+    userId: searchParams.get("userId"),
+    destination: searchParams.get("destination"),
+    type: searchParams.get("type"),
+  };
 
-  if (!userId || !destination) {
-    return NextResponse.json({ error: "Missing userId or destination" }, { status: 400 });
+  const validation = UploadTransactionSchema.safeParse(rawParams);
+
+  if (!validation.success) {
+    return NextResponse.json(
+      { error: "Missing/Invalid parameters", details: validation.error.format() },
+      { status: 400 }
+    );
   }
 
-  if (!allowedTypes.includes(mimeType)) {
-    return NextResponse.json({ error: "File type not allowed" }, { status: 400 });
-  }
+  const { userId, destination, type } = validation.data;
+  const mimeType = type;
 
   const key = `transactions/${userId}/${destination}`;
 

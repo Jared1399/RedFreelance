@@ -1,7 +1,7 @@
 import { createContext } from "react";
 import { TransactionInterface } from "../../types/Transaction";
 
-interface TransactionContextType {
+export interface TransactionContextType {
   state: {
     currentTransaction?: TransactionInterface;
     userTransactions: TransactionInterface[];

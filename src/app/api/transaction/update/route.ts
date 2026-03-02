@@ -1,16 +1,27 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { z } from "zod";
+
+const UpdateTransactionBody = z.object({
+  transactionId: z.uuid(),
+  nextState: z.string(),
+  completed: z.boolean().optional(),
+});
 
 export async function POST(request: Request) {
-  const { transactionId, nextState, completed } = await request.json();
+  const body = await request.json();
+  const validation = UpdateTransactionBody.safeParse(body);
 
-  if (!transactionId || !nextState) {
+  if (!validation.success) {
     return NextResponse.json(
-      { ok: false, error: "Datos incompletos" },
+      { ok: false, error: validation.error.format() },
       { status: 400 }
     );
   }
 
+  const { transactionId, nextState, completed } = validation.data;
+
+  // The rest of the logic
   const lifecycle = await prisma.lifecycle.findFirst({
     where: { name: nextState }
   });

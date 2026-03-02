@@ -36,8 +36,17 @@ const UiLoginBtn = () => {
   ) : (
     <button
       onClick={() => signIn('google')}
-      className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100 rounded-md transition-colors"
-    >
+      className="
+        w-full 
+        text-left 
+        px-3 
+        py-2 
+        text-sm 
+        hover:bg-gray-100 
+        rounded-md 
+        transition-colors
+        cursor-pointer
+      ">
       Ingresar con Google
     </button>
   );

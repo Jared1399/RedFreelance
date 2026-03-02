@@ -1,7 +1,6 @@
 "use client";
 import { RefObject, useCallback, useEffect, useRef, useState } from "react";
 import io, { Socket } from "socket.io-client";
-import { DefaultEventsMap } from '@socket.io/component-emitter';
 import transactionService from "../transaction.service";
 import { ConversationInterface, MessageInterface, LocalMsg, Metadata } from "../types/Chat";
 import { TransactionInterface } from "../types/Transaction";
@@ -17,7 +16,7 @@ type UseChatReturn = {
   messagesContainerRef: React.RefObject<HTMLDivElement | null>;
   messagesEndRef: React.RefObject<HTMLDivElement | null>;
   uploadingFile: boolean,
-  socketRef: RefObject<Socket<DefaultEventsMap, DefaultEventsMap> | null>
+  socketRef: RefObject<Socket | null>
 };
 
 export function useChat(

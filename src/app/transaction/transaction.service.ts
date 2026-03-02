@@ -244,6 +244,19 @@ const transactionService = {
     const updatedTransactionRequest = await authFetch(updateRequestUrl, options);
 
     return updatedTransactionRequest;
+  },
+  async findPaymentById(transactionId: string, paymentId: string) {
+
+    const verificationQuery = queryBuilder({
+      transactionId,
+      paymentId
+    });
+    const verifyPaymentUrl = `/api/payments/verify${verificationQuery}`;
+
+
+    const verifiedPayment = await authFetch(verifyPaymentUrl);
+
+    return verifiedPayment;
   }
 
 };

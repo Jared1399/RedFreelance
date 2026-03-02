@@ -1,6 +1,15 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { z } from "zod";
 
+const CreateGigTierBody = z.object({
+  gigId: z.uuid(),
+  userId: z.uuid(),
+  name: z.string(),
+  price: z.number(),
+  description: z.string().optional(),
+  deliveryTime: z.number().optional(),
+});
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -20,14 +29,17 @@ export async function GET(req: Request) {
 };
 
 export async function POST(request: Request) {
-  const { gigId, userId, name, price, description, deliveryTime } = await request.json();
+  const body = await request.json();
+  const validation = CreateGigTierBody.safeParse(body);
 
-  if (!gigId || !userId || !name || !price) {
+  if (!validation.success) {
     return NextResponse.json(
-      { ok: false, error: "Missing required fields" },
+      { ok: false, error: validation.error.format() },
       { status: 400 }
     );
   }
+
+  const { gigId, userId, name, price, description, deliveryTime } = validation.data;
 
   const existingGig = await prisma.gig.findFirst({
     where: {

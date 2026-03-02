@@ -1,16 +1,20 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { z } from "zod";
 
-
-interface Tier {
-  localId: number;
-  name: string;
-  price: number;
-  description: string;
-  deliveryTime: number;
-}
-
-
+const CreateGigBody = z.object({
+  title: z.string(),
+  description: z.string(),
+  price: z.number(),
+  categories: z.string(),
+  tiers: z.array(z.object({
+    name: z.string(),
+    price: z.number(),
+    description: z.string(),
+    deliveryTime: z.number()
+  })),
+  userId: z.uuid()
+});
 
 export async function GET(request: Request) {
 
@@ -62,6 +66,16 @@ export async function GET(request: Request) {
 };
 
 export async function POST(request: Request) {
+  const body = await request.json();
+  const validation = CreateGigBody.safeParse(body);
+
+  if (!validation.success) {
+    return NextResponse.json(
+      { ok: false, error: validation.error.format() },
+      { status: 400 }
+    );
+  }
+
   const {
     title,
     description,
@@ -69,14 +83,7 @@ export async function POST(request: Request) {
     categories,
     tiers,
     userId
-  } = await request.json();
-
-  if (!title || !description || !price || !categories || !tiers || !userId) {
-    return NextResponse.json(
-      { ok: false, error: "Missing crucial information for gig creation" },
-      { status: 400 }
-    );
-  }
+  } = validation.data;
 
   const categoryIds = categories.split(",").map((c: string) => Number.parseInt(c));
 
@@ -101,7 +108,7 @@ export async function POST(request: Request) {
         connect: categoryIds.map((id: number) => ({ id })),
       },
       GigTier: {
-        create: tiers.map((tier: Tier) => ({
+        create: tiers.map((tier) => ({
           name: tier.name,
           price: tier.price,
           description: tier.description,

@@ -5,6 +5,11 @@ generator client {
   js         = true
 }
 
+generator zod {
+  provider = "zod-prisma-types"
+  output   = "../src/generated/zod"
+}
+
 datasource db {
   provider = "postgresql"
 }
@@ -207,6 +212,55 @@ model Transaction {
   lifecycle      Lifecycle            @relation(fields: [lifecycleId], references: [id])
   Conversation   Conversation[]
   requests       TransactionRequest[]
+  payments       Payment[]
+}
+
+model Payment {
+  id            String        @id @default(uuid())
+  transactionId String
+  kind          PaymentType
+  status        PaymentStatus @default(pending)
+
+  amount Decimal
+
+  buyOrder  String?
+  sessionId String?
+  token     String? @unique
+
+  authorizationCode String?
+  paymentTypeCode   String?
+  accountingDate    String?
+  transactionDate   DateTime?
+  installments      Int?
+
+  cardLast4    String?
+  cardType     String?
+  responseCode Int?
+
+  refundedAmount Decimal?
+  refundDate     DateTime?
+  refundToken    String?
+
+  raw Json
+
+  createdAt DateTime @default(now())
+
+  transaction Transaction @relation(fields: [transactionId], references: [id])
+}
+
+enum PaymentStatus {
+  pending
+  authorized
+  paid
+  failed
+  refunded
+}
+
+enum PaymentType {
+  WEBPAY_PLUS
+  ONECLICK
+  REFUND
+  CAPTURE
 }
 
 model TransactionRequest {
