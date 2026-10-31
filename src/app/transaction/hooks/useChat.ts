@@ -19,6 +19,18 @@ type UseChatReturn = {
   socketRef: RefObject<Socket | null>
 };
 
+async function fetchSocketToken(): Promise<string | null> {
+  try {
+    const res = await fetch("/api/socket/token");
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.token ?? null;
+  } catch {
+    console.error("Failed to fetch socket token");
+    return null;
+  }
+}
+
 export function useChat(
   currTransaction: TransactionInterface | undefined,
   sessionUserId?: string | null
@@ -30,33 +42,76 @@ export function useChat(
   const [uploadingFile, setUploadingFile] = useState(false);
 
   const socketRef = useRef<Socket | null>(null);
+  const currentRoomRef = useRef<string | null>(null);
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
+  // ── Socket connection with JWT auth ──
   useEffect(() => {
     const url = process.env.NEXT_PUBLIC_SOCKET_URL;
-    if (!url) return;
+    if (!url || !sessionUserId) return;
 
-    socketRef.current = io(url);
+    let socket: Socket | null = null;
 
-    const handleMessage = (msg: { text: string; senderId?: string, metadata?: Metadata }) => {
-      const sender: LocalMsg["sender"] = msg.senderId === sessionUserId ? "me" : "other";
-      setMessages((prev) => [...prev, { text: msg.text, sender, metadata: msg.metadata }]);
-      if (msg.metadata?.type == 'delivery') {
-        window.document.dispatchEvent(new CustomEvent('newDelivery', {
-          detail: { success: true }
-        }));
+    const connect = async () => {
+      const token = await fetchSocketToken();
+      if (!token) {
+        console.error("No socket token available, skipping connection");
+        return;
       }
+
+      socket = io(url, {
+        auth: { token },
+      });
+
+      socket.on("connect_error", (err) => {
+        console.error("Socket connection error:", err.message);
+      });
+
+      const handleMessage = (msg: { text: string; senderId?: string; metadata?: Metadata }) => {
+        const sender: LocalMsg["sender"] = msg.senderId === sessionUserId ? "me" : "other";
+        setMessages((prev) => [...prev, { text: msg.text, sender, metadata: msg.metadata }]);
+        if (msg.metadata?.type === "delivery") {
+          window.document.dispatchEvent(
+            new CustomEvent("newDelivery", { detail: { success: true } })
+          );
+        }
+      };
+
+      socket.on("message", handleMessage);
+      socketRef.current = socket;
     };
 
-    socketRef.current.on("message", handleMessage);
+    connect();
 
     return () => {
-      socketRef.current?.off("message", handleMessage);
-      socketRef.current?.disconnect();
+      if (currentRoomRef.current && socketRef.current) {
+        socketRef.current.emit("leave", currentRoomRef.current);
+        currentRoomRef.current = null;
+      }
+      socket?.off("message");
+      socket?.disconnect();
       socketRef.current = null;
     };
   }, [sessionUserId]);
+
+  // ── Join/leave rooms when conversation changes ──
+  useEffect(() => {
+    const socket = socketRef.current;
+    if (!socket?.connected && !socket) return;
+
+    // Leave previous room
+    if (currentRoomRef.current) {
+      socket?.emit("leave", currentRoomRef.current);
+      currentRoomRef.current = null;
+    }
+
+    // Join new room
+    if (conversation?.id) {
+      socket?.emit("join", conversation.id);
+      currentRoomRef.current = conversation.id;
+    }
+  }, [conversation?.id]);
 
   useEffect(() => {
     let mounted = true;
@@ -135,7 +190,12 @@ export function useChat(
             setMessages((prev) => [...prev, ...newMsgs]);
             newMsgs.forEach((msg) => socketRef.current?.emit(
               "message",
-              { ...msg, senderId: sessionUserId, metadata: msg.metadata }
+              {
+                conversationId: conversation.id,
+                ...msg,
+                senderId: sessionUserId,
+                metadata: msg.metadata,
+              }
             ));
           }
         };

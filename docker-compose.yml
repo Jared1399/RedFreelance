@@ -29,7 +29,9 @@ services:
   socket:
     image: nobelium13/redfreelance-socket:latest
     container_name: redfreelance-socket
-    restart: always 	
+    restart: always
+    env_file:
+      - .env
     ports:
       - "4000:4000"
     depends_on:
